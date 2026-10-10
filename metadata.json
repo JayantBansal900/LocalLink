@@ -1,0 +1,8 @@
+{
+  "name": "LocalLink",
+  "description": "A community-focused platform connecting citizens for local issue reporting and trusted home service provider bookings.",
+  "permissions": [],
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

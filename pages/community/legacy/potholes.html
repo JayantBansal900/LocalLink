@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Potholes on Major Roads — LocalLink</title>
+  <meta name="description" content="Community civic issue report for potholes on major roads causing traffic delays and vehicle wear in Delhi.">
+  <link rel="icon" type="image/png" href="/assets/logo.png">
+  <link rel="stylesheet" href="/public/css/locallink.css">
+  <style>
+    .meta-tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      font-size: 14px;
+      color: #555555;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .issue-photo {
+      width: 100%;
+      max-height: 380px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 1px solid #000000;
+      margin-bottom: 24px;
+      display: block;
+    }
+    .issue-body-text {
+      font-size: 16px;
+      line-height: 1.7;
+      color: #222222;
+      margin-bottom: 28px;
+    }
+    .upvote-card {
+      background: #f8fafc;
+      border: 2px solid #000000;
+      border-radius: 12px;
+      padding: 28px;
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .upvote-num {
+      font-size: 38px;
+      font-weight: 800;
+      color: #000000;
+      margin-bottom: 4px;
+    }
+    .escalation-box {
+      display: none;
+      margin-top: 20px;
+      padding: 16px 20px;
+      background: #f5f5f5;
+      color: #000000;
+      border: 2px solid #000000;
+      border-radius: 8px;
+      font-size: 14px;
+      line-height: 1.6;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Header matching LocalLink original -->
+  <div class="header">
+    <div class="container">
+      <a href="/"><img src="/assets/logo.png" alt="LocalLink Logo" class="logo"></a>
+      
+      <div class="navigation">
+        <a href="/" class="nav-pill">Home</a>
+        <a href="/services" class="nav-pill">Consumer Mode</a>
+        <a href="/community" class="nav-pill active">Community Mode</a>
+        <a href="/dashboard" class="nav-pill">Dashboard</a>
+        <a href="/contact" class="nav-pill">Contact</a>
+      </div>
+      
+      <div class="auth">
+        <a href="/community" class="button" style="padding: 10px 18px; font-size: 14px; background: #000000; color: #ffffff;">← Back to Issues</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content Area -->
+  <div class="container">
+    <div class="page-wrapper" style="margin: 30px auto; padding: 32px; max-width: 960px;">
+      <main>
+        <div id="issueNotFound" class="empty-state-box" style="display: none; text-align: center; padding: 48px 20px;">
+          <h1>Community Issue Not Found</h1>
+          <p>The requested community issue does not exist or is no longer available.</p>
+          <a href="/community" class="button" style="margin-top: 20px; background: #000000; color: #ffffff;">Return to Community Issues</a>
+        </div>
+        <div id="issueContent">
+          <span class="badge badge-black" style="margin-bottom: 12px;">Roads &amp; Infrastructure</span>
+          <h1 style="font-size: 28px; font-weight: 700; color: #000000; margin-bottom: 12px; line-height: 1.3;">Potholes on Major Roads Causing Traffic Delays</h1>
+          
+          <div class="meta-tag-list">
+            <span id="issueLocation">Location: Loading...</span>
+            <span id="issueArea">Area: Loading...</span>
+            <span id="issuePincode">Pincode: Loading...</span>
+            <span id="issueThreshold">Threshold: Loading...</span>
+            <span id="statusBadgeText" style="color: #000000; font-weight: 700;">Status: Loading...</span>
+          </div>
+
+          <img src="https://images.pexels.com/photos/13622966/pexels-photo-13622966.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=800" alt="Potholes on major roads" class="issue-photo">
+
+          <div class="issue-body-text">
+            <p style="margin-bottom: 14px;">
+              Potholes on several major arterial roads are causing significant traffic delays, accidents, and vehicle wear. The affected areas include key daily commuter routes connecting dense residential neighborhoods with industrial and commercial centers.
+            </p>
+            <p>
+              During rains and late evening commutes, vehicular navigation is hazardous, leading to frequent vehicle breakdowns, minor accidents, and average commuter delays of 25-40 minutes. Immediate resurfacing, cold-mix asphalt patch restoration, and road reinforcement is urgently required from municipal contractors.
+            </p>
+          </div>
+
+          <!-- Upvote Section -->
+          <div class="upvote-card">
+            <div class="upvote-num" id="voteCount">12</div>
+            <div style="font-size: 14px; color: #555555; margin-bottom: 16px;">Community Citizen Upvotes Recorded</div>
+            
+            <button type="button" class="button" id="voteBtn" style="padding: 12px 32px; font-size: 15px; font-weight: 700; background: #000000; color: #ffffff;">
+              <span>▲</span>
+              <span id="voteBtnText">Support This Issue</span>
+            </button>
+
+            <div class="escalation-box" id="escalationAlert">
+              <strong>✓ Escalated to Municipal Corporation!</strong><br>
+              This civic issue has reached the required consensus threshold and has been escalated for municipal review.<br>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+            <a href="/community" class="button" style="background: #ffffff; color: #000000; text-decoration: none;">← Return to All Community Issues</a>
+            <a href="/dashboard" class="button" style="background: #000000; color: #ffffff; text-decoration: none;">View in My Dashboard &rarr;</a>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Standard 4-Column Footer -->
+  <div class="footer" id="resources">
+    <div class="container">
+      <div class="footer-column">
+        <div class="footer-title">LocalLink</div>
+        <p style="color: #666666; font-size: 13px; line-height: 1.5; margin-bottom: 12px;">Civic issue resolution &amp; verified local service providers platform.</p>
+      </div>
+
+      <div class="footer-column">
+        <div class="footer-title">Community</div>
+        <a href="/community" class="footer-link">Delhi Neighborhoods</a>
+        <a href="/community" class="footer-link">Civic Issues Tracker</a>
+      </div>
+
+      <div class="footer-column">
+        <div class="footer-title">Consumer Services</div>
+        <a href="/services" class="footer-link">Electricians</a>
+        <a href="/services" class="footer-link">Plumbers</a>
+        <a href="/services" class="footer-link">Carpenters &amp; Masons</a>
+      </div>
+
+      <div class="footer-column">
+        <div class="footer-title">Account &amp; Contact</div>
+        <a href="/login" class="footer-link">Sign In</a>
+        <a href="/signup" class="footer-link">Register Account</a>
+        <a href="/contact" class="footer-link">Contact</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="/public/js/locallink.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const issueId = decodeURIComponent(window.location.pathname.split('/').filter(Boolean).pop() || '');
+      const voteBtn = document.getElementById('voteBtn');
+      const voteBtnText = document.getElementById('voteBtnText');
+      const voteCount = document.getElementById('voteCount');
+      const escalationAlert = document.getElementById('escalationAlert');
+      const issueContent = document.getElementById('issueContent');
+      const issueNotFound = document.getElementById('issueNotFound');
+      let supportedIds = [];
+
+      function showNotFound() {
+        issueContent.style.display = 'none';
+        issueNotFound.style.display = 'block';
+        document.title = 'Community Issue Not Found — LocalLink';
+      }
+
+      try {
+        const supportRes = await fetch('/api/issues-supported/me');
+        if (supportRes.ok) {
+          const supportData = await supportRes.json();
+          supportedIds = Array.isArray(supportData.data) ? supportData.data : [];
+          localStorage.setItem('locallink_supported_issues', JSON.stringify(supportedIds));
+        }
+      } catch (e) {}
+
+      try {
+        const res = await fetch(`/api/issues/${encodeURIComponent(issueId)}`);
+        const data = await res.json();
+        if (!res.ok || !data.success || !data.data) {
+          showNotFound();
+          return;
+        }
+
+        const issue = data.data;
+        document.title = `${issue.title} — LocalLink Community`;
+        document.querySelector('main .badge.badge-black').textContent = issue.category || 'Community Issue';
+        document.querySelector('#issueContent h1').textContent = issue.title || 'Community Issue';
+        document.getElementById('issueLocation').textContent = `Location: ${issue.location?.address || 'Not specified'}`;
+        document.getElementById('issueArea').textContent = `Area: ${issue.location?.district || 'Not specified'}, ${issue.location?.city || 'Not specified'}, ${issue.location?.state || 'Not specified'}`;
+        document.getElementById('issuePincode').textContent = `Pincode: ${issue.location?.pincode || 'Not specified'}`;
+        document.getElementById('issueThreshold').textContent = `Threshold: ${issue.threshold || 5} Community Supports`;
+        document.getElementById('statusBadgeText').textContent = `Status: ${issue.status || 'Community Voting'}`;
+        const photo = document.querySelector('.issue-photo');
+        photo.src = issue.imageUrl || '/assets/logo.png';
+        photo.alt = issue.title || 'Community issue evidence';
+        document.querySelector('.issue-body-text').textContent = issue.description || 'No description provided.';
+        voteCount.textContent = issue.upvotes || 0;
+
+        if (issue.escalated || (issue.upvotes || 0) >= (issue.threshold || 5)) {
+          escalationAlert.style.display = 'block';
+        }
+        if (supportedIds.includes(issue.id)) {
+          voteBtn.disabled = true;
+          voteBtn.style.opacity = '0.7';
+          voteBtn.style.cursor = 'default';
+          voteBtnText.textContent = 'Supported';
+        }
+      } catch (e) {
+        showNotFound();
+        return;
+      }
+
+      voteBtn.addEventListener('click', async () => {
+        voteBtn.disabled = true;
+        voteBtnText.textContent = 'Recording...';
+        try {
+          const res = await fetch(`/api/issues/${encodeURIComponent(issueId)}/upvote`, { method: 'POST' });
+          const data = await res.json();
+          if (!res.ok || !data.success) throw new Error(data.message || 'Unable to record support.');
+          voteCount.textContent = data.data.upvotes;
+          voteBtnText.textContent = 'Supported';
+          voteBtn.style.opacity = '0.7';
+          voteBtn.style.cursor = 'default';
+          if (!supportedIds.includes(issueId)) supportedIds.push(issueId);
+          localStorage.setItem('locallink_supported_issues', JSON.stringify(supportedIds));
+          if (data.data.escalated) escalationAlert.style.display = 'block';
+          if (window.showToast) window.showToast('Support recorded! Viewable on your Dashboard.');
+        } catch (error) {
+          voteBtn.disabled = false;
+          voteBtnText.textContent = 'Support This Issue';
+          if (window.showToast) window.showToast(error.message, 'error');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

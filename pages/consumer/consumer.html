@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consumer Mode — LocalLink</title>
+    <link rel="stylesheet" href="/public/css/locallink.css">
+    <style>
+        .services-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 28px;
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        @media (max-width: 900px) {
+            .services-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+        /* Filter Sidebar */
+        .filter-panel {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            height: fit-content;
+        }
+        .filter-panel h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #111111;
+            margin: 0 0 16px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .filter-group {
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        .filter-group:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        .filter-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 700;
+            color: #333333;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 10px;
+        }
+        .filter-checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #555555;
+            cursor: pointer;
+            user-select: none;
+        }
+        .filter-checkbox-item input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: #000000;
+            cursor: pointer;
+        }
+        .filter-select, .search-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            background: #ffffff;
+            box-sizing: border-box;
+            transition: all 0.2s ease;
+        }
+        .filter-select:focus, .search-input:focus {
+            outline: none;
+            border-color: #000000;
+            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15);
+        }
+        .btn-reset-filters {
+            background: #f3f4f6;
+            color: #555555;
+            border: 1px solid #d1d5db;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s;
+        }
+        .btn-reset-filters:hover {
+            background: #e5e7eb;
+            color: #111111;
+        }
+        /* Top Control Bar */
+        .controls-header {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 24px;
+            background: #ffffff;
+            padding: 18px 20px;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+        }
+        .search-container {
+            flex: 1;
+            min-width: 260px;
+            position: relative;
+        }
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #888888;
+            font-size: 16px;
+        }
+        .search-input-field {
+            padding-left: 36px;
+        }
+        .sort-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .sort-controls label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #555555;
+            white-space: nowrap;
+        }
+        .saved-tab-toggle {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 9px 14px;
+            border-radius: 6px;
+            border: 1px solid #d1d5db;
+            background: #ffffff;
+            font-size: 13px;
+            font-weight: 600;
+            color: #333333;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        .saved-tab-toggle.active {
+            background: #f5f5f5;
+            color: #000000;
+            border-color: #000000;
+        }
+        /* Provider Cards Grid */
+        .provider-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+        @media (max-width: 640px) {
+            .provider-cards-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .provider-card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+            position: relative;
+        }
+        .provider-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+            border-color: #000000;
+        }
+        .card-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        .card-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #222222;
+            color: #000000;
+            font-weight: 700;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #000000;
+            flex-shrink: 0;
+        }
+        .card-info {
+            flex: 1;
+        }
+        .card-name {
+            font-size: 17px;
+            font-weight: 700;
+            color: #111111;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .card-profession {
+            font-size: 13px;
+            color: #000000;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+        .badge-verified {
+            background: #000000;
+            color: #ffffff;
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 9999px;
+            font-weight: 600;
+        }
+        .btn-card-save {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            padding: 4px;
+            line-height: 1;
+            color: #888888;
+            transition: color 0.2s, transform 0.15s;
+        }
+        .btn-card-save:hover {
+            transform: scale(1.15);
+        }
+        .btn-card-save.saved {
+            color: #000000;
+        }
+        .card-stats-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 10px 0;
+            font-size: 13px;
+        }
+        .rating-badge {
+            color: #000000;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .rate-badge {
+            color: #000000;
+            font-weight: 700;
+            font-size: 14px;
+            background: #f5f5f5;
+            padding: 3px 8px;
+            border-radius: 6px;
+        }
+        .card-location {
+            font-size: 12px;
+            color: #666666;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .card-skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 16px;
+        }
+        .card-skill-tag {
+            background: #f3f4f6;
+            color: #333333;
+            font-size: 11px;
+            font-weight: 500;
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+        .card-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: auto;
+            border-top: 1px solid #f3f4f6;
+            padding-top: 14px;
+        }
+        .btn-card-profile {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 9px;
+            border: 1px solid #d1d5db;
+            background: #ffffff;
+            color: #333333;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .btn-card-profile:hover {
+            background: #f3f4f6;
+            color: #111111;
+        }
+        .btn-card-request {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 9px;
+            background: #000000;
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-card-request:hover {
+            background: #222222;
+        }
+        /* Empty State */
+        .empty-state {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 60px 20px;
+            text-align: center;
+        }
+        .empty-state h3 {
+            font-size: 20px;
+            color: #111111;
+            margin-bottom: 8px;
+        }
+        .empty-state p {
+            color: #666666;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        /* Modal */
+        .modal-backdrop {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 999;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-backdrop.open {
+            display: flex;
+        }
+        .modal-box {
+            background: #ffffff;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 100%;
+            padding: 30px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.25);
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        .modal-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #111111;
+            margin-top: 0;
+            margin-bottom: 6px;
+        }
+        .modal-subtitle {
+            font-size: 14px;
+            color: #666666;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 16px;
+            text-align: left;
+        }
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #333333;
+            margin-bottom: 6px;
+        }
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: #000000;
+            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.15);
+        }
+        .error-message {
+            display: none;
+            background: #f5f5f5;
+            color: #000000;
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            margin-bottom: 16px;
+            border: 1px solid #dddddd;
+        }
+        .success-box {
+            display: none;
+            background: #f5f5f5;
+            color: #000000;
+            padding: 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 16px;
+            border: 1px solid #dddddd;
+            line-height: 1.5;
+        }
+        .modal-close-btn {
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            background: none;
+            border: none;
+            font-size: 22px;
+            color: #888888;
+            cursor: pointer;
+            padding: 4px;
+            line-height: 1;
+        }
+        .modal-close-btn:hover {
+            color: #333333;
+        }
+    </style>
+    <link rel="stylesheet" href="/public/css/ui-polish.css">
+</head>
+<body style="background-color: #0a0202; color: #000000;">
+
+    <!-- Navigation Header matching LocalLink original -->
+    <div class="header">
+        <div class="container">
+            <a href="/"><img src="/assets/logo.png" alt="LocalLink Logo" class="logo"></a>
+            
+            <div class="navigation">
+                <a href="/" class="nav-pill">Home</a>
+                <a href="/services" class="nav-pill active">Consumer Mode</a>
+                <a href="/community" class="nav-pill">Community Mode</a>
+                <a href="/dashboard" class="nav-pill">Dashboard</a>
+                <a href="/contact" class="nav-pill">Contact</a>
+            </div>
+            
+            <div class="auth">
+                <a href="/login" class="button" id="signin-btn">Sign in</a>
+                <a href="/signup" class="button" id="register-btn">Register</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="container">
+        <div class="page-wrapper" style="margin: 30px auto; padding: 24px;">
+            <main class="services-layout" style="margin: 0; padding: 0; max-width: 100%;">
+        <!-- Sidebar Filters -->
+        <aside class="filter-panel" aria-label="Search Filters">
+            <h3>
+                <span>Filters</span>
+                <span id="activeFilterBadge" style="font-size: 11px; background: #f5f5f5; color: #000000; padding: 2px 8px; border-radius: 9999px; font-weight: 600; display: none;">Active</span>
+            </h3>
+
+            <!-- Profession Filter -->
+            <div class="filter-group">
+                <span class="filter-label">Profession</span>
+                <div id="professionCheckboxes">
+                    <label class="filter-checkbox-item">
+                        <input type="checkbox" name="prof" value="Electrician" class="prof-filter"> Electrician
+                    </label>
+                    <label class="filter-checkbox-item">
+                        <input type="checkbox" name="prof" value="Plumber" class="prof-filter"> Plumber
+                    </label>
+                    <label class="filter-checkbox-item">
+                        <input type="checkbox" name="prof" value="Carpenter" class="prof-filter"> Carpenter
+                    </label>
+                    <label class="filter-checkbox-item">
+                        <input type="checkbox" name="prof" value="Painter" class="prof-filter"> Painter
+                    </label>
+                    <label class="filter-checkbox-item">
+                        <input type="checkbox" name="prof" value="Gardener" class="prof-filter"> Gardener
+                    </label>
+                    <label class="filter-checkbox-item">
+                        <input type="checkbox" name="prof" value="Mason" class="prof-filter"> Mason
+                    </label>
+                </div>
+            </div>
+
+            <!-- State Filter -->
+            <div class="filter-group">
+                <span class="filter-label">State</span>
+                <select id="stateSelect" class="filter-select">
+                    <option value="all">All States (Pan-India)</option>
+                </select>
+            </div>
+
+            <!-- District Filter -->
+            <div class="filter-group">
+                <span class="filter-label">District</span>
+                <select id="districtSelect" class="filter-select">
+                    <option value="all">All Districts</option>
+                </select>
+            </div>
+
+            <!-- City / Area Filter -->
+            <div class="filter-group">
+                <span class="filter-label">City / Locality</span>
+                <select id="citySelect" class="filter-select">
+                    <option value="all">All Cities</option>
+                </select>
+            </div>
+
+            <!-- Pincode Filter -->
+            <div class="filter-group">
+                <span class="filter-label">Postal Pincode</span>
+                <select id="pincodeSelect" class="filter-select">
+                    <option value="all">All Pincodes</option>
+                </select>
+            </div>
+
+            <!-- Optional Location Access Feature -->
+            <div class="filter-group" style="margin-top: -6px; margin-bottom: 16px;">
+                <button type="button" class="button btn-light" id="consumerGeoBtn" style="width: 100%; padding: 8px 12px; font-size: 13px;">
+                    📍 Use My Location
+                </button>
+                <div id="consumerGeoStatus" style="font-size: 12px; color: #333333; margin-top: 6px; display: none; line-height: 1.4; word-break: break-word;"></div>
+            </div>
+
+            <!-- Verified Status Filter -->
+            <div class="filter-group">
+                <span class="filter-label">Verification</span>
+                <label class="filter-checkbox-item">
+                    <input type="checkbox" id="verifiedOnlyCheck"> Verified Only (✓)
+                </label>
+            </div>
+
+            <button type="button" class="btn-reset-filters" id="resetFiltersBtn">Reset All Filters</button>
+        </aside>
+
+        <!-- Main Provider Results Area -->
+        <section>
+            <!-- Controls Bar: Search + Sort + Saved Toggle -->
+            <div class="controls-header">
+                <div class="search-container">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="searchInput" class="search-input search-input-field" placeholder="Search by name, skill, profession, or neighborhood..." aria-label="Search service providers">
+                </div>
+
+                <div class="sort-controls">
+                    <label for="sortBySelect">Sort by:</label>
+                    <select id="sortBySelect" class="filter-select" style="width: auto;">
+                        <option value="rating-desc">Rating: High to Low</option>
+                        <option value="rate-asc">Hourly Rate: Low to High</option>
+                        <option value="rate-desc">Hourly Rate: High to Low</option>
+                        <option value="name-asc">Name: A to Z</option>
+                    </select>
+                </div>
+
+                <button type="button" class="saved-tab-toggle" id="savedTabToggle">
+                    <span id="savedToggleIcon">🔖</span>
+                    <span id="savedToggleText">Saved Providers (<span id="savedCountBadge">0</span>)</span>
+                </button>
+            </div>
+
+            <!-- Results Summary -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <h1 style="font-size: 20px; font-weight: 700; color: #111111; margin: 0;">
+                    <span id="resultsHeading">Local Service Directory</span>
+                </h1>
+                <span id="resultsCount" style="font-size: 13px; color: #666666; font-weight: 500;">Loading...</span>
+            </div>
+
+            <!-- Provider Cards Container -->
+            <div class="provider-cards-grid" id="cardsGrid">
+                <!-- Injected via JavaScript -->
+            </div>
+
+            <!-- Empty State -->
+            <div class="empty-state" id="emptyState" style="display: none;">
+                <div style="font-size: 40px; margin-bottom: 12px;">🔎</div>
+                <h3>No local service providers found</h3>
+                <p>We couldn't find any service providers matching your current search and filter combination.</p>
+                <button type="button" class="ll-btn ll-btn-primary" id="emptyResetBtn">Clear Filters & Show All</button>
+            </div>
+        </section>
+    </main>
+        </div>
+    </div>
+
+    <!-- Request Service Modal -->
+    <div class="modal-backdrop" id="requestModal">
+        <div class="modal-box">
+            <button class="modal-close-btn" id="closeModalBtn" aria-label="Close Modal">&times;</button>
+            <h2 class="modal-title">Request Service</h2>
+            <p class="modal-subtitle">Direct dispatch request for <strong id="modalProviderName">Provider</strong></p>
+
+            <div class="error-message" id="modalError"></div>
+            <div class="success-box" id="modalSuccess"></div>
+
+            <form id="serviceRequestForm">
+                <div class="form-group">
+                    <label for="reqService">Service Type *</label>
+                    <input type="text" id="reqService" class="form-control" placeholder="e.g. Electrical wiring inspection, Tap leak" required>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div class="form-group">
+                        <label for="reqDate">Preferred Date *</label>
+                        <input type="date" id="reqDate" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reqTime">Preferred Window *</label>
+                        <select id="reqTime" class="form-control" required>
+                            <option value="">Select Window</option>
+                            <option value="Morning (09:00 - 12:00)">Morning (09:00 - 12:00)</option>
+                            <option value="Afternoon (12:00 - 16:00)">Afternoon (12:00 - 16:00)</option>
+                            <option value="Evening (16:00 - 19:00)">Evening (16:00 - 19:00)</option>
+                            <option value="Emergency (Immediate)">Emergency (Immediate)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="clientName">Your Full Name</label>
+                </div>
+
+                <div class="form-group">
+                    <label for="clientContact">Contact Phone or Email</label>
+                    <input type="text" id="clientContact" class="form-control" placeholder="Phone or email for status confirmation">
+                </div>
+
+                <div class="form-group">
+                    <label for="reqMessage">Describe the Issue or Requirements *</label>
+                    <textarea id="reqMessage" class="form-control" rows="3" placeholder="Tell the professional what needs attention, tools required, or property access notes..." required></textarea>
+                </div>
+
+                <button type="submit" class="button" id="submitRequestBtn" style="width: 100%; padding: 12px; font-size: 15px; background: #000; color: #fff;">Submit Service Request</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer Section matching LocalLink original -->
+    <div class="footer" id="resources">
+        <div class="container">
+            <div class="footer-column">
+                <div class="footer-title">LocalLink</div>
+                <p style="color: #666666; font-size: 13px; line-height: 1.5; margin-bottom: 12px;">Civic issue resolution & verified local service providers platform.</p>
+            </div>
+
+            <div class="footer-column">
+                <div class="footer-title">Community</div>
+                <a href="/community" class="footer-link">Delhi Neighborhoods</a>
+                <a href="/community" class="footer-link">Civic Issues Tracker</a>
+            </div>
+
+            <div class="footer-column">
+                <div class="footer-title">Consumer Services</div>
+                <a href="/services" class="footer-link">Electricians</a>
+                <a href="/services" class="footer-link">Plumbers</a>
+                <a href="/services" class="footer-link">Carpenters & Masons</a>
+            </div>
+
+            <div class="footer-column">
+                <div class="footer-title">Account & Contact</div>
+                <a href="/login" class="footer-link">Sign In</a>
+                <a href="/signup" class="footer-link">Register Account</a>
+                <a href="/contact" class="footer-link">Contact</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="/public/js/locallink.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const STORAGE_KEY = 'locallink_saved_providers';
+            let allProviders = [];
+            let activeTargetProvider = null;
+            let showOnlySaved = false;
+
+            // Elements
+            const cardsGrid = document.getElementById('cardsGrid');
+            const emptyState = document.getElementById('emptyState');
+            const resultsCount = document.getElementById('resultsCount');
+            const searchInput = document.getElementById('searchInput');
+            const stateSelect = document.getElementById('stateSelect');
+            const districtSelect = document.getElementById('districtSelect');
+            const citySelect = document.getElementById('citySelect');
+            const pincodeSelect = document.getElementById('pincodeSelect');
+            const verifiedOnlyCheck = document.getElementById('verifiedOnlyCheck');
+            const sortBySelect = document.getElementById('sortBySelect');
+            const savedTabToggle = document.getElementById('savedTabToggle');
+            const savedCountBadge = document.getElementById('savedCountBadge');
+            const resetFiltersBtn = document.getElementById('resetFiltersBtn');
+            const emptyResetBtn = document.getElementById('emptyResetBtn');
+            const activeFilterBadge = document.getElementById('activeFilterBadge');
+            const consumerGeoBtn = document.getElementById('consumerGeoBtn');
+
+            let locationsData = [];
+
+            // Centralized Locations Fetch & Cascade
+            async function loadLocationsData() {
+                try {
+                    const res = await fetch('/api/locations');
+                    const json = await res.json();
+                    if (json.success && Array.isArray(json.data)) {
+                        locationsData = json.data;
+                        if (stateSelect) {
+                            stateSelect.innerHTML = '<option value="all">All States (Pan-India)</option>';
+                            locationsData.forEach(l => {
+                                const opt = document.createElement('option');
+                                opt.value = l.state;
+                                opt.textContent = l.state;
+                                stateSelect.appendChild(opt);
+                            });
+                        }
+                    }
+                } catch (e) {
+                    console.error('Failed to load locations hierarchy:', e);
+                }
+            }
+
+            if (stateSelect) {
+                stateSelect.addEventListener('change', () => {
+                    if (districtSelect) {
+                        districtSelect.innerHTML = '<option value="all">All Districts</option>';
+                        const stateObj = locationsData.find(l => l.state === stateSelect.value);
+                        if (stateObj && stateObj.districts) {
+                            stateObj.districts.forEach(d => {
+                                const opt = document.createElement('option');
+                                opt.value = d.name;
+                                opt.textContent = d.name;
+                                districtSelect.appendChild(opt);
+                            });
+                        }
+                    }
+                    if (citySelect) citySelect.innerHTML = '<option value="all">All Cities</option>';
+                    if (pincodeSelect) pincodeSelect.innerHTML = '<option value="all">All Pincodes</option>';
+                    renderCards();
+                });
+            }
+
+            if (districtSelect) {
+                districtSelect.addEventListener('change', () => {
+                    const stateObj = locationsData.find(l => l.state === (stateSelect ? stateSelect.value : ''));
+                    if (citySelect) {
+                        citySelect.innerHTML = '<option value="all">All Cities</option>';
+                        if (stateObj && stateObj.districts) {
+                            const distObj = stateObj.districts.find(d => d.name === districtSelect.value);
+                            if (distObj && distObj.cities) {
+                                distObj.cities.forEach(c => {
+                                    const opt = document.createElement('option');
+                                    opt.value = c;
+                                    opt.textContent = c;
+                                    citySelect.appendChild(opt);
+                                });
+                            }
+                            if (pincodeSelect && distObj && distObj.pincodes) {
+                                pincodeSelect.innerHTML = '<option value="all">All Pincodes</option>';
+                                distObj.pincodes.forEach(p => {
+                                    const opt = document.createElement('option');
+                                    opt.value = p;
+                                    opt.textContent = p;
+                                    pincodeSelect.appendChild(opt);
+                                });
+                            }
+                        }
+                    }
+                    renderCards();
+                });
+            }
+
+            if (citySelect) {
+                citySelect.addEventListener('change', renderCards);
+            }
+
+            const consumerGeoStatus = document.getElementById('consumerGeoStatus');
+
+            function populateDistrictsForState(stateName, targetDistrict = null, targetCity = null, targetPincode = null) {
+                if (!districtSelect) return;
+                districtSelect.innerHTML = '<option value="all">All Districts</option>';
+                const stateObj = locationsData.find(l => l.state === stateName);
+                if (stateObj && stateObj.districts) {
+                    stateObj.districts.forEach(d => {
+                        const opt = document.createElement('option');
+                        opt.value = d.name;
+                        opt.textContent = d.name;
+                        districtSelect.appendChild(opt);
+                    });
+
+                    if (targetDistrict) {
+                        const matchedDist = stateObj.districts.find(d => d.name.toLowerCase() === targetDistrict.toLowerCase());
+                        if (matchedDist) {
+                            districtSelect.value = matchedDist.name;
+                            populateCitiesForDistrict(stateName, matchedDist.name, targetCity, targetPincode);
+                            return;
+                        }
+                    }
+                }
+                if (citySelect) citySelect.innerHTML = '<option value="all">All Cities</option>';
+                if (pincodeSelect) pincodeSelect.innerHTML = '<option value="all">All Pincodes</option>';
+            }
+
+            function populateCitiesForDistrict(stateName, districtName, targetCity = null, targetPincode = null) {
+                const stateObj = locationsData.find(l => l.state === stateName);
+                if (citySelect) {
+                    citySelect.innerHTML = '<option value="all">All Cities</option>';
+                    if (stateObj && stateObj.districts) {
+                        const distObj = stateObj.districts.find(d => d.name === districtName);
+                        if (distObj && distObj.cities) {
+                            distObj.cities.forEach(c => {
+                                const opt = document.createElement('option');
+                                opt.value = c;
+                                opt.textContent = c;
+                                citySelect.appendChild(opt);
+                            });
+                            if (targetCity) {
+                                const matchedCity = distObj.cities.find(c => c.toLowerCase() === targetCity.toLowerCase());
+                                if (matchedCity) {
+                                    citySelect.value = matchedCity;
+                                }
+                            }
+                        }
+                        if (pincodeSelect && distObj && distObj.pincodes) {
+                            pincodeSelect.innerHTML = '<option value="all">All Pincodes</option>';
+                            distObj.pincodes.forEach(p => {
+                                const opt = document.createElement('option');
+                                opt.value = p;
+                                opt.textContent = p;
+                                pincodeSelect.appendChild(opt);
+                            });
+                            if (targetPincode && distObj.pincodes.includes(targetPincode)) {
+                                pincodeSelect.value = targetPincode;
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (consumerGeoBtn) {
+                consumerGeoBtn.addEventListener('click', () => {
+                    if (!navigator.geolocation) {
+                        const msg = 'Geolocation is not supported by your browser. Please select your location manually.';
+                        if (consumerGeoStatus) {
+                            consumerGeoStatus.style.display = 'block';
+                            consumerGeoStatus.style.color = '#333333';
+                            consumerGeoStatus.textContent = msg;
+                        }
+                        if (typeof window.showToast === 'function') window.showToast(msg, 'warning');
+                        return;
+                    }
+
+                    consumerGeoBtn.disabled = true;
+                    consumerGeoBtn.textContent = 'Detecting location...';
+                    if (consumerGeoStatus) {
+                        consumerGeoStatus.style.display = 'block';
+                        consumerGeoStatus.style.color = '#555555';
+                        consumerGeoStatus.textContent = 'Requesting browser location permission...';
+                    }
+
+                    navigator.geolocation.getCurrentPosition(
+                        async (pos) => {
+                            try {
+                                if (consumerGeoStatus) {
+                                    consumerGeoStatus.textContent = 'Resolving Indian locality...';
+                                }
+                                const lat = pos.coords.latitude;
+                                const lon = pos.coords.longitude;
+
+                                const res = await fetch('/api/locations/resolve', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ latitude: lat, longitude: lon })
+                                });
+                                const json = await res.json();
+                                consumerGeoBtn.disabled = false;
+
+                                if (json.success && json.data) {
+                                    const loc = json.data;
+                                    consumerGeoBtn.textContent = '✓ Location Active';
+                                    if (consumerGeoStatus) {
+                                        consumerGeoStatus.style.display = 'block';
+                                        consumerGeoStatus.style.color = '#111111';
+                                        consumerGeoStatus.innerHTML = `<strong>Location:</strong><br>${loc.formatted || (loc.city + ', ' + loc.state)}`;
+                                    }
+
+                                    // Populate and set dropdowns to match resolved location
+                                    if (stateSelect && loc.state) {
+                                        const matchedState = locationsData.find(l => l.state.toLowerCase() === loc.state.toLowerCase());
+                                        if (matchedState) {
+                                            stateSelect.value = matchedState.state;
+                                            populateDistrictsForState(matchedState.state, loc.district, loc.city, loc.pincode);
+                                        }
+                                    }
+
+                                    // Immediately apply provider filtering with resolved location
+                                    renderCards();
+
+                                    if (typeof window.showToast === 'function') {
+                                        window.showToast(`Location detected: ${loc.formatted || (loc.city + ', ' + loc.state)}`, 'success');
+                                    }
+                                } else {
+                                    consumerGeoBtn.textContent = '📍 Use My Location';
+                                    const msg = json.message || 'Unable to resolve your location. Please select manually.';
+                                    if (consumerGeoStatus) {
+                                        consumerGeoStatus.style.display = 'block';
+                                        consumerGeoStatus.style.color = '#333333';
+                                        consumerGeoStatus.textContent = msg;
+                                    }
+                                    if (typeof window.showToast === 'function') {
+                                        window.showToast(msg, 'warning');
+                                    }
+                                }
+                            } catch (err) {
+                                consumerGeoBtn.disabled = false;
+                                consumerGeoBtn.textContent = '📍 Use My Location';
+                                const msg = 'Network error while resolving location. Please select manually.';
+                                if (consumerGeoStatus) {
+                                    consumerGeoStatus.style.display = 'block';
+                                    consumerGeoStatus.style.color = '#333333';
+                                    consumerGeoStatus.textContent = msg;
+                                }
+                                if (typeof window.showToast === 'function') {
+                                    window.showToast(msg, 'warning');
+                                }
+                            }
+                        },
+                        (err) => {
+                            consumerGeoBtn.disabled = false;
+                            consumerGeoBtn.textContent = '📍 Use My Location';
+                            let userMsg = 'Unable to detect location. Please select your location manually.';
+                            if (err.code === 1) { // PERMISSION_DENIED
+                                userMsg = 'Location access was denied. Please select your location manually.';
+                            } else if (err.code === 2) { // POSITION_UNAVAILABLE
+                                userMsg = 'Location information is currently unavailable. Please select your location manually.';
+                            } else if (err.code === 3) { // TIMEOUT
+                                userMsg = 'Location detection timed out. Please select your location manually.';
+                            }
+                            if (consumerGeoStatus) {
+                                consumerGeoStatus.style.display = 'block';
+                                consumerGeoStatus.style.color = '#333333';
+                                consumerGeoStatus.textContent = userMsg;
+                            }
+                            if (typeof window.showToast === 'function') {
+                                window.showToast(userMsg, 'warning');
+                            }
+                        },
+                        { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+                    );
+                });
+            }
+
+            loadLocationsData();
+
+            // Modal Elements
+            const requestModal = document.getElementById('requestModal');
+            const closeModalBtn = document.getElementById('closeModalBtn');
+            const modalProviderName = document.getElementById('modalProviderName');
+            const reqService = document.getElementById('reqService');
+            const reqDate = document.getElementById('reqDate');
+            const reqTime = document.getElementById('reqTime');
+            const reqMessage = document.getElementById('reqMessage');
+            const clientName = document.getElementById('clientName');
+            const clientContact = document.getElementById('clientContact');
+            const serviceRequestForm = document.getElementById('serviceRequestForm');
+            const modalError = document.getElementById('modalError');
+            const modalSuccess = document.getElementById('modalSuccess');
+            const submitRequestBtn = document.getElementById('submitRequestBtn');
+
+            // Set default date
+            const todayStr = new Date().toISOString().split('T')[0];
+            if (reqDate) {
+                reqDate.min = todayStr;
+                reqDate.value = todayStr;
+            }
+
+            // LocalStorage Helpers
+            function getSavedList() {
+                try {
+                    return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+                } catch(e) {
+                    return [];
+                }
+            }
+
+            function isSaved(id) {
+                return getSavedList().includes(id);
+            }
+
+            function toggleSave(id) {
+                let list = getSavedList();
+                if (list.includes(id)) {
+                    list = list.filter(item => item !== id);
+                } else {
+                    list.push(id);
+                }
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+                updateSavedBadgeCount();
+                renderCards();
+            }
+
+            function updateSavedBadgeCount() {
+                const count = getSavedList().length;
+                savedCountBadge.textContent = count;
+            }
+
+            // Parse numeric rate
+            function parseRate(rateStr) {
+                if (!rateStr) return 0;
+                const match = rateStr.match(/(\d+)/);
+                return match ? parseInt(match[1], 10) : 0;
+            }
+
+            // Initial Data Fetch
+            fetch('/api/providers')
+                .then(res => res.json())
+                .then(result => {
+                    allProviders = result.data || [];
+                    updateSavedBadgeCount();
+                    renderCards();
+                })
+                .catch(err => {
+                    resultsCount.textContent = 'Failed to load providers.';
+                });
+
+            // Filter & Sort Logic
+            function getFilteredProviders() {
+                const query = searchInput ? searchInput.value.trim().toLowerCase() : '';
+                const selectedState = stateSelect ? stateSelect.value : 'all';
+                const selectedDistrict = districtSelect ? districtSelect.value : 'all';
+                const selectedCity = citySelect ? citySelect.value : 'all';
+                const selectedPincode = pincodeSelect ? pincodeSelect.value : 'all';
+                const verifiedOnly = verifiedOnlyCheck ? verifiedOnlyCheck.checked : false;
+                const sortValue = sortBySelect ? sortBySelect.value : 'rating-desc';
+
+                // Checked professions
+                const selectedProfs = Array.from(document.querySelectorAll('.prof-filter:checked')).map(cb => cb.value.toLowerCase());
+
+                const savedList = getSavedList();
+
+                // Has active filters?
+                const hasFilters = query !== '' || selectedState !== 'all' || selectedDistrict !== 'all' || selectedCity !== 'all' || selectedPincode !== 'all' || verifiedOnly || selectedProfs.length > 0 || showOnlySaved;
+                if (activeFilterBadge) activeFilterBadge.style.display = hasFilters ? 'inline-block' : 'none';
+
+                let list = allProviders.filter(p => {
+                    // Saved only toggle
+                    if (showOnlySaved && !savedList.includes(p.id)) return false;
+
+                    // Verified
+                    if (verifiedOnly && !p.verified) return false;
+
+                    // Profession
+                    if (selectedProfs.length > 0 && !selectedProfs.includes((p.profession || '').toLowerCase())) return false;
+
+                    // State filter
+                    if (selectedState !== 'all' && (p.state || '').toLowerCase() !== selectedState.toLowerCase()) return false;
+
+                    // District filter
+                    if (selectedDistrict !== 'all' && (p.district || '').toLowerCase() !== selectedDistrict.toLowerCase()) return false;
+
+                    // City / Locality filter
+                    if (selectedCity !== 'all' && (p.city || '').toLowerCase() !== selectedCity.toLowerCase() && !(p.location || '').toLowerCase().includes(selectedCity.toLowerCase())) return false;
+
+                    // Pincode
+                    if (selectedPincode !== 'all' && (p.pincode || '') !== selectedPincode) return false;
+
+                    // Search query
+                    if (query) {
+                        const nameM = (p.name || '').toLowerCase().includes(query);
+                        const profM = (p.profession || '').toLowerCase().includes(query);
+                        const stateM = (p.state || '').toLowerCase().includes(query);
+                        const distM = (p.district || '').toLowerCase().includes(query);
+                        const cityM = (p.city || '').toLowerCase().includes(query);
+                        const locM = (p.location || '').toLowerCase().includes(query);
+                        const pinM = (p.pincode || '').includes(query);
+                        const skillsM = Array.isArray(p.skills) && p.skills.some(s => s.toLowerCase().includes(query));
+                        const bioM = (p.bio || '').toLowerCase().includes(query);
+                        if (!nameM && !profM && !stateM && !distM && !cityM && !locM && !pinM && !skillsM && !bioM) return false;
+                    }
+
+                    return true;
+                });
+
+                // Sorting
+                list.sort((a, b) => {
+                    if (sortValue === 'rating-desc') {
+                        return (b.rating || 0) - (a.rating || 0);
+                    }
+                    if (sortValue === 'rate-asc') {
+                        return parseRate(a.hourlyRate) - parseRate(b.hourlyRate);
+                    }
+                    if (sortValue === 'rate-desc') {
+                        return parseRate(b.hourlyRate) - parseRate(a.hourlyRate);
+                    }
+                    if (sortValue === 'name-asc') {
+                        return (a.name || '').localeCompare(b.name || '');
+                    }
+                    return 0;
+                });
+
+                return list;
+            }
+
+            // Render Cards
+            function renderCards() {
+                const providers = getFilteredProviders();
+                cardsGrid.innerHTML = '';
+
+                if (providers.length === 0) {
+                    cardsGrid.style.display = 'none';
+                    emptyState.style.display = 'block';
+                    resultsCount.textContent = 'Showing 0 providers';
+                    return;
+                }
+
+                cardsGrid.style.display = 'grid';
+                emptyState.style.display = 'none';
+                resultsCount.textContent = `Showing ${providers.length} of ${allProviders.length} providers`;
+
+                providers.forEach(p => {
+                    const card = document.createElement('article');
+                    card.className = 'provider-card';
+
+                    const saved = isSaved(p.id);
+                    const initials = p.name ? p.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() : 'LL';
+                    const skills = (p.skills || []).slice(0, 3);
+
+                    card.innerHTML = `
+                        <div>
+                            <div class="card-top">
+                                <div class="card-avatar">${initials}</div>
+                                <div class="card-info">
+                                    <h3 class="card-name">
+                                        <span>${p.name}</span>
+                                        ${p.verified ? '<span class="badge-verified">✓ Verified</span>' : ''}
+                                    </h3>
+                                    <div class="card-profession">${p.profession}</div>
+                                </div>
+                                <button type="button" class="btn-card-save ${saved ? 'saved' : ''}" data-id="${p.id}" title="${saved ? 'Unsave provider' : 'Save provider'}" aria-label="${saved ? 'Unsave Provider' : 'Save Provider'}">
+                                    ${saved ? 'Saved' : 'Save'}
+                                </button>
+                            </div>
+
+                            <div class="card-stats-row">
+                                <span class="rating-badge">⭐ ${p.rating} <span style="font-size: 11px; font-weight: normal; color: #666666;">(${p.reviewsCount || 20})</span></span>
+                                <span class="rate-badge">${typeof p.hourlyRate === 'number' ? `₹${p.hourlyRate}/hr` : (String(p.hourlyRate).startsWith('₹') ? p.hourlyRate : `₹${p.hourlyRate}/hr`)}</span>
+                            </div>
+
+                            <div class="card-location">
+                                <span>📍</span>
+                                <span>${p.city && p.state ? `${p.city}, ${p.state}` : (p.location || p.city || 'India')} (${p.pincode})</span>
+                            </div>
+
+                            <div class="card-skills">
+                                ${skills.map(s => `<span class="card-skill-tag">${s}</span>`).join('')}
+                            </div>
+                        </div>
+
+                        <div class="card-actions">
+                            <a href="/profile/${encodeURIComponent(p.id)}" class="btn-card-profile">View Profile</a>
+                            <button type="button" class="btn-card-request" data-id="${p.id}" data-name="${p.name}" data-prof="${p.profession}">Request Service</button>
+                        </div>
+                    `;
+
+                    // Bookmark action
+                    const saveBtn = card.querySelector('.btn-card-save');
+                    if (saveBtn) {
+                        saveBtn.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            toggleSave(p.id);
+                        });
+                    }
+
+                    // Request Service action
+                    const reqBtn = card.querySelector('.btn-card-request');
+                    if (reqBtn) {
+                        reqBtn.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            openRequestModal(p);
+                        });
+                    }
+
+                    cardsGrid.appendChild(card);
+                });
+            }
+
+            // Open Modal
+            function openRequestModal(provider) {
+                activeTargetProvider = provider;
+                if (modalProviderName) modalProviderName.textContent = provider.name;
+                if (reqService) reqService.value = provider.profession;
+                if (modalError) modalError.style.display = 'none';
+                if (modalSuccess) modalSuccess.style.display = 'none';
+                if (serviceRequestForm) serviceRequestForm.style.display = 'block';
+                if (submitRequestBtn) {
+                    submitRequestBtn.disabled = false;
+                    submitRequestBtn.textContent = 'Submit Service Request';
+                }
+                if (requestModal) requestModal.classList.add('open');
+            }
+
+            // Close Modal
+            function closeModal() {
+                if (requestModal) requestModal.classList.remove('open');
+            }
+            if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
+            if (requestModal) {
+                requestModal.addEventListener('click', (e) => {
+                    if (e.target === requestModal) closeModal();
+                });
+            }
+
+            // Form Submission
+            if (serviceRequestForm) {
+                serviceRequestForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                modalError.style.display = 'none';
+                modalSuccess.style.display = 'none';
+
+                const preferredDate = reqDate.value;
+                const preferredTime = reqTime.value;
+                const message = reqMessage.value.trim();
+                const service = reqService.value.trim();
+                const cName = clientName.value.trim();
+                const cContact = clientContact.value.trim();
+
+                if (!preferredDate || !preferredTime || !message) {
+                    modalError.textContent = 'Please fill out all required fields (Date, Time, and Service description).';
+                    modalError.style.display = 'block';
+                    return;
+                }
+
+                submitRequestBtn.disabled = true;
+                submitRequestBtn.textContent = 'Submitting Request...';
+
+                try {
+                    const res = await fetch(`/api/providers/${encodeURIComponent(activeTargetProvider.id)}/request`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            service,
+                            preferredDate,
+                            preferredTime,
+                            message,
+                            clientName: cName,
+                            clientContact: cContact
+                        })
+                    });
+
+                    const resData = await res.json();
+
+                    if (!res.ok || !resData.success) {
+                        throw new Error(resData.error || 'Failed to submit service request.');
+                    }
+
+                    // Save to user requests in localStorage for personal dashboard tracking
+                    try {
+                        const REQUESTS_STORAGE_KEY = 'locallink_user_requests';
+                        let userReqs = JSON.parse(localStorage.getItem(REQUESTS_STORAGE_KEY) || '[]');
+                        userReqs.unshift({
+                            id: resData.data.id,
+                            providerId: activeTargetProvider.id,
+                            providerName: activeTargetProvider.name,
+                            profession: activeTargetProvider.profession,
+                            service: service,
+                            preferredDate: preferredDate,
+                            preferredTime: preferredTime,
+                            message: message,
+                            status: 'Pending Confirmation',
+                            createdAt: new Date().toISOString()
+                        });
+                        localStorage.setItem(REQUESTS_STORAGE_KEY, JSON.stringify(userReqs));
+                    } catch(e) {}
+
+                    modalSuccess.innerHTML = `
+                        <strong>✓ Service request submitted successfully.</strong><br>
+                        Reference ID: <code>${resData.data.id}</code><br>
+                        Provider: <strong>${activeTargetProvider.name}</strong> (${activeTargetProvider.profession})<br>
+                        Scheduled: ${resData.data.preferredDate} (${resData.data.preferredTime})
+                    `;
+                    modalSuccess.style.display = 'block';
+                    serviceRequestForm.reset();
+                    reqDate.value = todayStr;
+                    submitRequestBtn.textContent = 'Request Sent';
+                } catch(err) {
+                    modalError.textContent = err.message || 'An error occurred while submitting the request.';
+                    modalError.style.display = 'block';
+                    submitRequestBtn.disabled = false;
+                    submitRequestBtn.textContent = 'Submit Service Request';
+                }
+            });
+            }
+
+            // Reset Filters
+            function resetAll() {
+                if (searchInput) searchInput.value = '';
+                if (stateSelect) stateSelect.value = 'all';
+                if (districtSelect) districtSelect.value = 'all';
+                if (citySelect) citySelect.value = 'all';
+                if (pincodeSelect) pincodeSelect.value = 'all';
+                if (verifiedOnlyCheck) verifiedOnlyCheck.checked = false;
+                if (sortBySelect) sortBySelect.value = 'rating-desc';
+                document.querySelectorAll('.prof-filter').forEach(cb => { if (cb) cb.checked = false; });
+                showOnlySaved = false;
+                if (savedTabToggle) {
+                    savedTabToggle.classList.remove('active');
+                    const toggleText = savedTabToggle.querySelector('#savedToggleText');
+                    if (toggleText) toggleText.innerHTML = `Saved Providers (<span id="savedCountBadge">${getSavedList().length}</span>)`;
+                }
+                if (consumerGeoBtn) {
+                    consumerGeoBtn.textContent = '📍 Use My Location';
+                    consumerGeoBtn.disabled = false;
+                }
+                if (consumerGeoStatus) {
+                    consumerGeoStatus.style.display = 'none';
+                    consumerGeoStatus.textContent = '';
+                }
+                renderCards();
+            }
+
+            if (resetFiltersBtn) resetFiltersBtn.addEventListener('click', resetAll);
+            if (emptyResetBtn) emptyResetBtn.addEventListener('click', resetAll);
+
+            // Filter Event Listeners
+            if (searchInput) searchInput.addEventListener('input', renderCards);
+            if (pincodeSelect) pincodeSelect.addEventListener('change', renderCards);
+            if (verifiedOnlyCheck) verifiedOnlyCheck.addEventListener('change', renderCards);
+            if (sortBySelect) sortBySelect.addEventListener('change', renderCards);
+            document.querySelectorAll('.prof-filter').forEach(cb => {
+                if (cb) cb.addEventListener('change', renderCards);
+            });
+
+            // Saved Toggle Tab
+            if (savedTabToggle) {
+                savedTabToggle.addEventListener('click', () => {
+                    showOnlySaved = !showOnlySaved;
+                    const toggleText = savedTabToggle.querySelector('#savedToggleText');
+                    if (showOnlySaved) {
+                        savedTabToggle.classList.add('active');
+                        if (toggleText) toggleText.textContent = 'Viewing Saved Only';
+                    } else {
+                        savedTabToggle.classList.remove('active');
+                        if (toggleText) toggleText.innerHTML = `Saved Providers (<span id="savedCountBadge">${getSavedList().length}</span>)`;
+                    }
+                    renderCards();
+                });
+            }
+        });
+    </script>
+</body>
+</html>

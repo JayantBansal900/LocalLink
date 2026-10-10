@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# IDE and operating system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Lockfiles
+bun.lock
+bun.lockb
+yarn.lock
+pnpm-lock.yaml
+
+# LocalLink runtime data
+data/*.json
+data/legacy/*.json
+
+# User-uploaded issue evidence
+public/uploads/issues/*
+!public/uploads/issues/.gitkeep
+
+# Backups
+*.bak
+*.backup

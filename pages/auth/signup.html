@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register / Sign Up — LocalLink</title>
+    <link rel="stylesheet" href="/public/css/locallink.css">
+    <style>
+        .signup-wrapper {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+        }
+        .signup-page {
+            width: min(1180px, calc(100% - 48px));
+            max-width: 1180px !important;
+            margin: 30px auto !important;
+            padding: 32px !important;
+        }
+        .signup-header {
+            text-align: center;
+            margin-bottom: 36px;
+        }
+        .signup-header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #000000;
+            margin-bottom: 8px;
+        }
+        .signup-header p {
+            font-size: 15px;
+            color: #555555;
+        }
+        .signup-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 24px;
+            align-items: start;
+        }
+        .signup-box {
+            background: #ffffff;
+            border: 2px solid #000000;
+            border-radius: 12px;
+            padding: 28px;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+        .signup-box-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #000000;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .signup-box-desc {
+            font-size: 13px;
+            color: #555555;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+        .form-group {
+            margin-bottom: 16px;
+            min-width: 0;
+        }
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #000000;
+            margin-bottom: 6px;
+        }
+        .form-control {
+            width: 100%;
+            min-width: 0;
+            min-height: 46px;
+            padding: 11px 13px;
+            font-size: 14px;
+            line-height: 1.3;
+            border: 2px solid #000000;
+            border-radius: 8px;
+            background: #ffffff;
+            box-sizing: border-box;
+            transition: all 0.2s;
+        }
+        .signup-form-row {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+        .signup-form-row > .form-group:only-child {
+            grid-column: 1 / -1;
+        }
+        .signup-admin-notice {
+            margin-top: 20px;
+            padding: 13px 16px;
+            background: #f4f4f4;
+            border: 1px solid #cccccc;
+            border-radius: 10px;
+            color: #444444;
+            font-size: 13px;
+            line-height: 1.5;
+            text-align: left;
+        }
+        .signup-signin {
+            margin-top: 24px;
+            text-align: center;
+            font-size: 14px;
+            color: #555555;
+        }
+        .btn-submit {
+            width: 100%;
+            padding: 12px;
+            background: #000000;
+            color: #ffffff;
+            border: 2px solid #000000;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: auto;
+        }
+        .btn-submit:hover {
+            background: #333333;
+        }
+        .alert-box {
+            display: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 16px;
+            background: #f5f5f5;
+            color: #000000;
+            border: 1px solid #dddddd;
+        }
+        @media (max-width: 900px) {
+            .signup-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 560px) {
+            .signup-page {
+                width: calc(100% - 24px);
+                margin: 16px auto !important;
+                padding: 18px !important;
+            }
+            .signup-header { margin-bottom: 22px; }
+            .signup-box { padding: 20px; }
+            .signup-form-row { grid-template-columns: 1fr; gap: 0; }
+            .signup-admin-notice { margin-top: 16px; }
+        }
+    </style>
+    <link rel="stylesheet" href="/public/css/ui-polish.css">
+</head>
+<body style="background-color: #0a0202; color: #000000;">
+
+    <!-- Navigation Header matching LocalLink original -->
+    <div class="header">
+        <div class="container">
+            <a href="/"><img src="/assets/logo.png" alt="LocalLink Logo" class="logo"></a>
+            
+            <div class="navigation">
+                <a href="/" class="nav-pill">Home</a>
+                <a href="/services" class="nav-pill">Consumer Mode</a>
+                <a href="/community" class="nav-pill">Community Mode</a>
+                <a href="/dashboard" class="nav-pill">Dashboard</a>
+                <a href="/contact" class="nav-pill">Contact</a>
+            </div>
+            
+            <div class="auth">
+                <a href="/login" class="button" id="signin-btn">Sign in</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="page-wrapper signup-page">
+            <main class="signup-wrapper">
+                <div class="signup-header">
+                    <h1>Create Your LocalLink Account</h1>
+                    <p>Select your user profile to get started with verified local services or civic tracking</p>
+                </div>
+
+                <div class="signup-grid">
+                    <!-- Resident / Consumer Form -->
+                    <div class="signup-box">
+                        <div class="signup-box-title">
+                            <span>🏠</span>
+                            <span>Resident / Customer</span>
+                        </div>
+                        <p class="signup-box-desc">Book certified home technicians, save trusted local professionals, and upvote community issues in your neighborhood.</p>
+
+                        <div class="alert-box" id="consumerAlert"></div>
+
+                        <form id="consumerForm">
+                            <div class="form-group">
+                                <label for="cName">Full Name *</label>
+                                <input type="text" id="cName" class="form-control" placeholder="e.g. Ramesh Kumar" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="cEmail">Email Address *</label>
+                                <input type="email" id="cEmail" class="form-control" placeholder="ramesh@example.com" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="cPhone">Phone Number *</label>
+                                <input type="tel" id="cPhone" class="form-control" placeholder="e.g. +91 98112 34567" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="cPassword">Password * (Min. 6 characters)</label>
+                                <input type="password" id="cPassword" class="form-control" placeholder="••••••••" minlength="6" required>
+                            </div>
+
+                            <div class="signup-form-row">
+                                <div class="form-group">
+                                    <label for="cState">State *</label>
+                                    <select id="cState" class="form-control" required>
+                                        <option value="">Select State</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="cDistrict">District *</label>
+                                    <select id="cDistrict" class="form-control" required>
+                                        <option value="">Select District</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="signup-form-row">
+                                <div class="form-group">
+                                    <label for="cCity">City / Locality *</label>
+                                    <select id="cCity" class="form-control" required>
+                                        <option value="">Select City</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="cPincode">Pincode *</label>
+                                    <input type="text" id="cPincode" class="form-control" placeholder="e.g. 110001" required>
+                                </div>
+                            </div>
+
+                            <div style="display: flex; justify-content: flex-end; margin-bottom: 12px;">
+                                <button type="button" class="button btn-light" id="cGeoBtn" style="padding: 6px 12px; font-size: 12px;">📍 Use My Location</button>
+                            </div>
+
+                            <button type="submit" class="btn-submit" id="cSubmitBtn">Register as Customer</button>
+                        </form>
+                    </div>
+
+                    <!-- Service Provider / Vendor Form -->
+                    <div class="signup-box">
+                        <div class="signup-box-title">
+                            <span>🛠️</span>
+                            <span>Service Provider / Vendor</span>
+                        </div>
+                        <p class="signup-box-desc">Onboard your trade service profile and receive local booking requests from customers.</p>
+
+                        <div class="alert-box" id="vendorAlert"></div>
+
+                        <form id="vendorForm">
+                            <div class="form-group">
+                                <label for="vName">Full Name *</label>
+                                <input type="text" id="vName" class="form-control" placeholder="e.g. Priya Sharma" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="vBusinessName">Business / Trade Name *</label>
+                                <input type="text" id="vBusinessName" class="form-control" placeholder="e.g. Sharma Electricals & Automation" required>
+                            </div>
+
+                            <div class="signup-form-row">
+                                <div class="form-group">
+                                    <label for="vEmail">Email Address *</label>
+                                    <input type="email" id="vEmail" class="form-control" placeholder="priya@sharmaelectric.in" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="vPhone">Phone Number *</label>
+                                    <input type="tel" id="vPhone" class="form-control" placeholder="+91 98441 23456" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="vPassword">Password * (Min. 6 characters)</label>
+                                <input type="password" id="vPassword" class="form-control" placeholder="••••••••" minlength="6" required>
+                            </div>
+
+                            <div class="signup-form-row">
+                                <div class="form-group">
+                                    <label for="vProfession">Primary Profession *</label>
+                                    <select id="vProfession" class="form-control" required>
+                                        <option value="">Select Profession</option>
+                                        <option value="Electrician">Electrician</option>
+                                        <option value="Plumber">Plumber</option>
+                                        <option value="Carpenter">Carpenter</option>
+                                        <option value="Mason">Mason</option>
+                                        <option value="Painter">Painter</option>
+                                        <option value="Gardener">Gardener</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="vExperience">Experience (Years) *</label>
+                                    <input type="number" id="vExperience" class="form-control" placeholder="e.g. 5" min="0" required>
+                                </div>
+                            </div>
+
+                            <div class="signup-form-row">
+                                <div class="form-group">
+                                    <label for="vRate">Starting Hourly Rate (₹) *</label>
+                                    <input type="number" id="vRate" class="form-control" placeholder="e.g. 350" min="50" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="vSkills">Specialized Skills (Comma separated)</label>
+                                <input type="text" id="vSkills" class="form-control" placeholder="e.g. Wiring, Inverter repair, Safety audit">
+                            </div>
+
+                            <div class="signup-form-row">
+                                <div class="form-group">
+                                    <label for="vState">State *</label>
+                                    <select id="vState" class="form-control" required>
+                                        <option value="">Select State</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="vDistrict">District *</label>
+                                    <select id="vDistrict" class="form-control" required>
+                                        <option value="">Select District</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="signup-form-row">
+                                <div class="form-group">
+                                    <label for="vCity">City / Area *</label>
+                                    <select id="vCity" class="form-control" required>
+                                        <option value="">Select City</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="vPincode">Pincode *</label>
+                                    <input type="text" id="vPincode" class="form-control" placeholder="e.g. 560034" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="vAddress">Operating Address *</label>
+                                <input type="text" id="vAddress" class="form-control" placeholder="Shop / Office address" required>
+                            </div>
+
+                            <div style="display: flex; justify-content: flex-end; margin-bottom: 12px;">
+                                <button type="button" class="button btn-light" id="vGeoBtn" style="padding: 6px 12px; font-size: 12px;">📍 Use My Location</button>
+                            </div>
+
+                            <button type="submit" class="btn-submit" id="vSubmitBtn">Register as Vendor</button>
+                        </form>
+                    </div>
+
+                </div>
+
+                <div class="signup-admin-notice">
+                    <strong>Administrative Notice:</strong> Government & Civic Officer accounts are provisioned directly by administrative departmental authority. Platform Admin is managed internally.
+                </div>
+
+                <div class="signup-signin">
+                    Already have an account? <a href="/login" style="color: #000000; text-decoration: underline; font-weight: 600;">Sign in here</a>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Footer Section matching LocalLink original -->
+    <div class="footer" id="resources">
+        <div class="container">
+            <div class="footer-column">
+                <div class="footer-title">LocalLink</div>
+                <p style="color: #666666; font-size: 13px; line-height: 1.5; margin-bottom: 12px;">Civic issue resolution & verified local service providers platform.</p>
+            </div>
+
+            <div class="footer-column">
+                <div class="footer-title">Community</div>
+                <a href="/community" class="footer-link">Neighborhood Issues</a>
+                <a href="/community" class="footer-link">Civic Issues Tracker</a>
+            </div>
+
+            <div class="footer-column">
+                <div class="footer-title">Consumer Services</div>
+                <a href="/services" class="footer-link">Electricians</a>
+                <a href="/services" class="footer-link">Plumbers</a>
+                <a href="/services" class="footer-link">Carpenters & Masons</a>
+            </div>
+
+            <div class="footer-column">
+                <div class="footer-title">Account & Contact</div>
+                <a href="/login" class="footer-link">Sign In</a>
+                <a href="/signup" class="footer-link">Register Account</a>
+                <a href="/contact" class="footer-link">Contact</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="/public/js/locallink.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let locationsData = [];
+
+            // Cascading Location Logic
+            async function initLocations() {
+                try {
+                    const res = await fetch('/api/locations');
+                    const json = await res.json();
+                    if (json.success && Array.isArray(json.data)) {
+                        locationsData = json.data;
+                        populateStates('cState');
+                        populateStates('vState');
+                        populateStates('tState');
+                    }
+                } catch (e) {
+                    console.error('Failed to load locations:', e);
+                }
+            }
+
+            function populateStates(stateElemId) {
+                const sel = document.getElementById(stateElemId);
+                if (!sel) return;
+                sel.innerHTML = '<option value="">Select State</option>';
+                locationsData.forEach(l => {
+                    const opt = document.createElement('option');
+                    opt.value = l.state;
+                    opt.textContent = l.state;
+                    sel.appendChild(opt);
+                });
+            }
+
+            function setupLocationCascade(prefix) {
+                const stateEl = document.getElementById(`${prefix}State`);
+                const distEl = document.getElementById(`${prefix}District`);
+                const cityEl = document.getElementById(`${prefix}City`);
+                const pinEl = document.getElementById(`${prefix}Pincode`);
+
+                if (stateEl) {
+                    stateEl.addEventListener('change', () => {
+                        const stateObj = locationsData.find(l => l.state === stateEl.value);
+                        if (distEl) {
+                            distEl.innerHTML = '<option value="">Select District</option>';
+                            if (stateObj && stateObj.districts) {
+                                stateObj.districts.forEach(d => {
+                                    const opt = document.createElement('option');
+                                    opt.value = d.name;
+                                    opt.textContent = d.name;
+                                    distEl.appendChild(opt);
+                                });
+                            }
+                        }
+                        if (cityEl) cityEl.innerHTML = '<option value="">Select City</option>';
+                    });
+                }
+
+                if (distEl) {
+                    distEl.addEventListener('change', () => {
+                        const stateObj = locationsData.find(l => l.state === stateEl.value);
+                        if (!stateObj) return;
+                        const distObj = stateObj.districts.find(d => d.name === distEl.value);
+                        if (cityEl) {
+                            cityEl.innerHTML = '<option value="">Select City</option>';
+                            if (distObj && distObj.cities) {
+                                distObj.cities.forEach(c => {
+                                    const opt = document.createElement('option');
+                                    opt.value = c;
+                                    opt.textContent = c;
+                                    cityEl.appendChild(opt);
+                                });
+                            }
+                        }
+                    });
+                }
+
+                if (cityEl) {
+                    cityEl.addEventListener('change', () => {
+                        const stateObj = locationsData.find(l => l.state === stateEl.value);
+                        if (!stateObj) return;
+                        const distObj = stateObj.districts.find(d => d.name === distEl.value);
+                        if (distObj && distObj.pincodes && distObj.pincodes[0] && pinEl && !pinEl.value) {
+                            pinEl.value = distObj.pincodes[0];
+                        }
+                    });
+                }
+            }
+
+            setupLocationCascade('c');
+            setupLocationCascade('v');
+            setupLocationCascade('t');
+            initLocations();
+
+            // Optional Geolocation feature
+            function setupGeolocation(btnId, prefix) {
+                const btn = document.getElementById(btnId);
+                if (!btn) return;
+                btn.addEventListener('click', () => {
+                    if (!navigator.geolocation) {
+                        const msg = 'Geolocation is not supported by your browser. Please select your location manually.';
+                        if (typeof window.showToast === 'function') window.showToast(msg, 'warning');
+                        else alert(msg);
+                        return;
+                    }
+                    btn.disabled = true;
+                    btn.textContent = 'Detecting location...';
+                    navigator.geolocation.getCurrentPosition(
+                        async (position) => {
+                            try {
+                                const lat = position.coords.latitude;
+                                const lon = position.coords.longitude;
+
+                                const res = await fetch('/api/locations/resolve', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ latitude: lat, longitude: lon })
+                                });
+                                const json = await res.json();
+                                btn.disabled = false;
+
+                                if (json.success && json.data) {
+                                    const loc = json.data;
+                                    btn.textContent = '✓ Location Active';
+
+                                    const stateEl = document.getElementById(`${prefix}State`);
+                                    const distEl = document.getElementById(`${prefix}District`);
+                                    const cityEl = document.getElementById(`${prefix}City`);
+                                    const pinEl = document.getElementById(`${prefix}Pincode`);
+
+                                    if (stateEl && loc.state) {
+                                        const matchedState = locationsData.find(l => l.state.toLowerCase() === loc.state.toLowerCase());
+                                        if (matchedState) {
+                                            stateEl.value = matchedState.state;
+                                            
+                                            // Populate districts
+                                            if (distEl) {
+                                                distEl.innerHTML = '<option value="">Select District</option>';
+                                                matchedState.districts.forEach(d => {
+                                                    const opt = document.createElement('option');
+                                                    opt.value = d.name;
+                                                    opt.textContent = d.name;
+                                                    distEl.appendChild(opt);
+                                                });
+                                                const distObj = matchedState.districts.find(d => d.name.toLowerCase() === (loc.district || '').toLowerCase()) || matchedState.districts[0];
+                                                if (distObj) {
+                                                    distEl.value = distObj.name;
+                                                    // Populate cities
+                                                    if (cityEl) {
+                                                        cityEl.innerHTML = '<option value="">Select City / Locality</option>';
+                                                        distObj.cities.forEach(c => {
+                                                            const opt = document.createElement('option');
+                                                            opt.value = c;
+                                                            opt.textContent = c;
+                                                            cityEl.appendChild(opt);
+                                                        });
+                                                        const cityFound = distObj.cities.find(c => c.toLowerCase() === (loc.city || '').toLowerCase());
+                                                        if (cityFound) cityEl.value = cityFound;
+                                                    }
+                                                    if (pinEl) {
+                                                        pinEl.innerHTML = '<option value="">Select Pincode</option>';
+                                                        distObj.pincodes.forEach(p => {
+                                                            const opt = document.createElement('option');
+                                                            opt.value = p;
+                                                            opt.textContent = p;
+                                                            pinEl.appendChild(opt);
+                                                        });
+                                                        if (loc.pincode && distObj.pincodes.includes(loc.pincode)) {
+                                                            pinEl.value = loc.pincode;
+                                                        } else if (distObj.pincodes[0]) {
+                                                            pinEl.value = distObj.pincodes[0];
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    if (typeof window.showToast === 'function') {
+                                        window.showToast(`Location detected: ${loc.formatted || (loc.city + ', ' + loc.state)}`, 'success');
+                                    }
+                                } else {
+                                    btn.textContent = '📍 Use My Location';
+                                    const msg = json.message || 'Unable to resolve your location. Please select manually.';
+                                    if (typeof window.showToast === 'function') window.showToast(msg, 'warning');
+                                }
+                            } catch (err) {
+                                btn.disabled = false;
+                                btn.textContent = '📍 Use My Location';
+                                const msg = 'Network error while resolving location. Please select manually.';
+                                if (typeof window.showToast === 'function') window.showToast(msg, 'warning');
+                            }
+                        },
+                        (error) => {
+                            btn.disabled = false;
+                            btn.textContent = '📍 Use My Location';
+                            let userMsg = 'Unable to detect location. Please select your location manually.';
+                            if (error.code === 1) { // PERMISSION_DENIED
+                                userMsg = 'Location access was denied. Please select your location manually.';
+                            } else if (error.code === 2) { // POSITION_UNAVAILABLE
+                                userMsg = 'Location information is currently unavailable. Please select your location manually.';
+                            } else if (error.code === 3) { // TIMEOUT
+                                userMsg = 'Location detection timed out. Please select your location manually.';
+                            }
+                            if (typeof window.showToast === 'function') {
+                                window.showToast(userMsg, 'warning');
+                            }
+                        },
+                        { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+                    );
+                });
+            }
+
+            setupGeolocation('cGeoBtn', 'c');
+            setupGeolocation('vGeoBtn', 'v');
+
+            // Form Submit Handlers
+            const consumerForm = document.getElementById('consumerForm');
+            if (consumerForm) {
+                consumerForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const alertEl = document.getElementById('consumerAlert');
+                    const btn = document.getElementById('cSubmitBtn');
+                    alertEl.style.display = 'none';
+
+                    const payload = {
+                        role: 'customer',
+                        name: document.getElementById('cName').value.trim(),
+                        email: document.getElementById('cEmail').value.trim(),
+                        phone: document.getElementById('cPhone').value.trim(),
+                        password: document.getElementById('cPassword').value,
+                        location: {
+                            state: document.getElementById('cState').value,
+                            district: document.getElementById('cDistrict').value,
+                            city: document.getElementById('cCity').value,
+                            pincode: document.getElementById('cPincode').value.trim()
+                        }
+                    };
+
+                    btn.disabled = true;
+                    btn.textContent = 'Creating Account...';
+
+                    try {
+                        const res = await fetch('/api/auth/register', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+                        const data = await res.json();
+                        if (data.success && data.data && data.data.user) {
+                            localStorage.setItem('locallink_user', JSON.stringify(data.data.user));
+                            alertEl.style.background = '#ffffff';
+                            alertEl.style.color = '#000000';
+                            alertEl.style.borderColor = '#000000';
+                            alertEl.textContent = `✓ Account created successfully for ${payload.name}! Redirecting to Dashboard...`;
+                            alertEl.style.display = 'block';
+                            setTimeout(() => { window.location.href = '/dashboard'; }, 800);
+                        } else {
+                            alertEl.style.background = '#f0f0f0';
+                            alertEl.style.color = '#000000';
+                            alertEl.style.borderColor = '#000000';
+                            alertEl.textContent = data.message || 'Registration failed.';
+                            alertEl.style.display = 'block';
+                            btn.disabled = false;
+                            btn.textContent = 'Register as Customer';
+                        }
+                    } catch (err) {
+                        alertEl.style.display = 'block';
+                        alertEl.textContent = 'Server communication error. Please try again.';
+                        btn.disabled = false;
+                        btn.textContent = 'Register as Customer';
+                    }
+                });
+            }
+
+            const vendorForm = document.getElementById('vendorForm');
+            if (vendorForm) {
+                vendorForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const alertEl = document.getElementById('vendorAlert');
+                    const btn = document.getElementById('vSubmitBtn');
+                    alertEl.style.display = 'none';
+
+                    const skillsInput = document.getElementById('vSkills').value.trim();
+                    const skills = skillsInput ? skillsInput.split(',').map(s => s.trim()).filter(Boolean) : [];
+
+                    const payload = {
+                        role: 'vendor',
+                        name: document.getElementById('vName').value.trim(),
+                        businessName: document.getElementById('vBusinessName').value.trim(),
+                        email: document.getElementById('vEmail').value.trim(),
+                        phone: document.getElementById('vPhone').value.trim(),
+                        password: document.getElementById('vPassword').value,
+                        profession: document.getElementById('vProfession').value,
+                        experienceYears: parseInt(document.getElementById('vExperience').value, 10) || 1,
+                        hourlyRate: parseInt(document.getElementById('vRate').value, 10) || 300,
+                        skills,
+                        address: document.getElementById('vAddress').value.trim(),
+                        location: {
+                            state: document.getElementById('vState').value,
+                            district: document.getElementById('vDistrict').value,
+                            city: document.getElementById('vCity').value,
+                            pincode: document.getElementById('vPincode').value.trim()
+                        }
+                    };
+
+                    btn.disabled = true;
+                    btn.textContent = 'Registering Provider...';
+
+                    try {
+                        const res = await fetch('/api/auth/register', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(payload)
+                        });
+                        const data = await res.json();
+                        if (data.success && data.data && data.data.user) {
+                            localStorage.setItem('locallink_user', JSON.stringify(data.data.user));
+                            alertEl.style.background = '#ffffff';
+                            alertEl.style.color = '#000000';
+                            alertEl.style.borderColor = '#000000';
+                            alertEl.textContent = `✓ Provider registered successfully! Redirecting to Vendor Dashboard...`;
+                            alertEl.style.display = 'block';
+                            setTimeout(() => { window.location.href = '/dashboard'; }, 800);
+                        } else {
+                            alertEl.style.background = '#f0f0f0';
+                            alertEl.style.color = '#000000';
+                            alertEl.style.borderColor = '#000000';
+                            alertEl.textContent = data.message || 'Vendor registration failed.';
+                            alertEl.style.display = 'block';
+                            btn.disabled = false;
+                            btn.textContent = 'Register as Vendor';
+                        }
+                    } catch (err) {
+                        alertEl.style.display = 'block';
+                        alertEl.textContent = 'Server communication error. Please try again.';
+                        btn.disabled = false;
+                        btn.textContent = 'Register as Vendor';
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

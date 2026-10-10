@@ -1,0 +1,478 @@
+/* ============================================================
+   LocalLink - Unified Design Foundation
+   Authentic LocalLink Theme: #0a0202 background, #0e0303 header,
+   #ffffff containers with 2px solid #000 borders & 12px radius,
+   Inter typography, black & white buttons, white 4-column footer.
+   Shared application styles
+   ============================================================ */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: #0a0202;
+  color: #000000;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+img, video {
+  max-width: 100%;
+}
+
+table {
+  max-width: 100%;
+}
+
+/* Accessible focus ring */
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: 2px solid #000000;
+  outline-offset: 2px;
+}
+
+/* Layout Container */
+.container, .ll-container {
+  width: 100%;
+  max-width: 1540px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 32px;
+  padding-right: 32px;
+  box-sizing: border-box;
+}
+
+/* ============================================================
+   GLOBAL UNIFIED HEADER
+   ============================================================ */
+.header, .ll-header {
+  padding: 32px 0;
+  background: #0e0303;
+  border-bottom: 1px solid #000000;
+  width: 100%;
+  position: relative;
+  z-index: 100;
+}
+
+.header .container, .ll-header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  max-width: 1540px;
+  margin: 0 auto;
+  padding: 0 32px;
+  box-sizing: border-box;
+}
+
+.logo, .ll-brand img {
+  width: 120px;
+  height: auto;
+  display: block;
+}
+
+.ll-brand {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.navigation, .ll-nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.nav-pill, .ll-nav-link {
+  padding: 12px 16px;
+  background: #000000;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  text-decoration: none;
+  color: #ffffff;
+  font-weight: 500;
+  font-size: 16px;
+  transition: background 0.3s ease;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.nav-pill:hover, .ll-nav-link:hover,
+.nav-pill.active, .ll-nav-link.active {
+  background: #333333;
+  color: #ffffff;
+}
+
+.auth, .ll-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+}
+
+/* Header Role Badge */
+.role-badge, .admin-pill {
+  display: inline-block;
+  padding: 3px 8px;
+  background: #222222;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: 1px solid #444444;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.button, .btn, .ll-btn {
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-weight: 500;
+  font-size: 16px;
+  border: 2px solid #000000;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background 0.3s ease;
+  font-family: inherit;
+  line-height: 1.4;
+  box-sizing: border-box;
+}
+
+/* White button (first child in auth or outline) */
+.button:first-child, .btn-secondary, .ll-btn-outline, .btn-outline {
+  background: #ffffff;
+  color: #000000;
+  border: 2px solid #000000;
+}
+
+.button:first-child:hover, .btn-secondary:hover, .ll-btn-outline:hover, .btn-outline:hover {
+  background: #f0f0f0;
+  color: #000000;
+}
+
+/* Black button (last child in auth or primary) */
+.button:last-child, .button-primary, .btn-primary, .ll-btn-primary {
+  background: #000000;
+  color: #ffffff;
+  border: 2px solid #000000;
+}
+
+.button:last-child:hover, .button-primary:hover, .btn-primary:hover, .ll-btn-primary:hover {
+  background: #333333;
+  color: #ffffff;
+}
+
+/* Specific class helpers */
+.btn-dark {
+  background: #000000;
+  color: #ffffff;
+  border: 2px solid #000000;
+}
+.btn-dark:hover {
+  background: #333333;
+}
+
+.btn-light {
+  background: #ffffff;
+  color: #000000;
+  border: 2px solid #000000;
+}
+.btn-light:hover {
+  background: #f0f0f0;
+}
+
+/* ============================================================
+   MAIN CONTENT CONTAINERS & CARDS
+   ============================================================ */
+.page-wrapper, .dashboard-wrapper, .intro-section, .content-card, .main-container {
+  background: #ffffff;
+  border: 2px solid #000000;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 32px;
+  margin: 30px auto;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.card, .item-card, .provider-card, .issue-card {
+  background: #ffffff;
+  border: 2px solid #000000;
+  border-radius: 12px;
+  padding: 20px;
+  box-sizing: border-box;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.card:hover, .item-card:hover, .provider-card:hover, .issue-card:hover {
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+}
+
+/* Typography Headings */
+h1 {
+  font-size: 32px;
+  font-weight: 700;
+  color: #000000;
+  margin-bottom: 12px;
+  line-height: 1.25;
+}
+
+h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #000000;
+  margin-top: 24px;
+  margin-bottom: 10px;
+  line-height: 1.3;
+}
+
+h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #000000;
+  margin-bottom: 8px;
+  line-height: 1.35;
+}
+
+p {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #333333;
+}
+
+/* Badges & Tags */
+.badge, .tag, .pill-tag {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid #000000;
+  background: #f4f4f4;
+  color: #000000;
+  white-space: nowrap;
+}
+
+.badge-black, .badge-active {
+  background: #000000;
+  color: #ffffff;
+  border: 1px solid #000000;
+}
+
+/* ============================================================
+   FORMS & INPUTS
+   ============================================================ */
+.form-group {
+  margin-bottom: 18px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #000000;
+  margin-bottom: 6px;
+}
+
+.form-control, input[type="text"], input[type="email"], input[type="password"], input[type="date"], select, textarea {
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 14px;
+  border: 2px solid #000000;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #000000;
+  box-sizing: border-box;
+  font-family: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-control:focus, input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: #000000;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.15);
+}
+
+/* ============================================================
+   MODALS
+   ============================================================ */
+.modal-backdrop, .ll-modal-backdrop {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.modal-backdrop.open, .ll-modal-backdrop.open {
+  display: flex;
+}
+
+.modal-box, .ll-modal-box {
+  background: #ffffff;
+  border: 2px solid #000000;
+  border-radius: 12px;
+  max-width: 520px;
+  width: 100%;
+  padding: 32px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.modal-close-btn, .ll-modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  font-weight: 700;
+  color: #000000;
+  cursor: pointer;
+  line-height: 1;
+}
+
+/* ============================================================
+   FOOTER (MATCHING ORIGINAL LOCALLINK)
+   ============================================================ */
+.footer, .ll-footer {
+  width: 100%;
+  padding: 36px 0;
+  background: #ffffff;
+  border-top: 1px solid #000000;
+  margin-top: auto;
+}
+
+.footer .container, .ll-footer-inner {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 32px;
+  max-width: 1540px;
+  margin: 0 auto;
+  padding: 0 32px;
+  box-sizing: border-box;
+}
+
+.footer-column, .ll-footer-col {
+  width: calc(25% - 32px);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.footer-title, .ll-footer-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: #000000;
+}
+
+.footer-link, .ll-footer-link {
+  font-size: 14px;
+  text-decoration: none;
+  color: #000000;
+  line-height: 1.5;
+}
+
+.footer-link:hover, .ll-footer-link:hover {
+  text-decoration: underline;
+}
+
+/* ============================================================
+   RESPONSIVE DESIGN (1440, 1280, 1024, 768, 480, 375)
+   ============================================================ */
+@media (max-width: 1024px) {
+  .footer-column, .ll-footer-col {
+    width: calc(50% - 32px);
+  }
+}
+
+@media (max-width: 768px) {
+  .container, .ll-container {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .header .container, .ll-header-inner {
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 0 16px;
+  }
+
+  .navigation, .ll-nav {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .nav-pill, .ll-nav-link {
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+
+  .auth, .ll-nav-actions {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .page-wrapper, .dashboard-wrapper, .intro-section, .content-card, .main-container {
+    padding: 20px;
+    margin: 20px auto;
+  }
+
+  .footer .container, .ll-footer-inner {
+    flex-direction: column;
+    gap: 24px;
+    padding: 0 16px;
+  }
+
+  .footer-column, .ll-footer-col {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .container, .ll-container,
+  .header .container, .ll-header-inner,
+  .footer .container, .ll-footer-inner {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .page-wrapper, .dashboard-wrapper, .intro-section, .content-card, .main-container {
+    padding: 16px;
+  }
+}

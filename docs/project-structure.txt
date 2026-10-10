@@ -1,0 +1,85 @@
+LocalLink/
+|-- .env.example
+|-- .gitignore
+|-- metadata.json
+|-- package-lock.json
+|-- package.json
+|-- README.md
+|-- server.js
+|-- data/
+|   |-- categories.json
+|   |-- issues.json
+|   |-- locations.json
+|   |-- providers.json
+|   |-- requests.json
+|   |-- users.json
+|   `-- legacy/
+|       |-- applications.json
+|       `-- pincodes.json
+|-- docs/
+|   `-- project-structure.txt
+|-- middleware/
+|   |-- auth.js
+|   |-- role.js
+|   `-- upload.js
+|-- pages/
+|   |-- admin/
+|   |   `-- admin.html
+|   |-- auth/
+|   |   |-- login.html
+|   |   `-- signup.html
+|   |-- community/
+|   |   |-- community.html
+|   |   |-- issue-detail.html
+|   |   `-- legacy/
+|   |       |-- air-pollution.html
+|   |       |-- garbage-disposal.html
+|   |       |-- plantation.html
+|   |       |-- potholes.html
+|   |       |-- power-cuts.html
+|   |       |-- public-transport.html
+|   |       |-- street-vendors.html
+|   |       `-- water-supply.html
+|   |-- consumer/
+|   |   |-- consumer.html
+|   |   `-- legacy/
+|   |       `-- street-vendors/
+|   |           |-- script.js
+|   |           |-- street-vendors.html
+|   |           `-- styles.css
+|   |-- contact/
+|   |   `-- contact.html
+|   |-- dashboard/
+|   |   |-- dashboard.html
+|   |   `-- profile.html
+|   `-- home/
+|       `-- index.html
+|-- public/
+|   |-- assets/
+|   |   |-- logo-black.png
+|   |   |-- logo-color.png
+|   |   |-- logo-no-background.png
+|   |   |-- logo-white.png
+|   |   `-- logo.png
+|   |-- css/
+|   |   |-- locallink.css
+|   |   `-- ui-polish.css
+|   |-- js/
+|   |   `-- locallink.js
+|   `-- uploads/
+|       `-- issues/ (27 preserved evidence images)
+|-- routes/
+|   |-- admin.js
+|   |-- api.js
+|   |-- auth.js
+|   `-- government.js
+`-- services/
+    |-- authService.js
+    |-- issueService.js
+    |-- locationService.js
+    |-- providerService.js
+    |-- requestService.js
+    `-- userService.js
+
+Excluded from this architecture listing: node_modules/, .git/, temporary files,
+logs, caches, and generated runtime output.

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact — LocalLink</title>
+    <link rel="stylesheet" href="/public/css/locallink.css">
+    <style>
+        .contact-wrapper {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+        }
+        .contact-header {
+            text-align: center;
+            margin-bottom: 36px;
+        }
+        .contact-header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #000000;
+            margin-bottom: 8px;
+        }
+        .contact-header p {
+            font-size: 15px;
+            color: #555555;
+        }
+        .contact-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 680px);
+            justify-content: center;
+            gap: 28px;
+        }
+        @media (max-width: 768px) {
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .contact-card {
+            background: #ffffff;
+            border: 2px solid #000000;
+            border-radius: 12px;
+            padding: 28px;
+        }
+        .contact-card h2 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #000000;
+            margin-bottom: 16px;
+            margin-top: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .info-item {
+            margin-bottom: 16px;
+        }
+        .info-label {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #555555;
+            margin-bottom: 4px;
+        }
+        .info-value {
+            font-size: 15px;
+            color: #000000;
+            font-weight: 500;
+        }
+        .info-value a {
+            color: #000000;
+            text-decoration: underline;
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #000000;
+            margin-bottom: 6px;
+        }
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            font-size: 14px;
+            border: 2px solid #000000;
+            border-radius: 8px;
+            background: #ffffff;
+            box-sizing: border-box;
+            transition: all 0.2s;
+        }
+        .btn-submit {
+            width: 100%;
+            padding: 12px;
+            background: #000000;
+            color: #ffffff;
+            border: 2px solid #000000;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-submit:hover {
+            background: #333333;
+        }
+        .notice-box {
+            display: none;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+        .notice-success {
+            background: #f5f5f5;
+            color: #000000;
+            border: 1px solid #dddddd;
+        }
+    </style>
+    <link rel="stylesheet" href="/public/css/ui-polish.css">
+</head>
+<body style="background-color: #0a0202; color: #000000;">
+
+    <!-- Navigation Header matching LocalLink original -->
+    <div class="header">
+        <div class="container">
+            <a href="/"><img src="/assets/logo.png" alt="LocalLink Logo" class="logo"></a>
+            
+            <div class="navigation">
+                <a href="/" class="nav-pill">Home</a>
+                <a href="/services" class="nav-pill">Consumer Mode</a>
+                <a href="/community" class="nav-pill">Community Mode</a>
+                <a href="/dashboard" class="nav-pill">Dashboard</a>
+                <a href="/contact" class="nav-pill active">Contact</a>
+            </div>
+            
+            <div class="auth">
+                <a href="/login" class="button" id="signin-btn">Sign in</a>
+                <a href="/signup" class="button" id="register-btn">Register</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="page-wrapper" style="margin: 30px auto; padding: 32px; max-width: 960px;">
+            <main class="contact-wrapper">
+                <div class="contact-header">
+                    <h1>Contact & Support</h1>
+                    <p>Send feedback or request help with LocalLink services and civic reports</p>
+                </div>
+
+                <div class="contact-grid">
+                    <!-- Direct Message Form Card -->
+                    <div class="contact-card">
+                        <h2>
+                            <span>✉️</span>
+                            <span>Send a Message</span>
+                        </h2>
+
+                        <div class="notice-box notice-success" id="contactSuccess">
+                            ✓ Thank you! Your message has been received.
+                        </div>
+
+                        <form id="contactForm">
+                            <div class="form-group">
+                                <label for="cName">Your Name</label>
+                                <input type="text" id="cName" class="form-control" placeholder="e.g. Aditi Sharma" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="cEmail">Email Address</label>
+                                <input type="email" id="cEmail" class="form-control" placeholder="your.email@example.com" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="cMessage">Message or Feedback</label>
+                                <textarea id="cMessage" class="form-control" rows="4" placeholder="How can we assist you with local service discovery or civic issues?" required></textarea>
+                            </div>
+
+                            <button type="submit" class="btn-submit" id="cSendBtn">Send Message</button>
+                        </form>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Footer Section matching LocalLink original -->
+    <div class="footer" id="resources">
+        <div class="container">
+            <div class="footer-column">
+                <div class="footer-title">LocalLink</div>
+                <p style="color: #666666; font-size: 13px; line-height: 1.5; margin-bottom: 12px;">Civic issue resolution & verified local service providers platform.</p>
+            </div>
+
+            <div class="footer-column">
+                <div class="footer-title">Community</div>
+                <a href="/community" class="footer-link">Delhi Neighborhoods</a>
+                <a href="/community" class="footer-link">Civic Issues Tracker</a>
+            </div>
+
+            <div class="footer-column">
+                <div class="footer-title">Consumer Services</div>
+                <a href="/services" class="footer-link">Electricians</a>
+                <a href="/services" class="footer-link">Plumbers</a>
+                <a href="/services" class="footer-link">Carpenters & Masons</a>
+            </div>
+
+            <div class="footer-column">
+                <div class="footer-title">Account & Contact</div>
+                <a href="/login" class="footer-link">Sign In</a>
+                <a href="/signup" class="footer-link">Register Account</a>
+                <a href="/contact" class="footer-link">Contact</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="/public/js/locallink.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const contactForm = document.getElementById('contactForm');
+            if (!contactForm) return;
+
+            contactForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const nameInput = document.getElementById('cName');
+                const emailInput = document.getElementById('cEmail');
+                const messageInput = document.getElementById('cMessage');
+                const successBox = document.getElementById('contactSuccess');
+                const sendBtn = document.getElementById('cSendBtn');
+
+                const name = nameInput ? nameInput.value.trim() : '';
+                const email = emailInput ? emailInput.value.trim() : '';
+                const message = messageInput ? messageInput.value.trim() : '';
+
+                if (sendBtn) {
+                    sendBtn.disabled = true;
+                    sendBtn.textContent = 'Sending...';
+                }
+
+                try {
+                    const res = await fetch('/api/contact', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ name, email, message })
+                    });
+
+                    if (successBox) successBox.style.display = 'block';
+                    contactForm.reset();
+                    if (sendBtn) {
+                        sendBtn.textContent = 'Message Sent';
+                        setTimeout(() => {
+                            sendBtn.disabled = false;
+                            sendBtn.textContent = 'Send Message';
+                        }, 3000);
+                    }
+                } catch (err) {
+                    if (successBox) successBox.style.display = 'block';
+                    if (sendBtn) {
+                        sendBtn.disabled = false;
+                        sendBtn.textContent = 'Send Message';
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

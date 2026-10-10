@@ -1,0 +1,1417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community Mode — LocalLink</title>
+    <meta name="description" content="Report local neighborhood issues, upload photo evidence, vote on civic problems, and escalate collective concerns to municipal authorities.">
+    <link rel="icon" type="image/png" href="/assets/logo.png">
+    <link rel="stylesheet" href="/public/css/locallink.css">
+    <style>
+        .community-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+        @media (max-width: 900px) {
+            .community-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+        .civic-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .civic-box {
+            background: #ffffff;
+            border: 2px solid #000000;
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .civic-box h3 {
+            font-size: 15px;
+            font-weight: 700;
+            color: #000000;
+            margin: 0 0 16px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 2px solid #000000;
+            padding-bottom: 8px;
+        }
+        .filter-group {
+            margin-bottom: 14px;
+        }
+        .filter-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            color: #333333;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .form-select, .form-input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 2px solid #000000;
+            border-radius: 8px;
+            font-size: 13px;
+            background: #ffffff;
+            color: #000000;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+        .form-select:focus, .form-input:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px #000000;
+        }
+        .issue-card-main {
+            background: #ffffff;
+            border: 2px solid #000000;
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+        }
+        .issue-card-main:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+        .issue-img-box {
+            height: 180px;
+            width: 100%;
+            position: relative;
+            background: #222222;
+            overflow: hidden;
+        }
+        .issue-img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .issue-cat-tag {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: #000000;
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 6px;
+            border: 1px solid #333333;
+        }
+        .issue-status-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 9px;
+            border-radius: 6px;
+            border: 1px solid #000000;
+        }
+        .badge-escalated {
+            background: #000000;
+            color: #ffffff;
+        }
+        .badge-voting {
+            background: #ffffff;
+            color: #000000;
+        }
+        .issue-card-body {
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+        .issue-card-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #000000;
+            margin: 0 0 8px 0;
+            line-height: 1.35;
+        }
+        .issue-card-location {
+            font-size: 12px;
+            color: #555555;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-bottom: 12px;
+        }
+        .issue-card-desc {
+            font-size: 13px;
+            color: #333333;
+            line-height: 1.5;
+            margin-bottom: 16px;
+            flex: 1;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .support-progress-wrap {
+            margin-bottom: 16px;
+        }
+        .support-progress-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            color: #000000;
+        }
+        .support-progress-bar {
+            height: 8px;
+            background: #eeeeee;
+            border-radius: 4px;
+            overflow: hidden;
+            border: 1px solid #000000;
+        }
+        .support-progress-fill {
+            height: 100%;
+            background: #000000;
+            transition: width 0.3s ease;
+        }
+        .issue-card-footer {
+            display: flex;
+            gap: 8px;
+            border-top: 1px solid #eeeeee;
+            padding-top: 14px;
+            margin-top: auto;
+        }
+        .btn-support {
+            flex: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 9px 12px;
+            background: #000000;
+            color: #ffffff;
+            border: 2px solid #000000;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-support:hover {
+            background: #333333;
+        }
+        .btn-support.supported {
+            background: #ffffff;
+            color: #000000;
+            border-color: #000000;
+            cursor: default;
+        }
+        .btn-support:disabled {
+            opacity: 0.72;
+        }
+        .btn-view-detail {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 9px 12px;
+            background: #ffffff;
+            color: #000000;
+            border: 2px solid #000000;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .btn-view-detail:hover {
+            background: #f0f0f0;
+        }
+        @media (max-width: 480px) {
+            .issue-card-footer {
+                flex-direction: column;
+            }
+            .btn-support, .btn-view-detail {
+                width: 100%;
+            }
+        }
+        .modal-backdrop {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.75);
+            z-index: 999;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-backdrop.open {
+            display: flex;
+        }
+        .modal-box {
+            background: #ffffff;
+            border: 2px solid #000000;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 100%;
+            padding: 28px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        .modal-close-btn {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #000000;
+            cursor: pointer;
+            line-height: 1;
+            font-weight: bold;
+        }
+        .notice-box {
+            display: none;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 16px;
+            border: 2px solid #000000;
+        }
+        .notice-error {
+            background: #ffffff;
+            color: #000000;
+        }
+        .notice-success {
+            background: #f4f4f4;
+            color: #000000;
+        }
+    </style>
+    <link rel="stylesheet" href="/public/css/ui-polish.css">
+</head>
+<body style="background-color: #0a0202; color: #000000;">
+
+    <!-- Navigation Header matching LocalLink original -->
+    <div class="header">
+        <div class="container">
+            <a href="/"><img src="/assets/logo.png" alt="LocalLink Logo" class="logo"></a>
+            
+            <div class="navigation">
+                <a href="/" class="nav-pill">Home</a>
+                <a href="/services" class="nav-pill">Consumer Mode</a>
+                <a href="/community" class="nav-pill active">Community Mode</a>
+                <a href="/dashboard" class="nav-pill">Dashboard</a>
+                <a href="/contact" class="nav-pill">Contact</a>
+            </div>
+            
+            <div class="auth" style="display: flex; align-items: center; gap: 10px;">
+                <button type="button" class="button" id="openReportModalBtn" style="padding: 10px 18px; font-size: 14px; background: #000000; color: #ffffff;">+ Report Issue</button>
+                <div id="ll-auth-slot"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="container">
+        <div class="page-wrapper" style="margin: 30px auto; padding: 24px;">
+            <main class="community-layout" style="margin: 0; padding: 0; max-width: 100%;">
+                
+                <!-- Sidebar Controls -->
+                <aside class="civic-sidebar">
+                    <!-- Filter Box -->
+                    <div class="civic-box">
+                        <h3>
+                            <span>Civic Filters</span>
+                            <button type="button" id="resetFiltersBtn" style="background: none; border: none; font-size: 12px; color: #000000; text-decoration: underline; font-weight: 600; cursor: pointer;">Reset</button>
+                        </h3>
+
+                        <!-- Search -->
+                        <div class="filter-group">
+                            <label for="searchInput" class="filter-label">Search Issues</label>
+                            <input type="text" id="searchInput" class="form-input" placeholder="Search potholes, water, roads...">
+                        </div>
+
+                        <!-- Category -->
+                        <div class="filter-group">
+                            <label for="categoryFilter" class="filter-label">Civic Category</label>
+                            <select id="categoryFilter" class="form-select">
+                                <option value="all">All Categories</option>
+                                <option value="Roads">Roads & Infrastructure</option>
+                                <option value="Water">Water & Sanitation</option>
+                                <option value="Electricity">Electricity & Energy</option>
+                                <option value="Sanitation">Sanitation & Waste</option>
+                                <option value="Environment">Environment & Health</option>
+                                <option value="Urban Mobility">Urban Mobility</option>
+                                <option value="Transit">Transit & Connectivity</option>
+                                <option value="Urban Ecology">Urban Ecology</option>
+                            </select>
+                        </div>
+
+                        <!-- Multi-State India Location -->
+                        <div class="filter-group">
+                            <label for="stateFilter" class="filter-label">State</label>
+                            <select id="stateFilter" class="form-select">
+                                <option value="all">All States</option>
+                            </select>
+                        </div>
+
+                        <!-- City Filter -->
+                        <div class="filter-group">
+                            <label for="cityFilter" class="filter-label">City / Region</label>
+                            <select id="cityFilter" class="form-select">
+                                <option value="all">All Cities</option>
+                            </select>
+                        </div>
+
+                        <div class="filter-group" style="margin-top: -6px; margin-bottom: 14px;">
+                            <button type="button" class="button btn-light" id="commGeoBtn" style="width: 100%; padding: 8px 12px; font-size: 13px;">
+                                📍 Use My Location
+                            </button>
+                            <div id="commGeoStatus" style="font-size: 12px; color: #333333; margin-top: 6px; display: none; line-height: 1.4; word-break: break-word;"></div>
+                        </div>
+
+                        <!-- Status Filter -->
+                        <div class="filter-group">
+                            <label for="statusFilter" class="filter-label">Escalation Status</label>
+                            <select id="statusFilter" class="form-select">
+                                <option value="all">All Statuses</option>
+                                <option value="voting">Community Voting</option>
+                                <option value="escalated">Escalated to Municipality</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Trending / High Support Issues -->
+                    <div class="civic-box">
+                        <h3><span>🔥 High Support Issues</span></h3>
+                        <div id="trendingList">
+                            <div style="font-size: 13px; color: #666666;">Loading high support issues...</div>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Main Content Issues Grid -->
+                <section class="civic-main">
+                    <!-- Top Bar -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+                        <div>
+                            <h1 style="font-size: 24px; font-weight: 700; margin: 0; color: #000000;">Community Issue Tracker</h1>
+                            <p style="font-size: 13px; color: #555555; margin: 4px 0 0 0;">Verified civic problems reported by neighbors across India.</p>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <span style="font-size: 13px; font-weight: 600; color: #000000;" id="issuesCount">Showing 0 issues</span>
+                            <select id="sortFilter" class="form-select" style="width: auto; padding: 6px 10px; font-size: 12px;">
+                                <option value="upvotes-desc">Highest Upvotes</option>
+                                <option value="date-desc">Newest First</option>
+                                <option value="date-asc">Oldest First</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Issues Grid Container -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;" id="issuesGrid">
+                        <!-- Populated dynamically -->
+                    </div>
+
+                    <!-- Empty State -->
+                    <div id="emptyState" style="display: none; text-align: center; padding: 60px 20px; background: #ffffff; border: 2px solid #000000; border-radius: 12px; margin-top: 20px;">
+                        <h3 style="font-size: 18px; font-weight: 700; color: #000000; margin-bottom: 8px;">No civic issues match your criteria</h3>
+                        <p style="font-size: 14px; color: #555555; margin-bottom: 20px;">Try adjusting your search terms or location filters.</p>
+                        <button type="button" class="button" id="emptyClearBtn" style="background: #000000; color: #ffffff;">Clear Filters</button>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- Issue Detail Modal -->
+    <div class="modal-backdrop" id="detailModal">
+        <div class="modal-box">
+            <button class="modal-close-btn" id="closeDetailModal" aria-label="Close">&times;</button>
+            <div id="detailContent">
+                <!-- Injected via JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Report Issue Modal (With Real Camera/Gallery Image Upload & Multi-Location) -->
+    <div class="modal-backdrop" id="reportModal">
+        <div class="modal-box">
+            <button class="modal-close-btn" id="closeReportModal" aria-label="Close">&times;</button>
+            <h2 style="font-size: 20px; font-weight: 700; margin: 0 0 6px 0; color: #000000;">Report a Community Issue</h2>
+            <p style="font-size: 13px; color: #555555; margin-bottom: 20px;">Submit a verified civic problem with photo evidence for neighbor voting and municipal escalation.</p>
+
+            <div class="notice-box notice-error" id="reportError"></div>
+            <div class="notice-box notice-success" id="reportSuccess"></div>
+
+            <form id="reportForm" enctype="multipart/form-data">
+                <div class="filter-group">
+                    <label for="repCategory" class="filter-label">Civic Category *</label>
+                    <select id="repCategory" name="category" class="form-select" required>
+                        <option value="Roads & Infrastructure">Roads & Infrastructure</option>
+                        <option value="Water & Sanitation">Water & Sanitation</option>
+                        <option value="Electricity & Energy">Electricity & Energy</option>
+                        <option value="Sanitation & Waste">Sanitation & Waste</option>
+                        <option value="Environment & Health">Environment & Health</option>
+                        <option value="Transit & Connectivity">Transit & Connectivity</option>
+                        <option value="Urban Mobility">Urban Mobility</option>
+                        <option value="Urban Ecology">Urban Ecology</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label for="repTitle" class="filter-label">Issue Title *</label>
+                    <input type="text" id="repTitle" name="title" class="form-input" placeholder="e.g. Broken streetlight on Outer Ring Road" required>
+                </div>
+
+                <!-- Location Dependency: State, District, City, Pincode -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                    <span class="filter-label" style="margin: 0;">Location Details *</span>
+                    <button type="button" class="button btn-light" id="repGeoBtn" style="padding: 4px 10px; font-size: 11px;">
+                        📍 Use My Location
+                    </button>
+                </div>
+                <div id="repGeoStatus" style="font-size: 11px; color: #333333; margin-bottom: 8px; display: none;"></div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div class="filter-group">
+                        <label for="repState" class="filter-label">State *</label>
+                        <select id="repState" name="state" class="form-select" required>
+                            <option value="">Select State</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="repDistrict" class="filter-label">District *</label>
+                        <select id="repDistrict" name="district" class="form-select" required>
+                            <option value="">Select District</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div class="filter-group">
+                        <label for="repCity" class="filter-label">City / Town *</label>
+                        <select id="repCity" name="city" class="form-select" required>
+                            <option value="">Select City</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="repPincode" class="filter-label">Pincode *</label>
+                        <input type="text" id="repPincode" name="pincode" class="form-input" placeholder="e.g. 110001" required>
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <label for="repLocation" class="filter-label">Specific Landmark / Neighborhood *</label>
+                    <input type="text" id="repLocation" name="location" class="form-input" placeholder="e.g. Near Market Gate #3" required>
+                </div>
+
+                <!-- Image Evidence (Camera & Gallery Upload) -->
+                <div class="filter-group">
+                    <label class="filter-label">Photo Evidence *</label>
+                    <div style="display: flex; gap: 10px; margin-bottom: 8px;">
+                        <button type="button" id="selectGalleryBtn" class="button" style="flex: 1; padding: 8px 12px; font-size: 13px; background: #ffffff; color: #000000; border: 1px solid #000000; cursor: pointer;">🖼️ Choose from Gallery</button>
+                        <button type="button" id="selectCameraBtn" class="button" style="flex: 1; padding: 8px 12px; font-size: 13px; background: #ffffff; color: #000000; border: 1px solid #000000; cursor: pointer;">📷 Capture with Camera</button>
+                    </div>
+                    <!-- Dedicated gallery and mobile camera inputs -->
+                    <input type="file" id="repImageGallery" accept="image/jpeg,image/png,image/webp,image/jpg" style="display: none;">
+                    <input type="file" id="repImageCamera" accept="image/*" capture="environment" style="display: none;">
+                    <!-- Main file input included in form submission -->
+                    <input type="file" id="repImage" name="image" accept="image/*" class="form-input" style="display: none;">
+                    <div id="imageFileNameDisplay" style="font-size: 12px; font-weight: 600; color: #000000; margin-top: 4px; display: none;"></div>
+                    <p style="font-size: 11px; color: #666666; margin-top: 4px;">Upload verifiable photo evidence. Formats: JPG, PNG, WEBP (Max 5MB). Mobile camera capture supported directly.</p>
+                    <div id="imagePreviewContainer" style="display: none; margin-top: 8px;">
+                        <img id="imagePreview" src="" alt="Photo preview" style="max-height: 140px; border-radius: 6px; border: 1px solid #000000; object-fit: cover;">
+                    </div>
+                </div>
+
+                <div class="filter-group">
+                    <label for="repContact" class="filter-label">Citizen Contact Info (Phone / Email) *</label>
+                    <input type="text" id="repContact" name="contact" class="form-input" placeholder="e.g. 9811223344 or citizen@example.com" required>
+                </div>
+
+                <div class="filter-group">
+                    <label for="repDescription" class="filter-label">Detailed Description *</label>
+                    <textarea id="repDescription" name="description" class="form-input" rows="3" placeholder="Explain the hazard, frequency, affected citizens, and urgency..." required></textarea>
+                </div>
+
+                <button type="submit" class="button" id="submitReportBtn" style="width: 100%; padding: 12px; font-size: 15px; background: #000000; color: #ffffff; cursor: pointer;">Submit Issue to Community</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer Section matching LocalLink original -->
+    <div class="footer" id="resources">
+        <div class="container">
+            <div class="footer-column">
+                <div class="footer-title">LocalLink</div>
+                <p style="color: #666666; font-size: 13px; line-height: 1.5; margin-bottom: 12px;">Civic issue resolution &amp; verified local service providers platform.</p>
+            </div>
+
+            <div class="footer-column">
+                <div class="footer-title">Community</div>
+                <a href="/community" class="footer-link">Neighborhood Issues</a>
+                <a href="/community" class="footer-link">Civic Tracker</a>
+            </div>
+
+            <div class="footer-column">
+                <div class="footer-title">Consumer Services</div>
+                <a href="/services" class="footer-link">Electricians</a>
+                <a href="/services" class="footer-link">Plumbers</a>
+                <a href="/services" class="footer-link">Carpenters &amp; Masons</a>
+            </div>
+
+            <div class="footer-column">
+                <div class="footer-title">Account &amp; Contact</div>
+                <a href="/login" class="footer-link">Sign In</a>
+                <a href="/signup" class="footer-link">Register Account</a>
+                <a href="/contact" class="footer-link">Contact</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="/public/js/locallink.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const UPVOTES_STORAGE_KEY = 'locallink_supported_issues';
+            const REPORTED_STORAGE_KEY = 'locallink_reported_issues';
+            let allIssues = [];
+            let locationData = [];
+            const supportedIssueIds = new Set();
+            const inFlightSupportIds = new Set();
+
+            // UI Elements
+            const issuesGrid = document.getElementById('issuesGrid');
+            const issuesCount = document.getElementById('issuesCount');
+            const emptyState = document.getElementById('emptyState');
+            const trendingList = document.getElementById('trendingList');
+            const searchInput = document.getElementById('searchInput');
+            const categoryFilter = document.getElementById('categoryFilter');
+            const stateFilter = document.getElementById('stateFilter');
+            const cityFilter = document.getElementById('cityFilter');
+            const statusFilter = document.getElementById('statusFilter');
+            const sortFilter = document.getElementById('sortFilter');
+            const resetFiltersBtn = document.getElementById('resetFiltersBtn');
+            const emptyClearBtn = document.getElementById('emptyClearBtn');
+
+            // Detail Modal
+            const detailModal = document.getElementById('detailModal');
+            const closeDetailModal = document.getElementById('closeDetailModal');
+            const detailContent = document.getElementById('detailContent');
+
+            // Report Modal
+            const reportModal = document.getElementById('reportModal');
+            const openReportModalBtn = document.getElementById('openReportModalBtn');
+            const closeReportModal = document.getElementById('closeReportModal');
+            const reportForm = document.getElementById('reportForm');
+            const reportError = document.getElementById('reportError');
+            const reportSuccess = document.getElementById('reportSuccess');
+            const submitReportBtn = document.getElementById('submitReportBtn');
+            const repImage = document.getElementById('repImage');
+            const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+            const imagePreview = document.getElementById('imagePreview');
+
+            // Report Location Selectors
+            const repState = document.getElementById('repState');
+            const repDistrict = document.getElementById('repDistrict');
+            const repCity = document.getElementById('repCity');
+            const repPincode = document.getElementById('repPincode');
+
+            // Storage Helpers
+            function isSupported(issueId) {
+                return supportedIssueIds.has(issueId);
+            }
+
+            function markSupported(issueId) {
+                supportedIssueIds.add(issueId);
+                localStorage.setItem(UPVOTES_STORAGE_KEY, JSON.stringify([...supportedIssueIds]));
+            }
+
+            async function syncSupportedIssues() {
+                try {
+                    const res = await fetch('/api/issues-supported/me');
+                    supportedIssueIds.clear();
+                    if (!res.ok) {
+                        localStorage.setItem(UPVOTES_STORAGE_KEY, '[]');
+                        return;
+                    }
+                    const data = await res.json();
+                    if (data.success && Array.isArray(data.data)) {
+                        data.data.forEach(id => supportedIssueIds.add(id));
+                        localStorage.setItem(UPVOTES_STORAGE_KEY, JSON.stringify(data.data));
+                    }
+                } catch (e) {
+                    // Keep the last local state while temporarily offline.
+                }
+            }
+
+            function saveReportedIssueId(issueId) {
+                try {
+                    let reported = JSON.parse(localStorage.getItem(REPORTED_STORAGE_KEY) || '[]');
+                    if (!reported.includes(issueId)) {
+                        reported.push(issueId);
+                        localStorage.setItem(REPORTED_STORAGE_KEY, JSON.stringify(reported));
+                    }
+                } catch(e) {}
+            }
+
+            // Load Location Hierarchy
+            async function loadLocations() {
+                try {
+                    const res = await fetch('/api/locations');
+                    const json = await res.json();
+                    if (json.success && Array.isArray(json.data)) {
+                        locationData = json.data;
+                        populateLocationSelectors();
+                    }
+                } catch(e) {
+                    console.error('Error loading locations:', e);
+                }
+            }
+
+            function populateLocationSelectors() {
+                if (stateFilter) {
+                    stateFilter.innerHTML = '<option value="all">All States</option>';
+                    locationData.forEach(l => {
+                        const opt = document.createElement('option');
+                        opt.value = l.state;
+                        opt.textContent = l.state;
+                        stateFilter.appendChild(opt);
+                    });
+                }
+
+                if (repState) {
+                    repState.innerHTML = '<option value="">Select State</option>';
+                    locationData.forEach(l => {
+                        const opt = document.createElement('option');
+                        opt.value = l.state;
+                        opt.textContent = l.state;
+                        repState.appendChild(opt);
+                    });
+                }
+                populateCitiesForState('all');
+            }
+
+            function populateCitiesForState(stateName, selectedCity = 'all') {
+                if (!cityFilter) return;
+                cityFilter.innerHTML = '<option value="all">All Cities</option>';
+                if (!stateName || stateName === 'all') {
+                    const allCities = new Set();
+                    locationData.forEach(s => s.districts.forEach(d => d.cities.forEach(c => allCities.add(c))));
+                    allCities.forEach(c => {
+                        const opt = document.createElement('option');
+                        opt.value = c;
+                        opt.textContent = c;
+                        cityFilter.appendChild(opt);
+                    });
+                } else {
+                    const st = locationData.find(l => l.state.toLowerCase() === stateName.toLowerCase());
+                    if (st) {
+                        st.districts.forEach(d => {
+                            d.cities.forEach(c => {
+                                const opt = document.createElement('option');
+                                opt.value = c;
+                                opt.textContent = c;
+                                cityFilter.appendChild(opt);
+                            });
+                        });
+                    }
+                }
+                if (selectedCity && selectedCity !== 'all') {
+                    cityFilter.value = selectedCity;
+                }
+            }
+
+            // When repState changes, populate repDistrict
+            if (repState) {
+                repState.addEventListener('change', () => {
+                    const selected = locationData.find(l => l.state === repState.value);
+                    if (repDistrict) {
+                        repDistrict.innerHTML = '<option value="">Select District</option>';
+                        if (selected && selected.districts) {
+                            selected.districts.forEach(d => {
+                                const opt = document.createElement('option');
+                                opt.value = d.name;
+                                opt.textContent = d.name;
+                                repDistrict.appendChild(opt);
+                            });
+                        }
+                    }
+                    if (repCity) repCity.innerHTML = '<option value="">Select City</option>';
+                });
+            }
+
+            // When repDistrict changes, populate repCity
+            if (repDistrict) {
+                repDistrict.addEventListener('change', () => {
+                    const selectedState = locationData.find(l => l.state === repState.value);
+                    if (!selectedState) return;
+                    const selectedDist = selectedState.districts.find(d => d.name === repDistrict.value);
+                    if (repCity) {
+                        repCity.innerHTML = '<option value="">Select City</option>';
+                        if (selectedDist && selectedDist.cities) {
+                            selectedDist.cities.forEach(c => {
+                                const opt = document.createElement('option');
+                                opt.value = c;
+                                opt.textContent = c;
+                                repCity.appendChild(opt);
+                            });
+                        }
+                    }
+                });
+            }
+
+            // When repCity changes, suggest pincode
+            if (repCity) {
+                repCity.addEventListener('change', () => {
+                    const selectedState = locationData.find(l => l.state === repState.value);
+                    if (!selectedState) return;
+                    const selectedDist = selectedState.districts.find(d => d.name === repDistrict.value);
+                    if (selectedDist && selectedDist.pincodes && selectedDist.pincodes[0] && repPincode && !repPincode.value) {
+                        repPincode.value = selectedDist.pincodes[0];
+                    }
+                });
+            }
+
+            // Community Mode: Use My Location for Filter Sidebar
+            const commGeoBtn = document.getElementById('commGeoBtn');
+            const commGeoStatus = document.getElementById('commGeoStatus');
+            if (commGeoBtn) {
+                commGeoBtn.addEventListener('click', () => {
+                    if (!navigator.geolocation) {
+                        const msg = 'Geolocation is not supported by your browser. Please select your location manually.';
+                        if (commGeoStatus) {
+                            commGeoStatus.style.display = 'block';
+                            commGeoStatus.textContent = msg;
+                        }
+                        if (typeof window.showToast === 'function') window.showToast(msg, 'warning');
+                        return;
+                    }
+
+                    commGeoBtn.disabled = true;
+                    commGeoBtn.textContent = 'Detecting location...';
+                    if (commGeoStatus) {
+                        commGeoStatus.style.display = 'block';
+                        commGeoStatus.textContent = 'Requesting browser location permission...';
+                    }
+
+                    navigator.geolocation.getCurrentPosition(
+                        async (pos) => {
+                            try {
+                                if (commGeoStatus) commGeoStatus.textContent = 'Resolving Indian locality...';
+                                const lat = pos.coords.latitude;
+                                const lon = pos.coords.longitude;
+
+                                const res = await fetch('/api/locations/resolve', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ latitude: lat, longitude: lon })
+                                });
+                                const json = await res.json();
+                                commGeoBtn.disabled = false;
+
+                                if (json.success && json.data) {
+                                    const loc = json.data;
+                                    commGeoBtn.textContent = '✓ Location Active';
+                                    if (commGeoStatus) {
+                                        commGeoStatus.style.display = 'block';
+                                        commGeoStatus.innerHTML = `<strong>Location:</strong><br>${loc.formatted || (loc.city + ', ' + loc.state)}`;
+                                    }
+
+                                    if (stateFilter && loc.state) {
+                                        stateFilter.value = loc.state;
+                                        populateCitiesForState(loc.state, loc.city);
+                                    }
+
+                                    renderIssues();
+
+                                    if (typeof window.showToast === 'function') {
+                                        window.showToast(`Location detected: ${loc.formatted || (loc.city + ', ' + loc.state)}`, 'success');
+                                    }
+                                } else {
+                                    commGeoBtn.textContent = '📍 Use My Location';
+                                    const msg = json.message || 'Unable to resolve your location. Please select manually.';
+                                    if (commGeoStatus) {
+                                        commGeoStatus.style.display = 'block';
+                                        commGeoStatus.textContent = msg;
+                                    }
+                                    if (typeof window.showToast === 'function') window.showToast(msg, 'warning');
+                                }
+                            } catch (e) {
+                                commGeoBtn.disabled = false;
+                                commGeoBtn.textContent = '📍 Use My Location';
+                                const msg = 'Network error while resolving location. Please select manually.';
+                                if (commGeoStatus) {
+                                    commGeoStatus.style.display = 'block';
+                                    commGeoStatus.textContent = msg;
+                                }
+                                if (typeof window.showToast === 'function') window.showToast(msg, 'warning');
+                            }
+                        },
+                        (err) => {
+                            commGeoBtn.disabled = false;
+                            commGeoBtn.textContent = '📍 Use My Location';
+                            let userMsg = 'Unable to detect location. Please select your location manually.';
+                            if (err.code === 1) userMsg = 'Location access was denied. Please select your location manually.';
+                            else if (err.code === 2) userMsg = 'Location information is currently unavailable. Please select your location manually.';
+                            else if (err.code === 3) userMsg = 'Location detection timed out. Please select your location manually.';
+                            if (commGeoStatus) {
+                                commGeoStatus.style.display = 'block';
+                                commGeoStatus.textContent = userMsg;
+                            }
+                            if (typeof window.showToast === 'function') window.showToast(userMsg, 'warning');
+                        },
+                        { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+                    );
+                });
+            }
+
+            // Community Mode: Use My Location for Report Issue Modal
+            const repGeoBtn = document.getElementById('repGeoBtn');
+            const repGeoStatus = document.getElementById('repGeoStatus');
+            if (repGeoBtn) {
+                repGeoBtn.addEventListener('click', () => {
+                    if (!navigator.geolocation) {
+                        const msg = 'Geolocation is not supported by your browser. Please select your location manually.';
+                        if (repGeoStatus) {
+                            repGeoStatus.style.display = 'block';
+                            repGeoStatus.textContent = msg;
+                        }
+                        if (typeof window.showToast === 'function') window.showToast(msg, 'warning');
+                        return;
+                    }
+
+                    repGeoBtn.disabled = true;
+                    repGeoBtn.textContent = 'Detecting location...';
+                    if (repGeoStatus) {
+                        repGeoStatus.style.display = 'block';
+                        repGeoStatus.textContent = 'Requesting browser location permission...';
+                    }
+
+                    navigator.geolocation.getCurrentPosition(
+                        async (pos) => {
+                            try {
+                                if (repGeoStatus) repGeoStatus.textContent = 'Resolving Indian locality...';
+                                const lat = pos.coords.latitude;
+                                const lon = pos.coords.longitude;
+
+                                const res = await fetch('/api/locations/resolve', {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ latitude: lat, longitude: lon })
+                                });
+                                const json = await res.json();
+                                repGeoBtn.disabled = false;
+
+                                if (json.success && json.data) {
+                                    const loc = json.data;
+                                    repGeoBtn.textContent = '✓ Location Active';
+                                    if (repGeoStatus) {
+                                        repGeoStatus.style.display = 'block';
+                                        repGeoStatus.innerHTML = `<strong>Location:</strong> ${loc.formatted || (loc.city + ', ' + loc.state)}`;
+                                    }
+
+                                    if (repState && loc.state) {
+                                        const matchedState = locationData.find(l => l.state.toLowerCase() === loc.state.toLowerCase());
+                                        if (matchedState) {
+                                            repState.value = matchedState.state;
+                                            
+                                            // Populate districts
+                                            if (repDistrict) {
+                                                repDistrict.innerHTML = '<option value="">Select District</option>';
+                                                matchedState.districts.forEach(d => {
+                                                    const opt = document.createElement('option');
+                                                    opt.value = d.name;
+                                                    opt.textContent = d.name;
+                                                    repDistrict.appendChild(opt);
+                                                });
+                                                const distObj = matchedState.districts.find(d => d.name.toLowerCase() === (loc.district || '').toLowerCase()) || matchedState.districts[0];
+                                                if (distObj) {
+                                                    repDistrict.value = distObj.name;
+                                                    // Populate cities
+                                                    if (repCity) {
+                                                        repCity.innerHTML = '<option value="">Select City</option>';
+                                                        distObj.cities.forEach(c => {
+                                                            const opt = document.createElement('option');
+                                                            opt.value = c;
+                                                            opt.textContent = c;
+                                                            repCity.appendChild(opt);
+                                                        });
+                                                        const cityFound = distObj.cities.find(c => c.toLowerCase() === (loc.city || '').toLowerCase());
+                                                        if (cityFound) repCity.value = cityFound;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    if (repPincode && loc.pincode) {
+                                        repPincode.value = loc.pincode;
+                                    }
+                                    if (repLocation && !repLocation.value && loc.city) {
+                                        repLocation.value = loc.city;
+                                    }
+
+                                    if (typeof window.showToast === 'function') {
+                                        window.showToast(`Location detected: ${loc.formatted || (loc.city + ', ' + loc.state)}`, 'success');
+                                    }
+                                } else {
+                                    repGeoBtn.textContent = '📍 Use My Location';
+                                    const msg = json.message || 'Unable to resolve your location. Please select manually.';
+                                    if (repGeoStatus) {
+                                        repGeoStatus.style.display = 'block';
+                                        repGeoStatus.textContent = msg;
+                                    }
+                                    if (typeof window.showToast === 'function') window.showToast(msg, 'warning');
+                                }
+                            } catch (e) {
+                                repGeoBtn.disabled = false;
+                                repGeoBtn.textContent = '📍 Use My Location';
+                                const msg = 'Network error while resolving location. Please select manually.';
+                                if (repGeoStatus) {
+                                    repGeoStatus.style.display = 'block';
+                                    repGeoStatus.textContent = msg;
+                                }
+                                if (typeof window.showToast === 'function') window.showToast(msg, 'warning');
+                            }
+                        },
+                        (err) => {
+                            repGeoBtn.disabled = false;
+                            repGeoBtn.textContent = '📍 Use My Location';
+                            let userMsg = 'Unable to detect location. Please select your location manually.';
+                            if (err.code === 1) userMsg = 'Location access was denied. Please select your location manually.';
+                            else if (err.code === 2) userMsg = 'Location information is currently unavailable. Please select your location manually.';
+                            else if (err.code === 3) userMsg = 'Location detection timed out. Please select your location manually.';
+                            if (repGeoStatus) {
+                                repGeoStatus.style.display = 'block';
+                                repGeoStatus.textContent = userMsg;
+                            }
+                            if (typeof window.showToast === 'function') window.showToast(userMsg, 'warning');
+                        },
+                        { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+                    );
+                });
+            }
+
+            // Image Evidence Selection (Gallery & Camera)
+            let selectedEvidenceFile = null;
+            const selectGalleryBtn = document.getElementById('selectGalleryBtn');
+            const selectCameraBtn = document.getElementById('selectCameraBtn');
+            const repImageGallery = document.getElementById('repImageGallery');
+            const repImageCamera = document.getElementById('repImageCamera');
+            const fileNameDisplay = document.getElementById('imageFileNameDisplay');
+
+            if (selectGalleryBtn && repImageGallery) {
+                selectGalleryBtn.addEventListener('click', () => repImageGallery.click());
+            }
+
+            if (selectCameraBtn && repImageCamera) {
+                selectCameraBtn.addEventListener('click', () => repImageCamera.click());
+            }
+
+            function processImageFile(file) {
+                if (!file) return;
+
+                // Validate file type
+                const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+                if (!validTypes.includes(file.type.toLowerCase())) {
+                    if (reportError) {
+                        reportError.textContent = 'Invalid file format. Please select a JPG, PNG, or WEBP image.';
+                        reportError.style.display = 'block';
+                    }
+                    return;
+                }
+
+                // Validate file size (5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    if (reportError) {
+                        reportError.textContent = 'Image exceeds 5MB limit. Please upload an image smaller than 5MB.';
+                        reportError.style.display = 'block';
+                    }
+                    return;
+                }
+
+                if (reportError) reportError.style.display = 'none';
+                selectedEvidenceFile = file;
+
+                if (fileNameDisplay) {
+                    fileNameDisplay.textContent = `Selected: ${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+                    fileNameDisplay.style.display = 'block';
+                }
+
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    if (imagePreview) imagePreview.src = event.target.result;
+                    if (imagePreviewContainer) imagePreviewContainer.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+
+            if (repImageGallery) {
+                repImageGallery.addEventListener('change', (e) => {
+                    const file = e.target.files && e.target.files[0];
+                    processImageFile(file);
+                });
+            }
+
+            if (repImageCamera) {
+                repImageCamera.addEventListener('change', (e) => {
+                    const file = e.target.files && e.target.files[0];
+                    processImageFile(file);
+                });
+            }
+
+            if (repImage) {
+                repImage.addEventListener('change', (e) => {
+                    const file = e.target.files && e.target.files[0];
+                    processImageFile(file);
+                });
+            }
+
+            // Load Issues from REST API
+            async function loadIssues() {
+                try {
+                    const res = await fetch('/api/issues');
+                    const data = await res.json();
+                    if (data.success && Array.isArray(data.data)) {
+                        allIssues = data.data;
+                        renderIssues();
+                    }
+                } catch(err) {
+                    console.error('Failed to load issues:', err);
+                }
+            }
+
+            // Render Issues Cards
+            function renderIssues() {
+                const q = searchInput ? searchInput.value.toLowerCase().trim() : '';
+                const cat = categoryFilter ? categoryFilter.value : 'all';
+                const st = stateFilter ? stateFilter.value : 'all';
+                const ct = cityFilter ? cityFilter.value : 'all';
+                const stat = statusFilter ? statusFilter.value : 'all';
+                const sort = sortFilter ? sortFilter.value : 'upvotes-desc';
+
+                let filtered = allIssues.filter(item => {
+                    const matchQ = !q || 
+                        (item.title && item.title.toLowerCase().includes(q)) ||
+                        (item.description && item.description.toLowerCase().includes(q)) ||
+                        (item.location && item.location.city && item.location.city.toLowerCase().includes(q));
+
+                    const matchCat = cat === 'all' || (item.category && item.category.toLowerCase().includes(cat.toLowerCase()));
+                    const matchSt = st === 'all' || (item.location && item.location.state && item.location.state.toLowerCase() === st.toLowerCase());
+                    const matchCt = ct === 'all' || (item.location && item.location.city && item.location.city.toLowerCase() === ct.toLowerCase());
+
+                    let matchStat = true;
+                    if (stat === 'voting') matchStat = !item.escalated;
+                    if (stat === 'escalated') matchStat = item.escalated;
+
+                    return matchQ && matchCat && matchSt && matchCt && matchStat;
+                });
+
+                // Sorting
+                if (sort === 'upvotes-desc') {
+                    filtered.sort((a, b) => (b.upvotes || 0) - (a.upvotes || 0));
+                } else if (sort === 'date-desc') {
+                    filtered.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+                } else if (sort === 'date-asc') {
+                    filtered.sort((a, b) => new Date(a.createdAt || 0) - new Date(b.createdAt || 0));
+                }
+
+                if (issuesCount) {
+                    issuesCount.textContent = `Showing ${filtered.length} ${filtered.length === 1 ? 'issue' : 'issues'}`;
+                }
+
+                if (filtered.length === 0) {
+                    if (issuesGrid) issuesGrid.innerHTML = '';
+                    if (emptyState) emptyState.style.display = 'block';
+                    return;
+                }
+
+                if (emptyState) emptyState.style.display = 'none';
+
+                if (issuesGrid) {
+                    issuesGrid.innerHTML = filtered.map(item => {
+                        const supported = isSupported(item.id);
+                        const threshold = item.threshold || 10;
+                        const percent = Math.min(100, Math.round(((item.upvotes || 0) / threshold) * 100));
+                        const locText = item.location ? `${item.location.city || ''}, ${item.location.state || ''} (${item.location.pincode || ''})` : 'India';
+
+                        return `
+                            <article class="issue-card-main" data-id="${item.id}">
+                                <div class="issue-img-box">
+                                    <img src="${item.imageUrl || '/assets/logo.png'}" alt="${item.title}" onerror="this.src='/assets/logo.png'">
+                                    <span class="issue-cat-tag">${item.category}</span>
+                                    <span class="issue-status-badge ${item.escalated ? 'badge-escalated' : 'badge-voting'}">
+                                        ${item.status || (item.escalated ? 'Escalated' : 'Community Voting')}
+                                    </span>
+                                </div>
+                                <div class="issue-card-body">
+                                    <h3 class="issue-card-title">${item.title}</h3>
+                                    <div class="issue-card-location">
+                                        <span>📍 ${locText}</span>
+                                    </div>
+                                    <div class="issue-card-desc">${item.description}</div>
+
+                                    <div class="support-progress-wrap" data-support-progress="${item.id}">
+                                        <div class="support-progress-meta">
+                                            <span>Citizen Support</span>
+                                            <span><strong class="support-count">${item.upvotes || 0}</strong> / ${threshold} votes</span>
+                                        </div>
+                                        <div class="support-progress-bar">
+                                            <div class="support-progress-fill" style="width: ${percent}%;"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="issue-card-footer">
+                                        <button type="button" class="btn-support ${supported ? 'supported' : ''}" data-issue-id="${item.id}" ${supported ? 'disabled' : ''}>
+                                            ${supported ? '✓ Supported' : '▲ Support Issue'}
+                                        </button>
+                                        <a href="${window.location.origin}/issue/${encodeURIComponent(item.id)}" class="btn-view-detail" target="_blank" rel="noopener noreferrer">
+                                            Details &rarr;
+                                        </a>
+                                    </div>
+                                </div>
+                            </article>
+                        `;
+                    }).join('');
+
+                    // Attach upvote listeners
+                    issuesGrid.querySelectorAll('.btn-support').forEach(btn => {
+                        if (btn) {
+                            btn.addEventListener('click', (e) => {
+                                e.stopPropagation();
+                                const issueId = btn.getAttribute('data-issue-id');
+                                handleUpvote(issueId, btn);
+                            });
+                        }
+                    });
+                    issuesGrid.querySelectorAll('.btn-view-detail').forEach(link => {
+                        link.addEventListener('click', e => e.stopPropagation());
+                    });
+                }
+            }
+            function setCardSupportedState(issueId, issue) {
+                markSupported(issueId);
+                const card = issuesGrid?.querySelector(`.issue-card-main[data-id="${issueId}"]`);
+                if (!card) return;
+                const button = card.querySelector('.btn-support');
+                const count = card.querySelector('.support-count');
+                const fill = card.querySelector('.support-progress-fill');
+                const threshold = issue.threshold || 10;
+                if (button) {
+                    button.disabled = true;
+                    button.classList.add('supported');
+                    button.textContent = '✓ Supported';
+                }
+                if (count) count.textContent = issue.upvotes || 0;
+                if (fill) fill.style.width = `${Math.min(100, Math.round(((issue.upvotes || 0) / threshold) * 100))}%`;
+            }
+
+            // Handle Upvote
+            async function handleUpvote(issueId, btnElement) {
+                if (isSupported(issueId) || inFlightSupportIds.has(issueId)) return;
+
+                inFlightSupportIds.add(issueId);
+                btnElement.disabled = true;
+                btnElement.textContent = 'Recording...';
+
+                try {
+                    const res = await fetch(`/api/issues/${encodeURIComponent(issueId)}/upvote`, { method: 'POST' });
+                    const resData = await res.json();
+                    if (res.ok && resData.success) {
+                        const target = allIssues.find(i => i.id === issueId);
+                        if (target) Object.assign(target, resData.data);
+                        setCardSupportedState(issueId, resData.data);
+                        if (window.showToast) window.showToast('Support vote recorded! Viewable on your Dashboard.');
+                        loadTrending();
+                    } else if (res.status === 409 && resData.data) {
+                        const target = allIssues.find(i => i.id === issueId);
+                        if (target) Object.assign(target, resData.data);
+                        setCardSupportedState(issueId, resData.data);
+                        if (window.showToast) window.showToast(resData.message, 'error');
+                    } else {
+                        btnElement.disabled = false;
+                        btnElement.textContent = '▲ Support Issue';
+                        if (window.showToast) window.showToast(resData.message || 'Please sign in as a customer or vendor to support issues.', 'error');
+                    }
+                } catch(e) {
+                    btnElement.disabled = false;
+                    btnElement.textContent = '▲ Support Issue';
+                    if (window.showToast) window.showToast('Unable to record support. Please try again.', 'error');
+                } finally {
+                    inFlightSupportIds.delete(issueId);
+                }
+            }
+
+            // Load Trending Sidebar
+            function loadTrending() {
+                if (!trendingList) return;
+                const sorted = [...allIssues].sort((a, b) => (b.upvotes || 0) - (a.upvotes || 0)).slice(0, 5);
+                if (sorted.length === 0) {
+                    trendingList.innerHTML = '<div style="font-size: 13px; color: #666666;">No reports recorded yet.</div>';
+                    return;
+                }
+
+                trendingList.innerHTML = sorted.map(i => `
+                    <div style="padding: 10px 0; border-bottom: 1px solid #eeeeee;">
+                        <div style="font-size: 13px; font-weight: 700; color: #000000; margin-bottom: 2px;">
+                            <a href="/issue/${encodeURIComponent(i.id)}" style="color: #000000; text-decoration: none;">${i.title}</a>
+                        </div>
+                        <div style="font-size: 12px; color: #555555; display: flex; justify-content: space-between;">
+                            <span>${i.category}</span>
+                            <span><strong>${i.upvotes || 0} votes</strong></span>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            // Report Form Submit with Multi-Part Form Data & Image
+            if (reportForm) {
+                reportForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    if (reportError) reportError.style.display = 'none';
+                    if (reportSuccess) reportSuccess.style.display = 'none';
+
+                    if (submitReportBtn) {
+                        submitReportBtn.disabled = true;
+                        submitReportBtn.textContent = 'Uploading & Submitting Issue...';
+                    }
+
+                    try {
+                        if (!selectedEvidenceFile && (!repImage.files || !repImage.files[0])) {
+                            throw new Error('Photo evidence is required. Please capture a photo or choose an image file.');
+                        }
+
+                        const formData = new FormData(reportForm);
+                        if (selectedEvidenceFile) {
+                            formData.set('image', selectedEvidenceFile);
+                        }
+
+                        const res = await fetch('/api/issues/report', {
+                            method: 'POST',
+                            body: formData
+                        });
+
+                        const resData = await res.json();
+                        if (!res.ok || !resData.success) {
+                            throw new Error(resData.message || 'Failed to submit issue report.');
+                        }
+
+                        saveReportedIssueId(resData.data.id);
+                        markSupported(resData.data.id);
+
+                        if (reportSuccess) {
+                            reportSuccess.innerHTML = `
+                                <strong>✓ Civic issue reported successfully with photo evidence!</strong><br>
+                                Issue Reference: <code>${resData.data.id}</code><br>
+                                Your report is now live for community citizen voting.
+                            `;
+                            reportSuccess.style.display = 'block';
+                        }
+
+                        reportForm.reset();
+                        selectedEvidenceFile = null;
+                        if (fileNameDisplay) fileNameDisplay.style.display = 'none';
+                        if (imagePreviewContainer) imagePreviewContainer.style.display = 'none';
+                        if (submitReportBtn) submitReportBtn.textContent = 'Report Submitted';
+
+                        // Reload data
+                        await loadIssues();
+                        loadTrending();
+
+                        setTimeout(() => {
+                            if (reportModal) reportModal.classList.remove('open');
+                            if (submitReportBtn) {
+                                submitReportBtn.disabled = false;
+                                submitReportBtn.textContent = 'Submit Issue to Community';
+                            }
+                        }, 2000);
+                    } catch(err) {
+                        if (reportError) {
+                            reportError.textContent = err.message || 'Error uploading photo and submitting report.';
+                            reportError.style.display = 'block';
+                        }
+                        if (submitReportBtn) {
+                            submitReportBtn.disabled = false;
+                            submitReportBtn.textContent = 'Submit Issue to Community';
+                        }
+                    }
+                });
+            }
+
+            // Modal Triggers
+            if (openReportModalBtn && reportModal) {
+                openReportModalBtn.addEventListener('click', () => {
+                    reportModal.classList.add('open');
+                    if (reportError) reportError.style.display = 'none';
+                    if (reportSuccess) reportSuccess.style.display = 'none';
+                });
+            }
+
+            if (closeReportModal && reportModal) {
+                closeReportModal.addEventListener('click', () => {
+                    reportModal.classList.remove('open');
+                });
+            }
+
+            if (closeDetailModal && detailModal) {
+                closeDetailModal.addEventListener('click', () => {
+                    detailModal.classList.remove('open');
+                });
+            }
+
+            // Reset Filters
+            function resetAll() {
+                if (searchInput) searchInput.value = '';
+                if (categoryFilter) categoryFilter.value = 'all';
+                if (stateFilter) stateFilter.value = 'all';
+                if (cityFilter) cityFilter.value = 'all';
+                if (statusFilter) statusFilter.value = 'all';
+                if (sortFilter) sortFilter.value = 'upvotes-desc';
+                if (commGeoBtn) {
+                    commGeoBtn.textContent = '📍 Use My Location';
+                    commGeoBtn.disabled = false;
+                }
+                if (commGeoStatus) {
+                    commGeoStatus.style.display = 'none';
+                    commGeoStatus.textContent = '';
+                }
+                populateCitiesForState('all');
+                renderIssues();
+            }
+
+            if (resetFiltersBtn) resetFiltersBtn.addEventListener('click', resetAll);
+            if (emptyClearBtn) emptyClearBtn.addEventListener('click', resetAll);
+
+            // Filter Event Listeners
+            if (searchInput) searchInput.addEventListener('input', renderIssues);
+            if (categoryFilter) categoryFilter.addEventListener('change', renderIssues);
+            if (stateFilter) {
+                stateFilter.addEventListener('change', () => {
+                    populateCitiesForState(stateFilter.value);
+                    renderIssues();
+                });
+            }
+            if (cityFilter) cityFilter.addEventListener('change', renderIssues);
+            if (statusFilter) statusFilter.addEventListener('change', renderIssues);
+            if (sortFilter) sortFilter.addEventListener('change', renderIssues);
+
+            // Initial load
+            loadLocations();
+            syncSupportedIssues().then(loadIssues);
+        });
+    </script>
+</body>
+</html>

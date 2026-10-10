@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LocalLink</title>
+  <meta name="description" content="A community-focused platform connecting citizens for local issue reporting and trusted home service provider bookings.">
+  <meta property="og:title" content="LocalLink">
+  <meta property="og:description" content="A community-focused platform connecting citizens for local issue reporting and trusted home service provider bookings.">
+  <link rel="icon" type="image/png" href="/assets/logo.png">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: #0a0202;
+      color: #000;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1540px;
+      width: 100%;
+      box-sizing: border-box;
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+
+    /* Header Styles */
+    .header {
+      padding: 32px 0;
+      background: #0e0303;
+      border-bottom: 1px solid #000;
+      width: 100%;
+    }
+
+    .header .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      width: 120px;
+    }
+
+    .navigation {
+      display: flex;
+      gap: 12px;
+    }
+
+    .nav-pill {
+      padding: 12px 16px;
+      background: #000;
+      border-radius: 12px;
+      text-decoration: none;
+      color: #fff;
+      font-weight: 500;
+      font-size: 16px;
+      transition: background 0.3s ease;
+    }
+
+    .nav-pill:hover {
+      background: #333;
+    }
+
+    .auth {
+      display: flex;
+      gap: 16px;
+    }
+
+    .button {
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-weight: 500;
+      font-size: 16px;
+      border: 2px solid #000;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .button:first-child {
+      background: #fff;
+      color: #000;
+    }
+
+    .button:first-child:hover {
+      background: #f0f0f0;
+    }
+
+    .button:last-child {
+      background: #000;
+      color: #fff;
+    }
+
+    .button:last-child:hover {
+      background: #333;
+    }
+
+    /* Introduction Section */
+    .intro-section {
+      display: flex;
+      margin: 0 auto 30px auto;
+      padding: 32px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      align-items: center;
+      justify-content: space-between;
+      gap: 32px;
+      flex-grow: 1;
+    }
+
+    .intro-text {
+      flex: 1;
+      min-width: 0;
+      padding-right: 32px;
+    }
+
+    .intro-text h1 {
+      font-size: 36px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .intro-text h2 {
+      font-size: 24px;
+      font-weight: 600;
+      margin-top: 24px;
+      margin-bottom: 12px;
+    }
+
+    .intro-text p {
+      font-size: 18px;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .intro-text ul {
+      margin-left: 20px;
+      margin-bottom: 16px;
+      list-style-type: disc;
+    }
+
+    .intro-text ul li {
+      margin-bottom: 8px;
+      font-size: 16px;
+    }
+
+    .intro-image {
+      max-width: 400px;
+      width: min(32%, 400px);
+      flex: 0 1 400px;
+      height: auto;
+      border-radius: 12px;
+    }
+
+    /* Footer Section */
+    .footer {
+      background: #000;
+      color: #fff;
+      padding: 32px 0;
+      width: 100%;
+    }
+
+    .footer .container {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    .footer-column {
+      flex: 1;
+      min-width: 200px;
+      margin-bottom: 16px;
+    }
+
+    .footer-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .footer-link {
+      display: block;
+      color: #ccc;
+      text-decoration: none;
+      font-size: 14px;
+      margin-bottom: 8px;
+      transition: color 0.3s ease;
+    }
+
+    .footer-link:hover {
+      color: #fff;
+    }
+
+    .social-icons {
+      display: flex;
+      gap: 8px;
+    }
+
+    .social-icon {
+      width: 24px;
+      height: 24px;
+      background: #ccc;
+      border-radius: 50%;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .header .container {
+        flex-direction: column;
+        gap: 16px;
+      }
+
+      .navigation {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .auth {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .intro-section {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .intro-image {
+        max-width: 300px;
+        width: 100%;
+        flex-basis: auto;
+        margin-top: 20px;
+      }
+
+      .footer .container {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .footer-column {
+        width: 100%;
+        max-width: 300px;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="/public/css/ui-polish.css">
+</head>
+<body>
+  <!-- Header Section -->
+  <div class="header">
+    <div class="container">
+      <a href="/"><img src="/assets/logo.png" alt="LocalLink Logo" class="logo"></a>
+      
+      <div class="navigation">
+        <a href="/" class="nav-pill active">Home</a>
+        <a href="/services" class="nav-pill">Consumer Mode</a>
+        <a href="/community" class="nav-pill">Community Mode</a>
+        <a href="/dashboard" class="nav-pill">Dashboard</a>
+        <a href="/contact" class="nav-pill">Contact</a>
+      </div>
+      
+      <div class="auth">
+        <a href="/login" class="button" id="signin-btn">Sign in</a>
+        <a href="/signup" class="button" id="register-btn">Register</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Introduction Section -->
+  <div class="intro-section container">
+    <div class="intro-text">
+      <h1>Introducing Local Link</h1>
+      <p>At LocalLink, we are committed to creating a more connected and sustainable community. Our platform offers two distinct modes to cater to the needs of our users:</p>
+
+      <div class="home-mode-grid">
+      <section class="home-mode-section">
+      <h2>Community Mode</h2>
+      <p>In Community Mode, LocalLink empowers citizens to actively engage with their local issues. If you encounter a problem in your neighborhood, such as potholes, broken streetlights, or any other public concern, you can report it directly on our platform. Here’s how it works:</p>
+      <ul>
+        <li><strong>Issues:</strong> Choose from list of problems provided by us or report neighborhood incidents.</li>
+        <li><strong>Engage the Community:</strong> Share the report with your neighbors and encourage them to support it.</li>
+        <li><strong>Vote and Upvote:</strong> Citizens can upvote the issues they find important. Once an issue reaches 10 upvotes (5,000 in production concept), it is escalated to the municipal corporation for official review and action.</li>
+      </ul>
+      <p>This feature ensures that community concerns are addressed efficiently and that collective voices are heard by local authorities.</p>
+      <div style="margin: 16px 0 24px 0;">
+        <a href="/community" class="button" style="display: inline-block; background: #000000; color: #ffffff; text-decoration: none; padding: 10px 20px;">Explore Community Mode →</a>
+      </div>
+
+      </section>
+      <section class="home-mode-section">
+      <h2>Consumer Mode</h2>
+      <p>Consumer Mode is designed to simplify the process of booking reliable local service providers. Whether you need an electrician, plumber, carpenter, or any other skilled worker, LocalLink has you covered. Here’s how it benefits you:</p>
+      <ul>
+        <li><strong>Book Local Services:</strong> Easily find and book trusted professionals for various home services through our platform.</li>
+        <li><strong>Verified Milestones:</strong> We utilize milestone-based escrow verification to ensure that service providers remain committed to their obligations and quality workmanship.</li>
+        <li><strong>Secure Transactions:</strong> Our platform provides secure payment options, making the process seamless and safe for both consumers and service providers.</li>
+      </ul>
+      <p>With Consumer Mode, you can confidently manage home services and ensure that you receive quality service from reliable providers.</p>
+      <div style="margin: 16px 0 24px 0;">
+        <a href="/services" class="button" style="display: inline-block; background: #000000; color: #ffffff; text-decoration: none; padding: 10px 20px;">Find Verified Providers →</a>
+      </div>
+      </section>
+      </div>
+    </div>
+
+    <img src="/assets/logo-color.png" alt="Local Link" class="intro-image">
+  </div>
+
+  <!-- Footer Section -->
+  <div class="footer" id="resources">
+    <div class="container">
+      <div class="footer-column">
+        <div class="footer-title">LocalLink</div>
+        <p style="color: #666666; font-size: 13px; line-height: 1.5; margin-bottom: 12px;">Civic issue resolution & verified local service providers platform.</p>
+      </div>
+
+      <div class="footer-column">
+        <div class="footer-title">Community</div>
+        <a href="/community" class="footer-link">Delhi Neighborhoods</a>
+        <a href="/community" class="footer-link">Civic Issues Tracker</a>
+      </div>
+
+      <div class="footer-column">
+        <div class="footer-title">Consumer Services</div>
+        <a href="/services" class="footer-link">Electricians</a>
+        <a href="/services" class="footer-link">Plumbers</a>
+        <a href="/services" class="footer-link">Carpenters & Masons</a>
+      </div>
+
+      <div class="footer-column">
+        <div class="footer-title">Account & Contact</div>
+        <a href="/login" class="footer-link">Sign In</a>
+        <a href="/signup" class="footer-link">Register Account</a>
+        <a href="/contact" class="footer-link">Contact</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="/public/js/locallink.js"></script>
+</body>
+</html>

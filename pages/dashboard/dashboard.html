@@ -1,0 +1,2132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — LocalLink</title>
+  <meta name="description" content="Manage your LocalLink activity in one place. View your saved providers, supported issues, and civic activity.">
+  <link rel="icon" type="image/png" href="/assets/logo.png">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: #0a0202;
+      color: #000;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1540px;
+      margin: 0 auto;
+      padding: 0 32px;
+      width: 100%;
+    }
+
+    /* Header Styles - matching LocalLink original */
+    .header {
+      padding: 32px 0;
+      background: #0e0303;
+      border-bottom: 1px solid #000;
+      width: 100%;
+    }
+
+    .header .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      width: 120px;
+      display: block;
+    }
+
+    .navigation {
+      display: flex;
+      gap: 12px;
+    }
+
+    .nav-pill {
+      padding: 12px 16px;
+      background: #000;
+      border-radius: 12px;
+      text-decoration: none;
+      color: #fff;
+      font-weight: 500;
+      font-size: 16px;
+      transition: background 0.3s ease;
+    }
+
+    .nav-pill:hover, .nav-pill.active {
+      background: #333;
+    }
+
+    .auth {
+      display: flex;
+      gap: 16px;
+    }
+
+    .button {
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-weight: 500;
+      font-size: 16px;
+      border: 2px solid #000;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: background 0.3s ease;
+    }
+
+    .button:first-child {
+      background: #fff;
+      color: #000;
+    }
+
+    .button:first-child:hover {
+      background: #f0f0f0;
+    }
+
+    .button:last-child {
+      background: #000;
+      color: #fff;
+    }
+
+    .button:last-child:hover {
+      background: #333;
+    }
+
+    /* Dashboard Main Container matching LocalLink intro-section */
+    .dashboard-wrapper {
+      margin: 30px auto;
+      padding: 32px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      flex-grow: 1;
+      width: 100%;
+    }
+
+    .dashboard-heading {
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #e5e5e5;
+    }
+
+    .dashboard-heading h1 {
+      font-size: 32px;
+      font-weight: 700;
+      color: #000;
+      margin: 0 0 8px 0;
+    }
+
+    .dashboard-heading p {
+      font-size: 16px;
+      color: #555;
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    .user-greeting-box {
+      margin-top: 14px;
+      padding: 12px 18px;
+      background: #f8f8f8;
+      border: 1px solid #000;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .user-greeting-text {
+      font-size: 14px;
+      color: #000;
+      font-weight: 600;
+    }
+
+    .user-role-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border: 1px solid #000;
+      background: #000;
+      color: #fff;
+    }
+
+    /* Section Subheadings */
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #000;
+      margin: 24px 0 14px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    /* Activity Grid */
+    .my-activity-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .activity-box {
+      border: 2px solid #000;
+      border-radius: 12px;
+      padding: 16px 20px;
+      background: #fff;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .activity-box:hover {
+      background: #f7f7f7;
+      transform: translateY(-2px);
+    }
+
+    .activity-box.active {
+      background: #000;
+      color: #fff;
+    }
+
+    .activity-box.active .activity-box-title {
+      color: #ccc;
+    }
+
+    .activity-box.active .activity-box-count {
+      color: #fff;
+    }
+
+    .activity-box-title {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #555;
+      margin-bottom: 6px;
+    }
+
+    .activity-box-count {
+      font-size: 26px;
+      font-weight: 700;
+      color: #000;
+    }
+
+    /* Navigation Tabs */
+    .tabs-bar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .tab-button {
+      padding: 10px 18px;
+      border: 2px solid #000;
+      border-radius: 12px;
+      background: #fff;
+      color: #000;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+
+    .tab-button:hover {
+      background: #f0f0f0;
+    }
+
+    .tab-button.active {
+      background: #000;
+      color: #fff;
+    }
+
+    /* Tab Content Panes */
+    .tab-pane {
+      display: none;
+    }
+
+    .tab-pane.active {
+      display: block;
+    }
+
+    /* Cards Grid */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    .card-item {
+      border: 1px solid #000;
+      border-radius: 12px;
+      padding: 20px;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: box-shadow 0.2s;
+    }
+
+    .card-item:hover {
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    }
+
+    .card-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 10px;
+      gap: 12px;
+    }
+
+    .card-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: #000;
+      margin: 0;
+      line-height: 1.35;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      border: 1px solid #000;
+      background: #f0f0f0;
+      color: #000;
+      white-space: nowrap;
+    }
+
+    .badge-status {
+      background: #000;
+      color: #fff;
+      border: 1px solid #000;
+    }
+
+    .badge-outline {
+      background: #ffffff;
+      color: #000000;
+      border: 1px solid #000000;
+    }
+
+    .card-meta {
+      font-size: 13px;
+      color: #555;
+      margin: 4px 0 14px 0;
+      line-height: 1.5;
+    }
+
+    .card-actions-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid #eee;
+      flex-wrap: wrap;
+    }
+
+    .btn-action-primary {
+      flex: 1;
+      min-width: 90px;
+      padding: 8px 12px;
+      background: #000;
+      color: #fff;
+      border: 1px solid #000;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      text-align: center;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-action-primary:hover {
+      background: #333;
+    }
+
+    .btn-action-outline {
+      padding: 8px 12px;
+      background: #fff;
+      color: #000;
+      border: 1px solid #000;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      text-align: center;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-action-outline:hover {
+      background: #f0f0f0;
+    }
+
+    /* Empty States */
+    .empty-state-box {
+      border: 2px dashed #bbb;
+      border-radius: 12px;
+      padding: 40px 24px;
+      text-align: center;
+      background: #fafafa;
+      margin: 10px 0;
+    }
+
+    .empty-state-box h3 {
+      font-size: 17px;
+      color: #000;
+      margin-bottom: 6px;
+    }
+
+    .empty-state-box p {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 16px;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Modal System */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.65);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 99999;
+      padding: 20px;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-box {
+      background: #ffffff;
+      border: 2px solid #000000;
+      border-radius: 12px;
+      max-width: 620px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 28px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #000000;
+      padding-bottom: 12px;
+      margin-bottom: 18px;
+    }
+
+    .modal-header h2 {
+      font-size: 20px;
+      font-weight: 700;
+      margin: 0;
+      color: #000;
+    }
+
+    .modal-close-btn {
+      background: transparent;
+      border: none;
+      font-size: 22px;
+      font-weight: bold;
+      cursor: pointer;
+      color: #000;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      color: #000;
+      margin-bottom: 6px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 10px 12px;
+      font-size: 14px;
+      border: 2px solid #000;
+      border-radius: 8px;
+      background: #fff;
+      color: #000;
+      font-family: inherit;
+    }
+
+    /* Data Tables */
+    .data-table-wrap {
+      overflow-x: auto;
+      border: 1px solid #000;
+      border-radius: 10px;
+      background: #fff;
+      margin-bottom: 20px;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 13px;
+    }
+
+    .data-table th {
+      background: #000;
+      color: #fff;
+      padding: 10px 14px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .data-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid #e5e5e5;
+      color: #111;
+      vertical-align: middle;
+    }
+
+    .data-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .data-table tr:hover td {
+      background: #f9f9f9;
+    }
+
+    /* Stats Grid */
+    .analytics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .analytics-card {
+      border: 1px solid #000;
+      border-radius: 10px;
+      padding: 16px 20px;
+      background: #ffffff;
+    }
+
+    .analytics-card-title {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #555;
+      margin-bottom: 6px;
+    }
+
+    .analytics-card-number {
+      font-size: 28px;
+      font-weight: 800;
+      color: #000;
+    }
+
+    .analytics-card-desc {
+      font-size: 12px;
+      color: #666;
+      margin-top: 4px;
+    }
+
+    /* Footer Styles */
+    .footer {
+      width: 100%;
+      padding: 32px 0;
+      background: #000;
+      color: #fff;
+      margin-top: auto;
+    }
+
+    .footer .container {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 24px;
+    }
+
+    .footer-column {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .footer-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: #fff;
+    }
+
+    .footer-link {
+      display: block;
+      font-size: 14px;
+      color: #ccc;
+      text-decoration: none;
+      margin-bottom: 8px;
+    }
+
+    .footer-link:hover {
+      color: #fff;
+    }
+
+    @media (max-width: 768px) {
+      .header .container {
+        flex-direction: column;
+        gap: 16px;
+      }
+      .navigation {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .dashboard-wrapper {
+        padding: 18px;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="/public/css/ui-polish.css">
+</head>
+<body>
+
+  <!-- Header Section matching LocalLink original -->
+  <div class="header">
+    <div class="container">
+      <a href="/"><img src="/assets/logo.png" alt="LocalLink Logo" class="logo"></a>
+      
+      <div class="navigation">
+        <a href="/" class="nav-pill">Home</a>
+        <a href="/services" class="nav-pill">Services</a>
+        <a href="/community" class="nav-pill">Community</a>
+        <a href="/dashboard" class="nav-pill active">Dashboard</a>
+        <a href="/contact" class="nav-pill">Contact</a>
+      </div>
+      
+      <div class="auth">
+        <a href="/login" class="button" id="signin-btn">Sign in</a>
+        <a href="/signup" class="button" id="register-btn">Register</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dashboard Main Container -->
+  <div class="container">
+    <div class="dashboard-wrapper">
+      
+      <!-- Page Heading consistent with LocalLink -->
+      <div class="dashboard-heading">
+        <h1 id="dashboardMainTitle">Dashboard</h1>
+        <p id="dashboardMainDesc">Unified operations management across Local Services and Community.</p>
+        
+        <div id="userGreetingBox" class="user-greeting-box" style="display: none;">
+          <div class="user-greeting-text">
+            <span>Welcome, <strong id="greetingUserName">User</strong></span>
+            <span id="greetingOrgSpan" style="color: #666; font-size: 13px; margin-left: 8px;"></span>
+          </div>
+          <div>
+            <span id="greetingRoleBadge" class="user-role-badge">CITIZEN</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section Title -->
+      <div class="section-title">
+        <span id="activitySectionTitle">Operational Overview</span>
+        <div id="sectionActionSlot"></div>
+      </div>
+
+      <!-- 1. Customer Activity Grid -->
+      <div class="my-activity-grid" id="customerMetricsGrid">
+        <div class="activity-box active" onclick="switchTab('requests')">
+          <div class="activity-box-title">My Requests</div>
+          <div class="activity-box-count" id="countRequests">0</div>
+        </div>
+        <div class="activity-box" onclick="switchTab('saved')">
+          <div class="activity-box-title">Saved Providers</div>
+          <div class="activity-box-count" id="countSaved">0</div>
+        </div>
+        <div class="activity-box" onclick="switchTab('reported')">
+          <div class="activity-box-title">Reported Issues</div>
+          <div class="activity-box-count" id="countReported">0</div>
+        </div>
+        <div class="activity-box" onclick="switchTab('supported')">
+          <div class="activity-box-title">Supported Issues</div>
+          <div class="activity-box-count" id="countSupported">0</div>
+        </div>
+      </div>
+
+      <!-- 2. Vendor Activity Grid -->
+      <div class="my-activity-grid" id="vendorMetricsGrid" style="display: none;">
+        <div class="activity-box active" onclick="switchTab('vendor-bookings')">
+          <div class="activity-box-title">Pending Inquiries</div>
+          <div class="activity-box-count" id="vCountPending">0</div>
+        </div>
+        <div class="activity-box" onclick="switchTab('vendor-bookings')">
+          <div class="activity-box-title">Accepted Jobs</div>
+          <div class="activity-box-count" id="vCountAccepted">0</div>
+        </div>
+        <div class="activity-box" onclick="switchTab('vendor-bookings')">
+          <div class="activity-box-title">Completed Work</div>
+          <div class="activity-box-count" id="vCountCompleted">0</div>
+        </div>
+        <div class="activity-box" onclick="switchTab('vendor-bookings')">
+          <div class="activity-box-title">Total Requests</div>
+          <div class="activity-box-count" id="vCountTotal">0</div>
+        </div>
+        <div class="activity-box" onclick="switchTab('supported')">
+          <div class="activity-box-title">Supported Issues</div>
+          <div class="activity-box-count" id="vCountSupported">0</div>
+        </div>
+      </div>
+
+      <!-- 3. Government Officer Activity Grid -->
+      <div class="my-activity-grid" id="govMetricsGrid" style="display: none;">
+        <div class="activity-box active" onclick="switchTab('gov-issues')">
+          <div class="activity-box-title">Escalated Civic Issues</div>
+          <div class="activity-box-count" id="govCountEscalated">0</div>
+        </div>
+        <div class="activity-box" onclick="switchTab('gov-issues')">
+          <div class="activity-box-title">Under Review / Active</div>
+          <div class="activity-box-count" id="govCountActive">0</div>
+        </div>
+        <div class="activity-box" onclick="switchTab('gov-issues')">
+          <div class="activity-box-title">Resolved / Closed</div>
+          <div class="activity-box-count" id="govCountResolved">0</div>
+        </div>
+      </div>
+
+      <!-- 5. Platform Admin Metric Grid -->
+      <div class="my-activity-grid" id="adminMetricsGrid" style="display: none;">
+        <div class="activity-box active" onclick="switchTab('admin-analytics')">
+          <div class="activity-box-title">Platform Users</div>
+          <div class="activity-box-count" id="aCountUsers">0</div>
+        </div>
+        <div class="activity-box" onclick="switchTab('admin-analytics')">
+          <div class="activity-box-title">Verified Providers</div>
+          <div class="activity-box-count" id="aCountProviders">0</div>
+        </div>
+        <div class="activity-box" onclick="switchTab('admin-analytics')">
+          <div class="activity-box-title">Civic Issues</div>
+          <div class="activity-box-count" id="aCountIssues">0</div>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs (Role Adjusted) -->
+      <div class="tabs-bar" id="dashboardTabsBar">
+        <!-- Customer Tabs -->
+        <button type="button" class="tab-button active" id="tabBtn-requests" onclick="switchTab('requests')">
+          Service Requests (<span id="badgeRequests">0</span>)
+        </button>
+        <button type="button" class="tab-button" id="tabBtn-saved" onclick="switchTab('saved')">
+          Saved Providers (<span id="badgeSaved">0</span>)
+        </button>
+        <button type="button" class="tab-button" id="tabBtn-reported" onclick="switchTab('reported')">
+          My Civic Reports (<span id="badgeReported">0</span>)
+        </button>
+        <button type="button" class="tab-button" id="tabBtn-supported" onclick="switchTab('supported')">
+          Supported Issues (<span id="badgeSupported">0</span>)
+        </button>
+
+        <!-- Vendor Tabs -->
+        <button type="button" class="tab-button" id="tabBtn-vendor-bookings" onclick="switchTab('vendor-bookings')" style="display: none;">
+          Incoming Bookings (<span id="badgeVendorBookings">0</span>)
+        </button>
+        <button type="button" class="tab-button" id="tabBtn-vendor-profile" onclick="switchTab('vendor-profile')" style="display: none;">
+          Provider Profile &amp; Skills
+        </button>
+
+        <!-- Government Officer Tabs -->
+        <button type="button" class="tab-button" id="tabBtn-gov-issues" onclick="switchTab('gov-issues')" style="display: none;">
+          Civic Issues Review (<span id="badgeGovIssues">0</span>)
+        </button>
+
+        <!-- Platform Admin Tabs -->
+        <button type="button" class="tab-button" id="tabBtn-admin-analytics" onclick="switchTab('admin-analytics')" style="display: none;">
+          Platform Analytics
+        </button>
+        <button type="button" class="tab-button" id="tabBtn-admin-users" onclick="switchTab('admin-users')" style="display: none;">
+          Users &amp; Roles
+        </button>
+        <button type="button" class="tab-button" id="tabBtn-admin-vendors" onclick="switchTab('admin-vendors')" style="display: none;">
+          Vendor Verification
+        </button>
+
+        <!-- Common Tab -->
+        <button type="button" class="tab-button" id="tabBtn-activity" onclick="switchTab('activity')">
+          Recent Activity
+        </button>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- TAB PANES -->
+      <!-- ============================================== -->
+
+      <!-- 1. Customer: Service Requests Pane -->
+      <div id="pane-requests" class="tab-pane active">
+        <div id="requestsContainer" class="cards-grid"></div>
+        <div id="requestsEmpty" class="empty-state-box" style="display: none;">
+          <h3>No service requests yet.</h3>
+          <p>Book verified electricians, plumbers, or carpenters to manage appointments right here.</p>
+          <a href="/services" class="button">Find Service Providers</a>
+        </div>
+      </div>
+
+      <!-- 2. Customer: Saved Providers Pane -->
+      <div id="pane-saved" class="tab-pane">
+        <div id="savedContainer" class="cards-grid"></div>
+        <div id="savedEmpty" class="empty-state-box" style="display: none;">
+          <h3>No saved providers.</h3>
+          <p>Bookmark trusted local service providers for rapid access whenever repairs are required.</p>
+          <a href="/services" class="button">Browse Directory</a>
+        </div>
+      </div>
+
+      <!-- 3. Customer: Reported Issues Pane -->
+      <div id="pane-reported" class="tab-pane">
+        <div id="reportedContainer" class="cards-grid"></div>
+        <div id="reportedEmpty" class="empty-state-box" style="display: none;">
+          <h3>No civic issues reported yet.</h3>
+          <p>Spotted a road hazard, broken pipeline, or power outage? Report it with photographic evidence.</p>
+          <a href="/community" class="button">Report Civic Issue</a>
+        </div>
+      </div>
+
+      <!-- 4. Customer: Supported Issues Pane -->
+      <div id="pane-supported" class="tab-pane">
+        <div id="supportedContainer" class="cards-grid"></div>
+        <div id="supportedEmpty" class="empty-state-box" style="display: none;">
+          <h3>No supported issues yet.</h3>
+          <p>Support community reports to help collective concerns reach the municipal threshold.</p>
+          <a href="/community" class="button">Explore Community Issues</a>
+        </div>
+      </div>
+
+      <!-- 5. Vendor: Incoming Bookings Pane -->
+      <div id="pane-vendor-bookings" class="tab-pane">
+        <div id="vendorBookingsContainer" class="cards-grid"></div>
+        <div id="vendorBookingsEmpty" class="empty-state-box" style="display: none;">
+          <h3>No incoming bookings yet.</h3>
+          <p>When customers in your operating radius request service, booking inquiries will appear here.</p>
+        </div>
+      </div>
+
+      <!-- 6. Vendor: Profile & Skills Pane -->
+      <div id="pane-vendor-profile" class="tab-pane">
+        <div id="vendorProfileDetails" style="border: 1px solid #000; border-radius: 12px; padding: 24px; background: #fff;"></div>
+      </div>
+
+      <!-- 7. Government Officer: Civic Issues Review Pane -->
+      <div id="pane-gov-issues" class="tab-pane">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;" id="govStatusFilters">
+            <button type="button" class="btn-action-primary" style="flex: none;" onclick="filterGovIssues('all')">All Issues</button>
+            <button type="button" class="btn-action-outline" style="flex: none;" onclick="filterGovIssues('escalated')">Escalated</button>
+            <button type="button" class="btn-action-outline" style="flex: none;" onclick="filterGovIssues('under review')">Under Review</button>
+            <button type="button" class="btn-action-outline" style="flex: none;" onclick="filterGovIssues('verified')">Verified</button>
+            <button type="button" class="btn-action-outline" style="flex: none;" onclick="filterGovIssues('in progress')">In Progress</button>
+            <button type="button" class="btn-action-outline" style="flex: none;" onclick="filterGovIssues('resolved')">Resolved</button>
+            <button type="button" class="btn-action-outline" style="flex: none;" onclick="filterGovIssues('closed')">Closed</button>
+          </div>
+        </div>
+        <div id="govIssuesContainer" class="cards-grid"></div>
+        <div id="govIssuesEmpty" class="empty-state-box" style="display: none;">
+          <h3>No civic issues in this category.</h3>
+          <p>No community reports currently match the selected status filter.</p>
+        </div>
+      </div>
+
+      <!-- 11. Platform Admin: Analytics Pane -->
+      <div id="pane-admin-analytics" class="tab-pane">
+        <div id="adminAnalyticsContainer"></div>
+      </div>
+
+      <!-- 12. Platform Admin: Users Management Pane -->
+      <div id="pane-admin-users" class="tab-pane">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
+          <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+            <input type="text" id="adminUserSearch" class="form-control" placeholder="Search by name, email, phone..." style="width: 260px;" oninput="filterAdminUsers()">
+            <select id="adminUserRoleFilter" class="form-control" style="width: 180px;" onchange="filterAdminUsers()">
+              <option value="all">All Roles</option>
+              <option value="customer">Citizen / Customer</option>
+              <option value="vendor">Vendor / Provider</option>
+              <option value="government_officer">Government Officer</option>
+              <option value="admin">Platform Admin</option>
+            </select>
+          </div>
+          <button type="button" class="button" onclick="openAdminOfficerModal()" style="padding: 8px 16px; font-size: 14px; background: #000; color: #fff;">+ Provision Gov Officer</button>
+        </div>
+        <div class="data-table-wrap">
+          <table class="data-table" id="adminUsersTable">
+            <thead>
+              <tr>
+                <th>User Details</th>
+                <th>Role</th>
+                <th>Organization / Dept</th>
+                <th>Status</th>
+                <th>Registered</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="adminUsersTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 13. Platform Admin: Vendors Verification Pane -->
+      <div id="pane-admin-vendors" class="tab-pane">
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Provider</th>
+                <th>Profession</th>
+                <th>Location</th>
+                <th>Hourly Rate</th>
+                <th>Verification</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="adminVendorsTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 14. Common: Recent Activity Pane -->
+      <div id="pane-activity" class="tab-pane">
+        <div id="activityContainer" style="border: 1px solid #000; border-radius: 12px; padding: 20px; background: #fff;"></div>
+        <div id="activityEmpty" class="empty-state-box" style="display: none;">
+          <h3>No recent events.</h3>
+          <p>Your platform interactions will record here in chronological order.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================== -->
+  <!-- MODALS -->
+  <!-- ============================================== -->
+
+  <!-- Modal 1: Government Civic Issue Review & Status Update -->
+  <div id="govIssueModal" class="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2>Civic Issue Review &amp; Status Update</h2>
+        <button type="button" class="modal-close-btn" onclick="closeModal('govIssueModal')">&times;</button>
+      </div>
+      <div id="govIssueModalBody">
+        <div id="govIssueImageWrap" style="margin-bottom: 14px; text-align: center;">
+          <img id="govIssueImg" src="" alt="Evidence" style="max-height: 180px; max-width: 100%; border: 1px solid #000; border-radius: 8px; object-fit: cover;">
+        </div>
+        <h3 id="govIssueTitle" style="margin: 0 0 6px 0; font-size: 18px;"></h3>
+        <p id="govIssueMeta" style="font-size: 13px; color: #555; margin-bottom: 14px;"></p>
+        <p id="govIssueDesc" style="font-size: 14px; color: #222; background: #f9f9f9; padding: 12px; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 16px;"></p>
+
+        <form id="govIssueForm" onsubmit="submitGovIssueStatus(event)">
+          <input type="hidden" id="govIssueId">
+          <div class="form-group">
+            <label for="govIssueStatusSelect">Advance Lifecycle Status *</label>
+            <select id="govIssueStatusSelect" class="form-control" required>
+              <option value="Community Voting">Community Voting</option>
+              <option value="Escalated">Escalated to Municipality</option>
+              <option value="Under Review">Under Review (Officer Assigned)</option>
+              <option value="Verified">Verified On-Site</option>
+              <option value="In Progress">In Progress (Work Order Issued)</option>
+              <option value="Resolved">Resolved (Works Completed)</option>
+              <option value="Closed">Closed &amp; Archived</option>
+              <option value="Rejected / Invalid">Rejected / Invalid Report</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="govIssueNotes">Official Inspection / Action Notes *</label>
+            <textarea id="govIssueNotes" class="form-control" rows="3" placeholder="Provide municipal inspection findings, team assignment, or completion details..." required></textarea>
+          </div>
+
+          <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+            <button type="button" class="btn-action-outline" onclick="closeModal('govIssueModal')">Cancel</button>
+            <button type="submit" class="button" style="padding: 10px 18px; font-size: 14px; background: #000; color: #fff;">Save Status</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 4: Platform Admin Provision Government Officer -->
+  <div id="adminOfficerModal" class="modal-backdrop">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2>Provision Government Officer Account</h2>
+        <button type="button" class="modal-close-btn" onclick="closeModal('adminOfficerModal')">&times;</button>
+      </div>
+      <p style="font-size: 13px; color: #555; margin-top: -6px; margin-bottom: 16px;">
+        Government accounts are controlled through administrative assignment. Platform Admin does not conduct government operations.
+      </p>
+      <form id="adminOfficerForm" onsubmit="submitAdminOfficer(event)">
+        <div class="form-group">
+          <label for="offName">Officer Full Name *</label>
+          <input type="text" id="offName" class="form-control" placeholder="e.g. Ramesh Verma" required>
+        </div>
+        <div class="form-group">
+          <label for="offEmail">Official Gov Email *</label>
+          <input type="email" id="offEmail" class="form-control" placeholder="e.g. ramesh.verma@mcd.gov.in" required>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-group">
+            <label for="offPhone">Direct Contact *</label>
+            <input type="tel" id="offPhone" class="form-control" placeholder="9871100223" required>
+          </div>
+          <div class="form-group">
+            <label for="offPassword">Initial Password *</label>
+            <input type="password" id="offPassword" class="form-control" placeholder="GovOfficer@123" minlength="6" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="offOrg">Government Body / Authority *</label>
+          <input type="text" id="offOrg" class="form-control" placeholder="e.g. Municipal Corporation of Delhi (MCD)" required>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-group">
+            <label for="offDept">Division / Department *</label>
+            <input type="text" id="offDept" class="form-control" placeholder="e.g. Public Works & Sanitation" required>
+          </div>
+          <div class="form-group">
+            <label for="offDesignation">Official Designation *</label>
+            <input type="text" id="offDesignation" class="form-control" placeholder="e.g. Senior Civic Inspector" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Assigned Operational Permissions *</label>
+          <div style="display: flex; gap: 16px; margin-top: 6px;">
+            <label style="font-weight: 500; font-size: 13px; display: inline-flex; align-items: center; gap: 6px;">
+              <input type="checkbox" id="permCivic" value="CIVIC_OFFICER" checked> Civic Officer (Review &amp; Status)
+            </label>
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-group">
+            <label for="offState">State Jurisdiction *</label>
+            <input type="text" id="offState" class="form-control" placeholder="Delhi" required>
+          </div>
+          <div class="form-group">
+            <label for="offCity">City / Municipality *</label>
+            <input type="text" id="offCity" class="form-control" placeholder="Delhi" required>
+          </div>
+        </div>
+        <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+          <button type="button" class="btn-action-outline" onclick="closeModal('adminOfficerModal')">Cancel</button>
+          <button type="submit" class="button" style="padding: 10px 18px; font-size: 14px; background: #000; color: #fff;">Provision Officer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Footer matching LocalLink original -->
+  <div class="footer" id="resources">
+    <div class="container">
+      <div class="footer-column">
+        <div class="footer-title">LocalLink</div>
+        <p style="color: #ccc; font-size: 13px; line-height: 1.5; margin-bottom: 12px;">Unified local services and community issue resolution platform.</p>
+      </div>
+
+      <div class="footer-column">
+        <div class="footer-title">Community</div>
+        <a href="/community" class="footer-link">Civic Issues Tracker</a>
+        <a href="/community" class="footer-link">Neighborhood Escalations</a>
+      </div>
+
+      <div class="footer-column">
+        <div class="footer-title">Local Services</div>
+        <a href="/services" class="footer-link">Electricians</a>
+        <a href="/services" class="footer-link">Plumbers</a>
+        <a href="/services" class="footer-link">Carpenters</a>
+      </div>
+
+      <div class="footer-column">
+        <div class="footer-title">Account &amp; Support</div>
+        <a href="/dashboard" class="footer-link">Operations Dashboard</a>
+        <a href="/contact" class="footer-link">Contact</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="/public/js/locallink.js"></script>
+  <script>
+    // State storage keys
+    const STORAGE_SAVED = 'locallink_saved_providers';
+    const STORAGE_SUPPORTED = 'locallink_supported_issues';
+    const STORAGE_REPORTED = 'locallink_reported_issues';
+
+    let currentUser = null;
+    let allProviders = [];
+    let allIssues = [];
+    let userRequests = [];
+    let userApplications = [];
+    let savedIds = [];
+    let supportedIds = [];
+    let reportedIds = [];
+
+    // Government data
+    let govIssues = [];
+
+    // Admin data
+    let adminUsers = [];
+    let adminStats = null;
+
+    // Tab switcher
+    window.switchTab = function(tabId) {
+      document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
+      document.querySelectorAll('.activity-box').forEach(box => box.classList.remove('active'));
+
+      const activeBtn = document.getElementById(`tabBtn-${tabId}`);
+      const activePane = document.getElementById(`pane-${tabId}`);
+      if (activeBtn) activeBtn.classList.add('active');
+      if (activePane) activePane.classList.add('active');
+    };
+
+    // Modal Helpers
+    window.openModal = function(id) {
+      const m = document.getElementById(id);
+      if (m) m.classList.add('open');
+    };
+
+    window.closeModal = function(id) {
+      const m = document.getElementById(id);
+      if (m) m.classList.remove('open');
+    };
+
+    // Setup Role UI
+    function setupRoleUI(user) {
+      currentUser = user;
+      const role = (user.role || 'customer').toLowerCase();
+
+      const greetingBox = document.getElementById('userGreetingBox');
+      const greetingName = document.getElementById('greetingUserName');
+      const greetingRole = document.getElementById('greetingRoleBadge');
+      const greetingOrg = document.getElementById('greetingOrgSpan');
+
+      if (greetingBox) {
+        greetingBox.style.display = 'flex';
+        greetingName.textContent = user.name || user.email;
+        let roleLabel = role.toUpperCase();
+        if (role === 'customer') roleLabel = 'CITIZEN';
+        if (role === 'vendor') roleLabel = 'SERVICE PROVIDER';
+        if (role === 'government_officer') roleLabel = 'GOVERNMENT OFFICER';
+        if (role === 'admin') roleLabel = 'PLATFORM ADMIN';
+        greetingRole.textContent = roleLabel;
+
+        if (user.organization || user.department) {
+          greetingOrg.textContent = `• ${user.organization || user.department}`;
+        } else if (user.company) {
+          greetingOrg.textContent = `• ${user.company}`;
+        }
+      }
+
+      // Hide all grids and role-specific tabs first
+      ['customerMetricsGrid', 'vendorMetricsGrid', 'govMetricsGrid', 'adminMetricsGrid'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+      });
+
+      // Role Routing
+      if (role === 'government_officer') {
+        document.getElementById('govMetricsGrid').style.display = 'grid';
+        document.getElementById('dashboardMainTitle').textContent = 'Government Operations Dashboard';
+        document.getElementById('dashboardMainDesc').textContent = 'Review escalated community reports and manage civic issue resolution.';
+
+        // Show Gov Tabs
+        document.getElementById('tabBtn-gov-issues').style.display = 'inline-block';
+
+        // Hide Customer Tabs
+        ['tabBtn-requests', 'tabBtn-saved', 'tabBtn-reported', 'tabBtn-supported'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.style.display = 'none';
+        });
+
+        switchTab('gov-issues');
+        loadGovData();
+      } else if (role === 'vendor') {
+        document.getElementById('vendorMetricsGrid').style.display = 'grid';
+        document.getElementById('dashboardMainTitle').textContent = 'Service Provider Dashboard';
+        document.getElementById('dashboardMainDesc').textContent = 'Manage incoming customer booking inquiries, accepted work orders, and service profile.';
+
+        // Show Vendor Tabs
+        document.getElementById('tabBtn-vendor-bookings').style.display = 'inline-block';
+        document.getElementById('tabBtn-vendor-profile').style.display = 'inline-block';
+        document.getElementById('tabBtn-supported').style.display = 'inline-block';
+
+        // Hide Customer Tabs
+        ['tabBtn-requests', 'tabBtn-saved', 'tabBtn-reported'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.style.display = 'none';
+        });
+
+        switchTab('vendor-bookings');
+        loadVendorData();} else if (role === 'admin' || role === 'platform_admin') {
+        document.getElementById('adminMetricsGrid').style.display = 'grid';
+        document.getElementById('dashboardMainTitle').textContent = 'Platform Administration';
+        document.getElementById('dashboardMainDesc').textContent = 'LocalLink platform-wide analytics, user authorization, and vendor directory oversight.';
+
+        // Show Admin Tabs
+        document.getElementById('tabBtn-admin-analytics').style.display = 'inline-block';
+        document.getElementById('tabBtn-admin-users').style.display = 'inline-block';
+        document.getElementById('tabBtn-admin-vendors').style.display = 'inline-block';
+
+        // Hide Customer Tabs
+        ['tabBtn-requests', 'tabBtn-saved', 'tabBtn-reported', 'tabBtn-supported'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.style.display = 'none';
+        });
+
+        switchTab('admin-analytics');
+        loadAdminData();
+      } else {
+        // Customer default
+        document.getElementById('customerMetricsGrid').style.display = 'grid';
+        switchTab('requests');
+        loadCustomerData();
+      }
+    }
+
+    // Initialize Dashboard
+    async function initDashboard() {
+      try {
+        const meRes = await fetch('/api/auth/me');
+        if (!meRes.ok) {
+          localStorage.removeItem('locallink_user');
+          window.location.href = '/login';
+          return;
+        }
+
+        const meData = await meRes.json();
+        if (!meData.success || !meData.data || !meData.data.user) {
+          localStorage.removeItem('locallink_user');
+          window.location.href = '/login';
+          return;
+        }
+
+        const user = meData.data.user;
+        localStorage.setItem('locallink_user', JSON.stringify(user));
+
+        const role = String(user.role || '').toLowerCase();
+        if (role === 'admin' || role === 'platform_admin') {
+          window.location.replace('/admin');
+          return;
+        }
+
+        // Baseline global catalog
+        const [pRes, iRes] = await Promise.all([
+          fetch('/api/providers').then(r => r.json()).catch(() => ({ data: [] })),
+          fetch('/api/issues').then(r => r.json()).catch(() => ({ data: [] }))
+        ]);
+
+        allProviders = pRes.data || [];
+        allIssues = iRes.data || [];
+
+        loadUserStorage();
+        setupRoleUI(user);
+      } catch (err) {
+        console.error('Error init dashboard:', err);
+        window.location.href = '/login';
+      }
+    }
+
+    function loadUserStorage() {
+      try { savedIds = JSON.parse(localStorage.getItem(STORAGE_SAVED) || '[]'); } catch(e) { savedIds = []; }
+      // Server voter records are authoritative; browser storage is only a UI cache.
+      supportedIds = [];
+      try { reportedIds = JSON.parse(localStorage.getItem(STORAGE_REPORTED) || '[]'); } catch(e) { reportedIds = []; }
+    }
+
+    // ==========================================
+    // 1. CUSTOMER LOGIC
+    // ==========================================
+    async function loadCustomerData() {
+      try {
+        const res = await fetch('/api/requests');
+        const json = await res.json();
+        if (json.success && Array.isArray(json.data)) {
+          userRequests = json.data;
+        }
+      } catch (e) {}
+
+      try {
+        const sRes = await fetch('/api/user/saved-providers');
+        const sJson = await sRes.json();
+        if (sJson.success && Array.isArray(sJson.data)) {
+          const serverSaved = sJson.data.map(p => p.id);
+          savedIds = Array.from(new Set([...savedIds, ...serverSaved]));
+          localStorage.setItem(STORAGE_SAVED, JSON.stringify(savedIds));
+        }
+      } catch (e) {}
+
+      try {
+        const supportedRes = await fetch('/api/issues-supported/me');
+        const supportedJson = await supportedRes.json();
+        if (supportedJson.success && Array.isArray(supportedJson.data)) {
+          supportedIds = supportedJson.data;
+          localStorage.setItem(STORAGE_SUPPORTED, JSON.stringify(supportedIds));
+        }
+      } catch (e) {}
+
+      updateCustomerCounters();
+      renderCustomerRequests();
+      renderCustomerSaved();
+      renderCustomerReported();
+      renderCustomerSupported();
+      renderRecentActivity();
+    }
+
+    function updateCustomerCounters() {
+      const elReq = document.getElementById('countRequests');
+      const badgeReq = document.getElementById('badgeRequests');
+      if (elReq) elReq.textContent = userRequests.length;
+      if (badgeReq) badgeReq.textContent = userRequests.length;
+
+      const elSav = document.getElementById('countSaved');
+      const badgeSav = document.getElementById('badgeSaved');
+      if (elSav) elSav.textContent = savedIds.length;
+      if (badgeSav) badgeSav.textContent = savedIds.length;
+
+      // Filter reported by user ID or stored IDs
+      const userReported = allIssues.filter(i => i.reportedBy === currentUser.id || reportedIds.includes(i.id));
+      const elRep = document.getElementById('countReported');
+      const badgeRep = document.getElementById('badgeReported');
+      if (elRep) elRep.textContent = userReported.length;
+      if (badgeRep) badgeRep.textContent = userReported.length;
+
+      const elSup = document.getElementById('countSupported');
+      const badgeSup = document.getElementById('badgeSupported');
+      const vendorSup = document.getElementById('vCountSupported');
+      if (elSup) elSup.textContent = supportedIds.length;
+      if (badgeSup) badgeSup.textContent = supportedIds.length;
+      if (vendorSup) vendorSup.textContent = supportedIds.length;
+    }
+
+    function renderCustomerRequests() {
+      const container = document.getElementById('requestsContainer');
+      const empty = document.getElementById('requestsEmpty');
+      if (!container || !empty) return;
+
+      if (!userRequests || userRequests.length === 0) {
+        container.style.display = 'none';
+        empty.style.display = 'block';
+        return;
+      }
+
+      container.style.display = 'grid';
+      empty.style.display = 'none';
+      container.innerHTML = '';
+
+      userRequests.forEach(req => {
+        const card = document.createElement('div');
+        card.className = 'card-item';
+        const canCancel = (req.status || '').toLowerCase() === 'pending';
+
+        card.innerHTML = `
+          <div>
+            <div class="card-header-row">
+              <h3 class="card-title">${req.providerName || 'LocalLink Provider'}</h3>
+              <span class="badge ${req.status === 'Accepted' ? 'badge-status' : ''}">${req.status || 'Pending'}</span>
+            </div>
+            <p class="card-meta">
+              Service: <strong>${req.service}</strong><br>
+              Scheduled: ${req.preferredDate} (${req.preferredTime})<br>
+              Booked: ${new Date(req.createdAt).toLocaleDateString()}
+            </p>
+            ${req.message ? `<p style="font-size: 13px; color: #444; background: #fafafa; padding: 8px; border-radius: 6px; border: 1px solid #eee;">"${req.message}"</p>` : ''}
+          </div>
+          <div class="card-actions-row">
+            <a href="/profile/${encodeURIComponent(req.providerId)}" class="btn-action-primary">View Provider</a>
+            ${canCancel ? `<button type="button" class="btn-action-outline" onclick="cancelServiceRequest('${req.id}')">Cancel Request</button>` : ''}
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    window.cancelServiceRequest = async function(requestId) {
+      if (!confirm('Are you sure you want to cancel this pending service request?')) return;
+      try {
+        const res = await fetch(`/api/requests/${requestId}/status`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: 'Cancelled' })
+        });
+        const json = await res.json();
+        if (json.success) {
+          window.showToast('Request cancelled successfully');
+          loadCustomerData();
+        } else {
+          alert(json.message || 'Failed to cancel request');
+        }
+      } catch (e) {
+        alert('Communication error while cancelling request');
+      }
+    };
+
+    function renderCustomerSaved() {
+      const container = document.getElementById('savedContainer');
+      const empty = document.getElementById('savedEmpty');
+      if (!container || !empty) return;
+
+      const list = allProviders.filter(p => savedIds.includes(p.id));
+      if (list.length === 0) {
+        container.style.display = 'none';
+        empty.style.display = 'block';
+        return;
+      }
+
+      container.style.display = 'grid';
+      empty.style.display = 'none';
+      container.innerHTML = '';
+
+      list.forEach(p => {
+        const card = document.createElement('div');
+        card.className = 'card-item';
+        card.innerHTML = `
+          <div>
+            <div class="card-header-row">
+              <h3 class="card-title">${p.name}</h3>
+              <span class="badge">${p.profession}</span>
+            </div>
+            <p class="card-meta">
+              📍 ${p.city || p.location}, ${p.state || 'Delhi'}<br>
+              ⭐ ${p.rating} &bull; Rate: <strong>₹${p.hourlyRate}/hr</strong>
+            </p>
+          </div>
+          <div class="card-actions-row">
+            <a href="/profile/${encodeURIComponent(p.id)}" class="btn-action-primary">Book Now</a>
+            <button type="button" class="btn-action-outline" onclick="removeSaved('${p.id}')">Remove</button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    window.removeSaved = async function(id) {
+      savedIds = savedIds.filter(x => x !== id);
+      localStorage.setItem(STORAGE_SAVED, JSON.stringify(savedIds));
+      try {
+        await fetch(`/api/user/saved-providers/${encodeURIComponent(id)}`, { method: 'DELETE' });
+      } catch(e) {}
+      updateCustomerCounters();
+      renderCustomerSaved();
+    };
+
+    function renderCustomerReported() {
+      const container = document.getElementById('reportedContainer');
+      const empty = document.getElementById('reportedEmpty');
+      if (!container || !empty) return;
+
+      const list = allIssues.filter(i => i.reportedBy === currentUser.id || reportedIds.includes(i.id));
+      if (list.length === 0) {
+        container.style.display = 'none';
+        empty.style.display = 'block';
+        return;
+      }
+
+      container.style.display = 'grid';
+      empty.style.display = 'none';
+      container.innerHTML = '';
+
+      list.forEach(i => {
+        const card = document.createElement('div');
+        card.className = 'card-item';
+        card.innerHTML = `
+          <div>
+            <div class="card-header-row">
+              <h3 class="card-title">${i.title}</h3>
+              <span class="badge badge-status">${i.status || 'Community Voting'}</span>
+            </div>
+            <p class="card-meta">
+              Category: <strong>${i.category}</strong><br>
+              📍 ${i.location?.city || i.city || 'Delhi'}, ${i.location?.state || i.state || 'Delhi'}<br>
+              👍 Support Votes: <strong>${i.upvotes || 1}</strong> &bull; Reported: ${new Date(i.createdAt).toLocaleDateString()}
+            </p>
+          </div>
+          <div class="card-actions-row">
+            <a href="/issue/${encodeURIComponent(i.id)}" class="btn-action-primary">View Details</a>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function renderCustomerSupported() {
+      const container = document.getElementById('supportedContainer');
+      const empty = document.getElementById('supportedEmpty');
+      if (!container || !empty) return;
+
+      const list = allIssues.filter(i => supportedIds.includes(i.id));
+      if (list.length === 0) {
+        container.style.display = 'none';
+        empty.style.display = 'block';
+        return;
+      }
+
+      container.style.display = 'grid';
+      empty.style.display = 'none';
+      container.innerHTML = '';
+
+      list.forEach(i => {
+        const card = document.createElement('div');
+        card.className = 'card-item';
+        card.innerHTML = `
+          <div>
+            <div class="card-header-row">
+              <h3 class="card-title">${i.title}</h3>
+              <span class="badge">${i.category}</span>
+            </div>
+            <p class="card-meta">
+              📍 ${i.location?.city || i.city || 'Delhi'}, ${i.location?.state || i.state || 'Delhi'}<br>
+              Status: <strong>${i.status || 'Active Community Voting'}</strong> &bull; Votes: <strong>${i.upvotes || 1}</strong>
+            </p>
+          </div>
+          <div class="card-actions-row">
+            <a href="/issue/${encodeURIComponent(i.id)}" class="btn-action-primary">View Details</a>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // ==========================================
+    // 2. VENDOR LOGIC
+    // ==========================================
+    async function loadVendorData() {
+      try {
+        const res = await fetch('/api/requests');
+        const json = await res.json();
+        if (json.success && Array.isArray(json.data)) {
+          userRequests = json.data;
+          renderVendorBookings();
+        }
+      } catch (e) {}
+
+      supportedIds = [];
+      try {
+        const supportedRes = await fetch('/api/issues-supported/me');
+        const supportedJson = await supportedRes.json();
+        if (supportedJson.success && Array.isArray(supportedJson.data)) {
+          supportedIds = supportedJson.data;
+          localStorage.setItem(STORAGE_SUPPORTED, JSON.stringify(supportedIds));
+        }
+      } catch (e) {}
+
+      updateCustomerCounters();
+      renderCustomerSupported();
+      renderVendorProfile();
+      renderRecentActivity();
+    }
+
+    function renderVendorBookings() {
+      const container = document.getElementById('vendorBookingsContainer');
+      const empty = document.getElementById('vendorBookingsEmpty');
+      if (!container || !empty) return;
+
+      const pending = userRequests.filter(r => (r.status || '').toLowerCase() === 'pending').length;
+      const accepted = userRequests.filter(r => (r.status || '').toLowerCase() === 'accepted').length;
+      const completed = userRequests.filter(r => (r.status || '').toLowerCase() === 'completed').length;
+
+      document.getElementById('vCountPending').textContent = pending;
+      document.getElementById('vCountAccepted').textContent = accepted;
+      document.getElementById('vCountCompleted').textContent = completed;
+      document.getElementById('vCountTotal').textContent = userRequests.length;
+      document.getElementById('badgeVendorBookings').textContent = userRequests.length;
+
+      if (!userRequests || userRequests.length === 0) {
+        container.style.display = 'none';
+        empty.style.display = 'block';
+        return;
+      }
+
+      container.style.display = 'grid';
+      empty.style.display = 'none';
+      container.innerHTML = '';
+
+      userRequests.forEach(req => {
+        const card = document.createElement('div');
+        card.className = 'card-item';
+        const isPending = (req.status || '').toLowerCase() === 'pending';
+        const isAccepted = (req.status || '').toLowerCase() === 'accepted';
+
+        card.innerHTML = `
+          <div>
+            <div class="card-header-row">
+              <h3 class="card-title">${req.clientName || req.customerName || 'Customer'}</h3>
+              <span class="badge ${req.status === 'Accepted' ? 'badge-status' : ''}">${req.status || 'Pending'}</span>
+            </div>
+            <p class="card-meta">
+              Service: <strong>${req.service}</strong><br>
+              Requested Date: <strong>${req.preferredDate} (${req.preferredTime})</strong><br>
+              Customer Contact: <strong>${req.clientContact || req.customerContact || 'Direct Contact'}</strong><br>
+              Booked: ${new Date(req.createdAt).toLocaleDateString()}
+            </p>
+            ${req.message ? `<p style="font-size: 13px; color: #333; background: #f9f9f9; padding: 10px; border-radius: 8px; border: 1px solid #ddd;">"${req.message}"</p>` : ''}
+          </div>
+          <div class="card-actions-row">
+            ${isPending ? `
+              <button type="button" class="btn-action-primary" onclick="vendorUpdateJob('${req.id}', 'Accepted')">Accept Job</button>
+              <button type="button" class="btn-action-outline" onclick="vendorUpdateJob('${req.id}', 'Rejected')">Decline</button>
+            ` : ''}
+            ${isAccepted ? `
+              <button type="button" class="btn-action-primary" onclick="vendorUpdateJob('${req.id}', 'Completed')">Mark Completed</button>
+            ` : ''}
+            ${(!isPending && !isAccepted) ? `<span style="font-size: 12px; color: #666; padding: 6px 0;">Work Order Finished</span>` : ''}
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    window.vendorUpdateJob = async function(requestId, newStatus) {
+      try {
+        const res = await fetch(`/api/requests/${requestId}/status`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: newStatus })
+        });
+        const json = await res.json();
+        if (json.success) {
+          window.showToast(`Work order marked as ${newStatus}`);
+          loadVendorData();
+        } else {
+          alert(json.message || 'Update failed');
+        }
+      } catch (e) {
+        alert('Server communication error');
+      }
+    };
+
+    function renderVendorProfile() {
+      const container = document.getElementById('vendorProfileDetails');
+      if (!container || !currentUser) return;
+
+      container.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+          <div>
+            <h2 style="margin: 0 0 6px 0; font-size: 22px;">${currentUser.businessName || currentUser.name}</h2>
+            <p style="margin: 0; font-size: 14px; color: #555;">${currentUser.profession || 'Specialist Provider'} &bull; ${currentUser.location?.city || 'Delhi'}, ${currentUser.location?.state || 'Delhi'}</p>
+          </div>
+          <div>
+            <span class="badge ${currentUser.verified ? 'badge-status' : ''}" style="padding: 6px 12px; font-size: 13px;">
+              ${currentUser.verified ? '✓ Verified Provider' : 'Pending Administrative Verification'}
+            </span>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 20px;">
+          <div style="border: 1px solid #000; padding: 14px; border-radius: 8px;">
+            <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #666;">Standard Hourly Rate</div>
+            <div style="font-size: 20px; font-weight: 700; margin-top: 4px;">₹${currentUser.hourlyRate || 300}/hr</div>
+          </div>
+          <div style="border: 1px solid #000; padding: 14px; border-radius: 8px;">
+            <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #666;">Availability Status</div>
+            <div style="font-size: 20px; font-weight: 700; margin-top: 4px;">${currentUser.availability || 'Available Today'}</div>
+          </div>
+          <div style="border: 1px solid #000; padding: 14px; border-radius: 8px;">
+            <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #666;">Direct Phone</div>
+            <div style="font-size: 16px; font-weight: 700; margin-top: 8px;">${currentUser.phone || 'Provided upon booking'}</div>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+          <h4 style="margin: 0 0 8px 0; font-size: 14px;">Certified Skills &amp; Services</h4>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            ${(currentUser.skills || [currentUser.profession || 'General Repairs']).map(s => `<span class="badge">${s}</span>`).join('')}
+          </div>
+        </div>
+
+        <div>
+          <a href="/profile/${encodeURIComponent(currentUser.id)}" class="btn-action-primary" style="display: inline-block; padding: 10px 18px;">Preview Public Profile</a>
+        </div>
+      `;
+    }
+
+    // ==========================================
+    // 3. GOVERNMENT OFFICER LOGIC
+    // ==========================================
+    async function loadGovData() {
+      try {
+        const [statsRes, issuesRes] = await Promise.all([
+          fetch('/api/gov/stats').then(r => r.json()).catch(() => ({ data: {} })),
+          fetch('/api/gov/issues').then(r => r.json()).catch(() => ({ data: [] }))
+        ]);
+
+        if (statsRes.success && statsRes.data) {
+          const c = statsRes.data.civic || {};
+          document.getElementById('govCountEscalated').textContent = c.escalated || 0;
+          document.getElementById('govCountActive').textContent = (c.underReview || 0) + (c.inProgress || 0);
+          document.getElementById('govCountResolved').textContent = (c.resolved || 0) + (c.closed || 0);
+        }
+
+        govIssues = issuesRes.data || [];
+
+        document.getElementById('badgeGovIssues').textContent = govIssues.length;
+
+        renderGovIssues(govIssues);
+      } catch (e) {
+        console.error('Failed to load gov data:', e);
+      }
+    }
+
+    window.filterGovIssues = function(statusFilter) {
+      if (statusFilter === 'all') {
+        renderGovIssues(govIssues);
+      } else {
+        const filtered = govIssues.filter(i => {
+          const s = (i.status || '').toLowerCase();
+          if (statusFilter === 'escalated') return i.escalated || s.includes('escalat');
+          return s.includes(statusFilter.toLowerCase());
+        });
+        renderGovIssues(filtered);
+      }
+    };
+
+    function renderGovIssues(list) {
+      const container = document.getElementById('govIssuesContainer');
+      const empty = document.getElementById('govIssuesEmpty');
+      if (!container || !empty) return;
+
+      if (!list || list.length === 0) {
+        container.style.display = 'none';
+        empty.style.display = 'block';
+        return;
+      }
+
+      container.style.display = 'grid';
+      empty.style.display = 'none';
+      container.innerHTML = '';
+
+      list.forEach(i => {
+        const card = document.createElement('div');
+        card.className = 'card-item';
+        card.innerHTML = `
+          <div>
+            <div class="card-header-row">
+              <h3 class="card-title">${i.title}</h3>
+              <span class="badge ${i.escalated ? 'badge-status' : ''}">${i.status || 'Community Voting'}</span>
+            </div>
+            <p class="card-meta">
+              Category: <strong>${i.category}</strong><br>
+              📍 ${i.location?.city || i.city || 'Delhi'}, ${i.location?.state || i.state || 'Delhi'}<br>
+              👍 Support Votes: <strong>${i.upvotes || 0}</strong> &bull; Reporter: ${i.reporterName || 'Citizen'}
+            </p>
+            ${i.imageUrl ? `<img src="${i.imageUrl}" alt="Photo Evidence" style="width: 100%; height: 120px; object-fit: cover; border-radius: 6px; border: 1px solid #000; margin-bottom: 12px;">` : ''}
+          </div>
+          <div class="card-actions-row">
+            <button type="button" class="btn-action-primary" onclick="openGovIssueModal('${i.id}')">Review &amp; Action</button>
+            <a href="/community" class="btn-action-outline">Open in Community</a>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    window.openGovIssueModal = function(id) {
+      const issue = govIssues.find(x => x.id === id) || allIssues.find(x => x.id === id);
+      if (!issue) return;
+
+      document.getElementById('govIssueId').value = issue.id;
+      document.getElementById('govIssueTitle').textContent = issue.title;
+      document.getElementById('govIssueMeta').textContent = `Category: ${issue.category} • Location: ${issue.location?.city || 'Delhi'}, ${issue.location?.state || 'Delhi'} • Votes: ${issue.upvotes || 0}`;
+      document.getElementById('govIssueDesc').textContent = issue.description;
+
+      const imgEl = document.getElementById('govIssueImg');
+      if (issue.imageUrl) {
+        imgEl.src = issue.imageUrl;
+        imgEl.style.display = 'inline-block';
+      } else {
+        imgEl.style.display = 'none';
+      }
+
+      const sel = document.getElementById('govIssueStatusSelect');
+      sel.value = issue.status || 'Under Review';
+      document.getElementById('govIssueNotes').value = '';
+
+      openModal('govIssueModal');
+    };
+
+    window.submitGovIssueStatus = async function(e) {
+      e.preventDefault();
+      const id = document.getElementById('govIssueId').value;
+      const status = document.getElementById('govIssueStatusSelect').value;
+      const notes = document.getElementById('govIssueNotes').value;
+
+      try {
+        const res = await fetch(`/api/gov/issues/${id}/status`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status, notes })
+        });
+        const json = await res.json();
+        if (json.success) {
+          window.showToast(`Issue status advanced to "${status}"`);
+          closeModal('govIssueModal');
+          loadGovData();
+        } else {
+          alert(json.message || 'Failed to update status');
+        }
+      } catch (err) {
+        alert('Server communication error');
+      }
+    };
+
+    // 5. PLATFORM ADMIN LOGIC
+    // ==========================================
+    async function loadAdminData() {
+      try {
+        const [statsRes, usersRes, vendorsRes] = await Promise.all([
+          fetch('/api/admin/stats').then(r => r.json()),
+          fetch('/api/admin/users').then(r => r.json()),
+          fetch('/api/admin/vendors').then(r => r.json())
+        ]);
+
+        if (statsRes.success && statsRes.data) {
+          adminStats = statsRes.data;
+          renderAdminAnalytics(adminStats);
+
+          document.getElementById('aCountUsers').textContent = adminStats.users?.total || 0;
+          document.getElementById('aCountProviders').textContent = adminStats.services?.verifiedVendors || 0;
+          document.getElementById('aCountIssues').textContent = adminStats.community?.total || 0;
+        }
+
+        adminUsers = usersRes.data || [];
+        renderAdminUsers(adminUsers);
+        renderAdminVendors(vendorsRes.data || []);
+      } catch (e) {
+        console.error('Failed to load admin data:', e);
+      }
+    }
+
+    function renderAdminAnalytics(stats) {
+      const container = document.getElementById('adminAnalyticsContainer');
+      if (!container || !stats) return;
+
+      const u = stats.users || {};
+      const s = stats.services || {};
+      const c = stats.community || {};
+      const l = stats.locations || {};
+
+      container.innerHTML = `
+        <h3 style="margin: 0 0 14px 0; font-size: 18px;">1. User Ecosystem Breakdown</h3>
+        <div class="analytics-grid">
+          <div class="analytics-card">
+            <div class="analytics-card-title">Citizens / Customers</div>
+            <div class="analytics-card-number">${u.totalCustomers || 0}</div>
+            <div class="analytics-card-desc">Active account holders</div>
+          </div>
+          <div class="analytics-card">
+            <div class="analytics-card-title">Service Vendors</div>
+            <div class="analytics-card-number">${u.totalVendors || 0}</div>
+            <div class="analytics-card-desc">Electricians, Plumbers, Carpenters</div>
+          </div>
+          <div class="analytics-card">
+            <div class="analytics-card-title">Government Officers</div>
+            <div class="analytics-card-number">${u.totalGovOfficers || 0}</div>
+            <div class="analytics-card-desc">Civic Authorities</div>
+          </div></div>
+
+        <h3 style="margin: 20px 0 14px 0; font-size: 18px;">2. Local Services Marketplace</h3>
+        <div class="analytics-grid">
+          <div class="analytics-card">
+            <div class="analytics-card-title">Total Providers</div>
+            <div class="analytics-card-number">${s.totalProviders || 0}</div>
+            <div class="analytics-card-desc">Verified: ${s.verifiedVendors || 0} &bull; Pending: ${s.unverifiedVendors || 0}</div>
+          </div>
+          <div class="analytics-card">
+            <div class="analytics-card-title">Service Requests</div>
+            <div class="analytics-card-number">${s.totalRequests || 0}</div>
+            <div class="analytics-card-desc">Pending: ${s.pendingRequests || 0} &bull; Accepted: ${s.acceptedRequests || 0}</div>
+          </div>
+          <div class="analytics-card">
+            <div class="analytics-card-title">Completed Work Orders</div>
+            <div class="analytics-card-number">${s.completedRequests || 0}</div>
+            <div class="analytics-card-desc">Successful citizen jobs</div>
+          </div>
+        </div>
+
+        <h3 style="margin: 20px 0 14px 0; font-size: 18px;">3. Civic Community Lifecycle</h3>
+        <div class="analytics-grid">
+          <div class="analytics-card">
+            <div class="analytics-card-title">Total Issues Reported</div>
+            <div class="analytics-card-number">${c.total || 0}</div>
+            <div class="analytics-card-desc">Photo-verified evidence</div>
+          </div>
+          <div class="analytics-card">
+            <div class="analytics-card-title">Community Voting</div>
+            <div class="analytics-card-number">${c.voting || 0}</div>
+            <div class="analytics-card-desc">Gathering citizen upvotes</div>
+          </div>
+          <div class="analytics-card">
+            <div class="analytics-card-title">Escalated to Govt</div>
+            <div class="analytics-card-number">${c.escalated || 0}</div>
+            <div class="analytics-card-desc">Threshold reached (5+ votes)</div>
+          </div>
+          <div class="analytics-card">
+            <div class="analytics-card-title">Under Review / Active</div>
+            <div class="analytics-card-number">${(c.underReview || 0) + (c.inProgress || 0)}</div>
+            <div class="analytics-card-desc">Municipal team in action</div>
+          </div>
+          <div class="analytics-card">
+            <div class="analytics-card-title">Resolved Civic Issues</div>
+            <div class="analytics-card-number">${(c.resolved || 0) + (c.closed || 0)}</div>
+            <div class="analytics-card-desc">Works completed</div>
+          </div>
+        </div>
+
+        <h3 style="margin: 20px 0 14px 0; font-size: 18px;">4. Geographic Activity Distribution</h3>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+          <div style="border: 1px solid #000; border-radius: 8px; padding: 14px;">
+            <div style="font-weight: 700; font-size: 13px; text-transform: uppercase; margin-bottom: 8px;">Activity by State</div>
+            ${(l.states || []).map(st => `<div style="display: flex; justify-content: space-between; font-size: 13px; padding: 4px 0; border-bottom: 1px solid #f0f0f0;"><span>${st.state}</span><strong>${st.count} entries</strong></div>`).join('')}
+          </div>
+          <div style="border: 1px solid #000; border-radius: 8px; padding: 14px;">
+            <div style="font-weight: 700; font-size: 13px; text-transform: uppercase; margin-bottom: 8px;">Top Urban Centers</div>
+            ${(l.topCities || []).map(ct => `<div style="display: flex; justify-content: space-between; font-size: 13px; padding: 4px 0; border-bottom: 1px solid #f0f0f0;"><span>${ct.city}</span><strong>${ct.count} entries</strong></div>`).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    window.filterAdminUsers = function() {
+      const q = (document.getElementById('adminUserSearch')?.value || '').toLowerCase().trim();
+      const r = (document.getElementById('adminUserRoleFilter')?.value || 'all').toLowerCase().trim();
+
+      let list = adminUsers;
+      if (r !== 'all') {
+        list = list.filter(u => String(u.role).toLowerCase() === r);
+      }
+      if (q) {
+        list = list.filter(u => 
+          (u.name && u.name.toLowerCase().includes(q)) ||
+          (u.email && u.email.toLowerCase().includes(q)) ||
+          (u.company && u.company.toLowerCase().includes(q)) ||
+          (u.organization && u.organization.toLowerCase().includes(q))
+        );
+      }
+      renderAdminUsers(list);
+    };
+
+    function renderAdminUsers(list) {
+      const tbody = document.getElementById('adminUsersTableBody');
+      if (!tbody) return;
+
+      tbody.innerHTML = '';
+      list.forEach(u => {
+        const tr = document.createElement('tr');
+        const isActive = u.status === 'active';
+
+        tr.innerHTML = `
+          <td>
+            <strong>${u.name}</strong><br>
+            <span style="font-size: 12px; color: #666;">${u.email}</span>
+          </td>
+          <td>
+            <span class="badge">${u.role}</span>
+          </td>
+          <td>
+            ${u.organization || u.company || u.businessName || u.department || '—'}
+          </td>
+          <td>
+            <span class="badge ${isActive ? 'badge-status' : 'badge-outline'}">${u.status || 'active'}</span>
+          </td>
+          <td>
+            ${u.createdAt ? new Date(u.createdAt).toLocaleDateString() : '—'}
+          </td>
+          <td>
+            ${u.role !== 'admin' ? `
+              <button type="button" class="btn-action-outline" style="font-size: 11px; padding: 4px 8px;" onclick="adminToggleUserStatus('${u.id}', '${isActive ? 'deactivated' : 'active'}')">
+                ${isActive ? 'Deactivate' : 'Activate'}
+              </button>
+            ` : '<span style="font-size: 11px; color: #666;">Protected</span>'}
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    window.adminToggleUserStatus = async function(userId, newStatus) {
+      try {
+        const res = await fetch(`/api/admin/users/${userId}/status`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: newStatus })
+        });
+        const json = await res.json();
+        if (json.success) {
+          window.showToast(`User status set to ${newStatus}`);
+          loadAdminData();
+        } else {
+          alert(json.message || 'Status update failed');
+        }
+      } catch (e) {
+        alert('Server communication error');
+      }
+    };
+
+    function renderAdminVendors(list) {
+      const tbody = document.getElementById('adminVendorsTableBody');
+      if (!tbody) return;
+
+      tbody.innerHTML = '';
+      list.forEach(v => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>
+            <strong>${v.name}</strong> (${v.businessName || v.name})<br>
+            <span style="font-size: 12px; color: #666;">${v.email || v.phone}</span>
+          </td>
+          <td><span class="badge">${v.profession}</span></td>
+          <td>${v.city || v.location}, ${v.state || 'Delhi'}</td>
+          <td>₹${v.hourlyRate || 300}/hr</td>
+          <td>
+            <span class="badge ${v.verified ? 'badge-status' : 'badge-outline'}">
+              ${v.verified ? '✓ Verified' : 'Pending'}
+            </span>
+          </td>
+          <td>
+            <button type="button" class="btn-action-outline" style="font-size: 11px; padding: 4px 8px;" onclick="adminVerifyVendor('${v.id}', ${!v.verified})">
+              ${v.verified ? 'Unverify' : 'Verify'}
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    window.adminVerifyVendor = async function(id, verifyState) {
+      try {
+        const res = await fetch(`/api/admin/vendors/${id}/verify`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ verified: verifyState })
+        });
+        const json = await res.json();
+        if (json.success) {
+          window.showToast(`Vendor ${verifyState ? 'verified' : 'unverified'}`);
+          loadAdminData();
+        }
+      } catch (e) {}
+    };
+
+    window.openAdminOfficerModal = function() {
+      document.getElementById('adminOfficerForm').reset();
+      openModal('adminOfficerModal');
+    };
+
+    window.submitAdminOfficer = async function(e) {
+      e.preventDefault();
+      const perms = [];
+      if (document.getElementById('permCivic').checked) perms.push('CIVIC_OFFICER');
+
+      const payload = {
+        name: document.getElementById('offName').value.trim(),
+        email: document.getElementById('offEmail').value.trim(),
+        phone: document.getElementById('offPhone').value.trim(),
+        password: document.getElementById('offPassword').value,
+        organization: document.getElementById('offOrg').value.trim(),
+        department: document.getElementById('offDept').value.trim(),
+        designation: document.getElementById('offDesignation').value.trim(),
+        permissions: perms,
+        state: document.getElementById('offState').value.trim(),
+        city: document.getElementById('offCity').value.trim()
+      };
+
+      try {
+        const res = await fetch('/api/admin/users/officer', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const json = await res.json();
+        if (json.success) {
+          window.showToast('Government Officer account created and provisioned!');
+          closeModal('adminOfficerModal');
+          loadAdminData();
+        } else {
+          alert(json.message || 'Provisioning failed');
+        }
+      } catch (err) {
+        alert('Server communication error');
+      }
+    };
+
+    // ==========================================
+    // 6. COMMON ACTIVITY FEED
+    // ==========================================
+    function renderRecentActivity() {
+      const container = document.getElementById('activityContainer');
+      const empty = document.getElementById('activityEmpty');
+      if (!container || !empty) return;
+
+      const events = [];
+
+      userRequests.forEach(req => {
+        events.push({
+          title: `Service Request: ${req.service}`,
+          desc: `Status is "${req.status}" with ${req.providerName || 'Provider'}`,
+          time: new Date(req.createdAt).toLocaleDateString()
+        });
+      });
+
+      if (events.length === 0) {
+        container.style.display = 'none';
+        empty.style.display = 'block';
+        return;
+      }
+
+      container.style.display = 'block';
+      empty.style.display = 'none';
+      container.innerHTML = '';
+
+      events.forEach(ev => {
+        const row = document.createElement('div');
+        row.style.cssText = 'padding: 10px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; font-size: 13px;';
+        row.innerHTML = `
+          <div>
+            <strong>${ev.title}</strong>
+            <div style="color: #666; font-size: 12px; margin-top: 2px;">${ev.desc}</div>
+          </div>
+          <span style="color: #888;">${ev.time}</span>
+        `;
+        container.appendChild(row);
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', initDashboard);
+  </script>
+</body>
+</html>
