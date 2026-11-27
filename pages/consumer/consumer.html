@@ -916,7 +916,7 @@
                                     if (consumerGeoStatus) {
                                         consumerGeoStatus.style.display = 'block';
                                         consumerGeoStatus.style.color = '#111111';
-                                        consumerGeoStatus.innerHTML = `<strong>Location:</strong><br>${loc.formatted || (loc.city + ', ' + loc.state)}`;
+                                        consumerGeoStatus.innerHTML = `<strong>Location:</strong><br>${escapeHtml(loc.formatted || (loc.city + ', ' + loc.state))}`;
                                     }
 
                                     // Populate and set dropdowns to match resolved location
@@ -1163,37 +1163,37 @@
                     card.innerHTML = `
                         <div>
                             <div class="card-top">
-                                <div class="card-avatar">${initials}</div>
+                                <div class="card-avatar">${escapeHtml(initials)}</div>
                                 <div class="card-info">
                                     <h3 class="card-name">
-                                        <span>${p.name}</span>
+                                        <span>${escapeHtml(p.name)}</span>
                                         ${p.verified ? '<span class="badge-verified">✓ Verified</span>' : ''}
                                     </h3>
-                                    <div class="card-profession">${p.profession}</div>
+                                    <div class="card-profession">${escapeHtml(p.profession)}</div>
                                 </div>
-                                <button type="button" class="btn-card-save ${saved ? 'saved' : ''}" data-id="${p.id}" title="${saved ? 'Unsave provider' : 'Save provider'}" aria-label="${saved ? 'Unsave Provider' : 'Save Provider'}">
+                                <button type="button" class="btn-card-save ${saved ? 'saved' : ''}" data-id="${escapeHtml(p.id)}" title="${saved ? 'Unsave provider' : 'Save provider'}" aria-label="${saved ? 'Unsave Provider' : 'Save Provider'}">
                                     ${saved ? 'Saved' : 'Save'}
                                 </button>
                             </div>
 
                             <div class="card-stats-row">
-                                <span class="rating-badge">⭐ ${p.rating} <span style="font-size: 11px; font-weight: normal; color: #666666;">(${p.reviewsCount || 20})</span></span>
-                                <span class="rate-badge">${typeof p.hourlyRate === 'number' ? `₹${p.hourlyRate}/hr` : (String(p.hourlyRate).startsWith('₹') ? p.hourlyRate : `₹${p.hourlyRate}/hr`)}</span>
+                                <span class="rating-badge">⭐ ${escapeHtml(p.rating)} <span style="font-size: 11px; font-weight: normal; color: #666666;">(${escapeHtml(p.reviewsCount || 20)})</span></span>
+                                <span class="rate-badge">${escapeHtml(typeof p.hourlyRate === 'number' ? `₹${p.hourlyRate}/hr` : (String(p.hourlyRate).startsWith('₹') ? p.hourlyRate : `₹${p.hourlyRate}/hr`))}</span>
                             </div>
 
                             <div class="card-location">
                                 <span>📍</span>
-                                <span>${p.city && p.state ? `${p.city}, ${p.state}` : (p.location || p.city || 'India')} (${p.pincode})</span>
+                                <span>${escapeHtml(p.city && p.state ? `${p.city}, ${p.state}` : (p.location || p.city || 'India'))} (${escapeHtml(p.pincode)})</span>
                             </div>
 
                             <div class="card-skills">
-                                ${skills.map(s => `<span class="card-skill-tag">${s}</span>`).join('')}
+                                ${skills.map(s => `<span class="card-skill-tag">${escapeHtml(s)}</span>`).join('')}
                             </div>
                         </div>
 
                         <div class="card-actions">
                             <a href="/profile/${encodeURIComponent(p.id)}" class="btn-card-profile">View Profile</a>
-                            <button type="button" class="btn-card-request" data-id="${p.id}" data-name="${p.name}" data-prof="${p.profession}">Request Service</button>
+                            <button type="button" class="btn-card-request" data-id="${escapeHtml(p.id)}" data-name="${escapeHtml(p.name)}" data-prof="${escapeHtml(p.profession)}">Request Service</button>
                         </div>
                     `;
 
@@ -1309,9 +1309,9 @@
 
                     modalSuccess.innerHTML = `
                         <strong>✓ Service request submitted successfully.</strong><br>
-                        Reference ID: <code>${resData.data.id}</code><br>
-                        Provider: <strong>${activeTargetProvider.name}</strong> (${activeTargetProvider.profession})<br>
-                        Scheduled: ${resData.data.preferredDate} (${resData.data.preferredTime})
+                        Reference ID: <code>${escapeHtml(resData.data.id)}</code><br>
+                        Provider: <strong>${escapeHtml(activeTargetProvider.name)}</strong> (${escapeHtml(activeTargetProvider.profession)})<br>
+                        Scheduled: ${escapeHtml(resData.data.preferredDate)} (${escapeHtml(resData.data.preferredTime)})
                     `;
                     modalSuccess.style.display = 'block';
                     serviceRequestForm.reset();

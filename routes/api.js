@@ -7,7 +7,8 @@ import adminRouter from './admin.js';
 import govRouter from './government.js';
 import { requireAuth, optionalAuth } from '../middleware/auth.js';
 import { requireRole } from '../middleware/role.js';
-import { issueUpload, handleIssueUpload } from '../middleware/upload.js';
+import { handleIssueUpload, removeUploadedFile } from '../middleware/upload.js';
+import { rateLimit } from '../middleware/rateLimit.js';
 import { providerService } from '../services/providerService.js';
 import { issueService } from '../services/issueService.js';
 import { requestService } from '../services/requestService.js';
@@ -156,7 +157,7 @@ router.get('/users/me', requireAuth, (req, res) => {
 
 router.patch('/users/me', requireAuth, (req, res) => {
   try {
-    const updated = updateUserProfile(req.user.id, req.body);
+    const updated = updateUserProfile(req.user.id, req.body || {});
     res.json({ success: true, message: 'Profile updated successfully', data: updated });
   } catch (err) {
     res.status(400).json({ success: false, message: err.message });
@@ -183,7 +184,7 @@ router.get('/providers', (req, res) => {
     res.json({
       success: true,
       count: list.length,
-      data: list
+      data: list.map(providerService.toPublic)
     });
   } catch (err) {
     console.error('API Error in GET /providers:', err);
@@ -197,7 +198,7 @@ router.get('/providers/:id', (req, res) => {
     if (!provider) {
       return res.status(404).json({ success: false, message: 'Service provider not found' });
     }
-    res.json({ success: true, data: provider });
+    res.json({ success: true, data: providerService.toPublic(provider) });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Failed to retrieve provider details' });
   }
@@ -286,7 +287,7 @@ router.get('/user/saved-providers', requireAuth, (req, res) => {
   try {
     const savedIds = getSavedProviderIds(req.user.id);
     const all = providerService.getAll();
-    const providers = all.filter(p => savedIds.includes(p.id));
+    const providers = all.filter(p => savedIds.includes(p.id)).map(providerService.toPublic);
     res.json({ success: true, count: providers.length, data: providers });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Failed to retrieve saved providers' });
@@ -296,7 +297,9 @@ router.get('/user/saved-providers', requireAuth, (req, res) => {
 router.post('/user/saved-providers', requireAuth, (req, res) => {
   try {
     const { providerId } = req.body;
-    if (!providerId) return res.status(400).json({ success: false, message: 'providerId is required' });
+    if (!providerId || typeof providerId !== 'string' || !providerService.getById(providerId)) {
+      return res.status(400).json({ success: false, message: 'A valid providerId is required' });
+    }
     const saved = saveProviderForUser(req.user.id, providerId);
     res.json({ success: true, message: 'Provider saved successfully', data: saved });
   } catch (err) {
@@ -330,7 +333,7 @@ router.get('/issues', (req, res) => {
     res.json({
       success: true,
       count: list.length,
-      data: list
+      data: list.map(issueService.toPublic)
     });
   } catch (err) {
     console.error('API Error in GET /issues:', err);
@@ -344,7 +347,7 @@ router.get('/issues/:id', (req, res) => {
     if (!issue) {
       return res.status(404).json({ success: false, message: 'Community issue not found' });
     }
-    res.json({ success: true, data: issue });
+    res.json({ success: true, data: issueService.toPublic(issue) });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Failed to retrieve community issue' });
   }
@@ -357,9 +360,29 @@ router.get('/issues-supported/me', requireAuth, requireRole('customer', 'vendor'
 });
 
 // Report new community issue with REAL image upload!
-router.post('/issues/report', optionalAuth, handleIssueUpload, (req, res) => {
+const reportLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 10,
+  message: 'Too many issue reports from this network. Please try again in an hour.'
+});
+
+router.post('/issues/report', reportLimiter, optionalAuth, handleIssueUpload, (req, res) => {
+  // Any non-2xx response below must not leave the uploaded evidence file orphaned on disk.
+  res.on('finish', () => {
+    if (res.statusCode >= 300) removeUploadedFile(req.file);
+  });
+
   try {
     const { category, title, description, location, state, district, city, pincode, contact } = req.body;
+    const isText = (v) => typeof v === 'string';
+
+    if (![category, title, description, location, state, city].every(isText) ||
+        (contact !== undefined && !isText(contact))) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid issue report fields.'
+      });
+    }
 
     if (!category || !title || !description) {
       return res.status(400).json({
@@ -391,7 +414,7 @@ router.post('/issues/report', optionalAuth, handleIssueUpload, (req, res) => {
       });
     }
 
-    if (!req.file && !req.body.imageUrl) {
+    if (!req.file) {
       return res.status(400).json({
         success: false,
         message: 'Evidence image is mandatory. Please capture a photo or choose an image file from your device.'
@@ -407,14 +430,13 @@ router.post('/issues/report', optionalAuth, handleIssueUpload, (req, res) => {
       district: sanitize(district, 50),
       city: sanitize(city, 50),
       pincode: sanitize(pincode, 20),
-      contact: sanitize(citizenContact, 100),
-      imageUrl: req.body.imageUrl
+      contact: sanitize(citizenContact, 100)
     }, req.file, req.user);
 
     res.status(201).json({
       success: true,
       message: 'Civic issue report registered successfully with image verification.',
-      data: newIssue
+      data: issueService.toPublic(newIssue)
     });
   } catch (err) {
     res.status(400).json({ success: false, message: err.message });
@@ -433,14 +455,14 @@ router.post('/issues/:id/upvote', requireAuth, requireRole('customer', 'vendor')
       return res.status(409).json({
         success: false,
         message: 'Duplicate vote prevented. You have already supported this civic issue.',
-        data: result.issue
+        data: issueService.toPublic(result.issue)
       });
     }
 
     res.json({
       success: true,
       message: 'Support recorded successfully',
-      data: result.issue
+      data: issueService.toPublic(result.issue)
     });
   } catch (err) {
     res.status(400).json({ success: false, message: err.message });

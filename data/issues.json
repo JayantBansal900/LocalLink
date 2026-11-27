@@ -1,0 +1,347 @@
+[
+  {
+    "id": "ISS-1791232040325",
+    "slug": "drainage-blockage",
+    "title": "drainage blockage",
+    "category": "Water & Sanitation",
+    "description": "drainage blockage",
+    "location": {
+      "address": "road no 3, behind main market",
+      "state": "Delhi",
+      "district": "New Delhi",
+      "city": "Aliganj",
+      "pincode": "110003"
+    },
+    "contact": "98765 43210",
+    "imageUrl": "/uploads/issues/ISSUE-1791232040319-1214.png",
+    "upvotes": 3,
+    "threshold": 5,
+    "escalated": false,
+    "status": "Community Voting",
+    "timeline": [
+      {
+        "status": "Community Voting",
+        "notes": "Civic issue report filed with photo evidence. Community voting opened.",
+        "officer": "Citizen Reported",
+        "date": "2026-10-05T20:27:20.325Z"
+      }
+    ],
+    "reportedBy": "USR-1791195454512-713",
+    "reporterName": "Rahul Mehta",
+    "voters": [
+      "usr-1791195454512-713",
+      "usr-1791195581566-768",
+      "usr-gov-1791214471869-278"
+    ],
+    "createdAt": "2026-10-05T20:27:20.325Z"
+  },
+  {
+    "id": "ISS-1791195864104",
+    "slug": "road-is-broken",
+    "title": "road is broken",
+    "category": "Roads & Infrastructure",
+    "description": "road has too much potholes",
+    "location": {
+      "address": "road no 3, behind CP",
+      "state": "Delhi",
+      "district": "Central Delhi",
+      "city": "Connaught Place",
+      "pincode": "110001"
+    },
+    "contact": "98765 43210",
+    "imageUrl": "/uploads/issues/ISSUE-1791195864084-3607.png",
+    "upvotes": 3,
+    "threshold": 5,
+    "escalated": true,
+    "status": "Under Review",
+    "timeline": [
+      {
+        "status": "Community Voting",
+        "notes": "Civic issue report filed with photo evidence. Community voting opened.",
+        "officer": "Citizen Reported",
+        "date": "2026-10-05T10:24:24.104Z"
+      },
+      {
+        "status": "Escalated",
+        "notes": "fwgrg",
+        "officer": "Rajesh Kumar (Municipal Corporation of Delhi)",
+        "date": "2026-10-05T20:21:41.447Z"
+      },
+      {
+        "status": "Under Review",
+        "notes": "grgrg",
+        "officer": "Rajesh Kumar (Municipal Corporation of Delhi)",
+        "date": "2026-10-05T20:21:49.135Z"
+      },
+      {
+        "status": "Rejected / Invalid",
+        "notes": "ewgggegr",
+        "officer": "Rajesh Kumar (Municipal Corporation of Delhi)",
+        "date": "2026-10-05T20:53:17.632Z"
+      },
+      {
+        "status": "Under Review",
+        "notes": "egrgrg",
+        "officer": "Rajesh Kumar (Municipal Corporation of Delhi)",
+        "date": "2026-10-05T20:53:35.860Z"
+      }
+    ],
+    "reportedBy": "USR-1791195454512-713",
+    "reporterName": "Rahul Mehta",
+    "voters": [
+      "usr-1791195454512-713",
+      "usr-1791195581566-768",
+      "usr-gov-1791214471869-278"
+    ],
+    "createdAt": "2026-10-05T10:24:24.104Z",
+    "updatedAt": "2026-10-05T20:53:35.860Z",
+    "rejectedAt": "2026-10-05T20:53:17.632Z",
+    "rejectionReason": "ewgggegr"
+  },
+  {
+    "id": "ISS-DEMO-001",
+    "slug": "road-damaged-near-residential-area",
+    "title": "Road damaged near residential area",
+    "category": "Roads & Infrastructure",
+    "description": "Large potholes have developed along the main road, making it difficult for vehicles and pedestrians to travel safely.",
+    "location": {
+      "address": "Service road near Benz Circle residential blocks",
+      "state": "Andhra Pradesh",
+      "district": "NTR",
+      "city": "Vijayawada",
+      "pincode": "520010"
+    },
+    "contact": "+91 98765 43210",
+    "imageUrl": "/uploads/issues/ISS-DEMO-001.png",
+    "upvotes": 1,
+    "threshold": 5,
+    "escalated": false,
+    "status": "Community Voting",
+    "timeline": [
+      {
+        "status": "Community Voting",
+        "notes": "Civic issue report filed with photo evidence. Community voting opened.",
+        "officer": "Citizen Reported",
+        "date": "2026-09-22T08:35:00.000Z"
+      }
+    ],
+    "reportedBy": "USR-1791195454512-713",
+    "reporterName": "Rahul Mehta",
+    "voters": ["usr-1791195454512-713"],
+    "createdAt": "2026-09-22T08:35:00.000Z"
+  },
+  {
+    "id": "ISS-DEMO-002",
+    "slug": "drainage-blockage-near-market-area",
+    "title": "Drainage blockage near market area",
+    "category": "Water & Sanitation",
+    "description": "Blocked drainage is causing stagnant water and unpleasant conditions for nearby residents and shopkeepers.",
+    "location": {
+      "address": "Lane beside Madhapur weekly market",
+      "state": "Telangana",
+      "district": "Hyderabad",
+      "city": "Hyderabad",
+      "pincode": "500081"
+    },
+    "contact": "+91 98765 43210",
+    "imageUrl": "/uploads/issues/ISS-DEMO-002.png",
+    "upvotes": 2,
+    "threshold": 2,
+    "escalated": true,
+    "status": "Under Review",
+    "timeline": [
+      {
+        "status": "Community Voting",
+        "notes": "Civic issue report filed with photo evidence. Community voting opened.",
+        "officer": "Citizen Reported",
+        "date": "2026-09-18T06:50:00.000Z"
+      },
+      {
+        "status": "Escalated",
+        "notes": "Community support threshold reached and the report was forwarded for municipal inspection.",
+        "officer": "System Automation",
+        "date": "2026-09-19T10:15:00.000Z"
+      },
+      {
+        "status": "Under Review",
+        "notes": "Drainage team assigned to inspect the blocked line near the market.",
+        "officer": "Municipal Civic Officer (Local Municipal Authority)",
+        "date": "2026-09-20T09:20:00.000Z"
+      }
+    ],
+    "reportedBy": "USR-1791195454512-713",
+    "reporterName": "Rahul Mehta",
+    "voters": ["usr-1791195454512-713", "usr-1791195581566-768"],
+    "createdAt": "2026-09-18T06:50:00.000Z",
+    "updatedAt": "2026-09-20T09:20:00.000Z"
+  },
+  {
+    "id": "ISS-DEMO-003",
+    "slug": "street-lights-not-working",
+    "title": "Street lights not working",
+    "category": "Electricity & Energy",
+    "description": "Several street lights are not functioning, making the road difficult to use safely after dark.",
+    "location": {
+      "address": "12th Main Road near Indiranagar Metro",
+      "state": "Karnataka",
+      "district": "Bengaluru Urban",
+      "city": "Bengaluru",
+      "pincode": "560038"
+    },
+    "contact": "+91 98765 43210",
+    "imageUrl": "/uploads/issues/ISS-DEMO-003.png",
+    "upvotes": 2,
+    "threshold": 2,
+    "escalated": true,
+    "status": "In Progress",
+    "timeline": [
+      {
+        "status": "Community Voting",
+        "notes": "Civic issue report filed with photo evidence. Community voting opened.",
+        "officer": "Citizen Reported",
+        "date": "2026-09-12T17:40:00.000Z"
+      },
+      {
+        "status": "Escalated",
+        "notes": "Community support threshold reached and the lighting complaint was escalated.",
+        "officer": "System Automation",
+        "date": "2026-09-13T08:10:00.000Z"
+      },
+      {
+        "status": "In Progress",
+        "notes": "Electrical maintenance crew scheduled to replace faulty fixtures.",
+        "officer": "Municipal Civic Officer (Local Municipal Authority)",
+        "date": "2026-09-15T11:30:00.000Z"
+      }
+    ],
+    "reportedBy": "USR-1791195454512-713",
+    "reporterName": "Rahul Mehta",
+    "voters": ["usr-1791195454512-713", "usr-1791195581566-768"],
+    "createdAt": "2026-09-12T17:40:00.000Z",
+    "updatedAt": "2026-09-15T11:30:00.000Z"
+  },
+  {
+    "id": "ISS-DEMO-004",
+    "slug": "garbage-accumulation-near-public-park",
+    "title": "Garbage accumulation near public park",
+    "category": "Sanitation & Waste",
+    "description": "Waste has been accumulating near the park entrance and requires municipal collection and cleaning.",
+    "location": {
+      "address": "Entrance of the municipal park on Karve Road",
+      "state": "Maharashtra",
+      "district": "Pune",
+      "city": "Pune",
+      "pincode": "411038"
+    },
+    "contact": "+91 98765 43210",
+    "imageUrl": "/uploads/issues/ISS-DEMO-004.png",
+    "upvotes": 2,
+    "threshold": 2,
+    "escalated": true,
+    "status": "Resolved",
+    "timeline": [
+      {
+        "status": "Community Voting",
+        "notes": "Civic issue report filed with photo evidence. Community voting opened.",
+        "officer": "Citizen Reported",
+        "date": "2026-09-05T07:25:00.000Z"
+      },
+      {
+        "status": "Escalated",
+        "notes": "Community support threshold reached and the sanitation report was escalated.",
+        "officer": "System Automation",
+        "date": "2026-09-06T08:00:00.000Z"
+      },
+      {
+        "status": "Resolved",
+        "notes": "Accumulated waste was collected and the park entrance was cleaned.",
+        "officer": "Municipal Civic Officer (Local Municipal Authority)",
+        "date": "2026-09-08T13:45:00.000Z"
+      }
+    ],
+    "reportedBy": "USR-1791195454512-713",
+    "reporterName": "Rahul Mehta",
+    "voters": ["usr-1791195454512-713", "usr-1791195581566-768"],
+    "createdAt": "2026-09-05T07:25:00.000Z",
+    "updatedAt": "2026-09-08T13:45:00.000Z",
+    "resolvedAt": "2026-09-08T13:45:00.000Z",
+    "resolutionDetails": "Accumulated waste was collected and the park entrance was cleaned."
+  },
+  {
+    "id": "ISS-DEMO-005",
+    "slug": "water-leakage-on-main-road",
+    "title": "Water leakage on main road",
+    "category": "Water & Sanitation",
+    "description": "A continuous water leak has created standing water and is affecting nearby residents and road users.",
+    "location": {
+      "address": "Velachery Main Road near the bus stop",
+      "state": "Tamil Nadu",
+      "district": "Chennai",
+      "city": "Chennai",
+      "pincode": "600042"
+    },
+    "contact": "+91 98765 43210",
+    "imageUrl": "/uploads/issues/ISS-DEMO-005.png",
+    "upvotes": 1,
+    "threshold": 5,
+    "escalated": false,
+    "status": "Community Voting",
+    "timeline": [
+      {
+        "status": "Community Voting",
+        "notes": "Civic issue report filed with photo evidence. Community voting opened.",
+        "officer": "Citizen Reported",
+        "date": "2026-09-27T05:55:00.000Z"
+      }
+    ],
+    "reportedBy": "USR-1791195454512-713",
+    "reporterName": "Rahul Mehta",
+    "voters": ["usr-1791195454512-713"],
+    "createdAt": "2026-09-27T05:55:00.000Z"
+  },
+  {
+    "id": "ISS-DEMO-006",
+    "slug": "open-drainage-cover",
+    "title": "Open drainage cover",
+    "category": "Urban Mobility",
+    "description": "A damaged drainage cover beside the footpath is creating a safety hazard for pedestrians.",
+    "location": {
+      "address": "Road beside the government complex in Velagapudi",
+      "state": "Andhra Pradesh",
+      "district": "Guntur",
+      "city": "Amaravati",
+      "pincode": "522503"
+    },
+    "contact": "+91 98765 43210",
+    "imageUrl": "/uploads/issues/ISS-DEMO-006.png",
+    "upvotes": 2,
+    "threshold": 2,
+    "escalated": true,
+    "status": "Verified",
+    "timeline": [
+      {
+        "status": "Community Voting",
+        "notes": "Civic issue report filed with photo evidence. Community voting opened.",
+        "officer": "Citizen Reported",
+        "date": "2026-09-20T12:15:00.000Z"
+      },
+      {
+        "status": "Escalated",
+        "notes": "Community support threshold reached and the safety hazard was escalated.",
+        "officer": "System Automation",
+        "date": "2026-09-21T07:35:00.000Z"
+      },
+      {
+        "status": "Verified",
+        "notes": "The damaged cover was confirmed during the site inspection.",
+        "officer": "Municipal Civic Officer (Local Municipal Authority)",
+        "date": "2026-09-22T10:05:00.000Z"
+      }
+    ],
+    "reportedBy": "USR-1791195454512-713",
+    "reporterName": "Rahul Mehta",
+    "voters": ["usr-1791195454512-713", "usr-1791195581566-768"],
+    "createdAt": "2026-09-20T12:15:00.000Z",
+    "updatedAt": "2026-09-22T10:05:00.000Z"
+  }
+]

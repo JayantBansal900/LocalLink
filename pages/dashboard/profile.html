@@ -734,9 +734,9 @@
 
                     successBox.innerHTML = `
                         <strong>✓ Service request submitted successfully!</strong><br>
-                        Reference ID: <code>${resData.data.id}</code><br>
-                        Scheduled window: ${resData.data.preferredDate} (${resData.data.preferredTime})<br>
-                        Status: <em>Pending confirmation by ${currentProvider.name}</em>
+                        Reference ID: <code>${escapeHtml(resData.data.id)}</code><br>
+                        Scheduled window: ${escapeHtml(resData.data.preferredDate)} (${escapeHtml(resData.data.preferredTime)})<br>
+                        Status: <em>Pending confirmation by ${escapeHtml(currentProvider.name)}</em>
                     `;
                     successBox.style.display = 'block';
                     form.reset();

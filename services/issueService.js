@@ -35,6 +35,13 @@ function saveIssues(issues) {
 }
 
 export const issueService = {
+  // Public view of an issue: hides reporter contact details and the voter list.
+  toPublic: (issue) => {
+    if (!issue) return issue;
+    const { contact, voters, ...rest } = issue;
+    return rest;
+  },
+
   getAll: (filters = {}) => {
     let list = loadIssues();
     const { category, state, city, pincode, status, search, sort = 'upvotes-desc' } = filters;
@@ -124,14 +131,12 @@ export const issueService = {
       throw new Error('Contact information (phone or email) is required so municipal teams can coordinate on-site verification');
     }
 
-    let imageUrl = null;
-    if (file) {
-      imageUrl = `/uploads/issues/${file.filename}`;
-    } else if (data.imageUrl && (data.imageUrl.startsWith('/uploads/') || data.imageUrl.startsWith('http') || data.imageUrl.startsWith('/assets/'))) {
-      imageUrl = data.imageUrl;
-    } else {
+    // Evidence must be a file uploaded through the validated upload middleware.
+    // Client-supplied image URLs are not accepted (they allowed markup injection and evidence bypass).
+    if (!file || !file.filename) {
       throw new Error('Evidence image is mandatory. Please capture or upload a clear photo of the hazard.');
     }
+    const imageUrl = `/uploads/issues/${encodeURIComponent(file.filename)}`;
 
     const issues = loadIssues();
     const newId = `ISS-${Date.now()}`;

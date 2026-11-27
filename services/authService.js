@@ -6,9 +6,43 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const USERS_FILE = path.join(__dirname, '..', 'data', 'users.json');
+const SESSIONS_FILE = path.join(__dirname, '..', 'data', 'sessions.json');
+const SESSION_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
 
-// In-memory active session token store: token -> { userId, email, role, expiresAt }
+// Active sessions keyed by SHA-256(token) so the raw bearer tokens are never written to disk.
+// Persisted to data/sessions.json so a server restart does not sign everyone out.
 const sessions = new Map();
+
+function hashToken(token) {
+  return crypto.createHash('sha256').update(String(token)).digest('hex');
+}
+
+function loadSessions() {
+  try {
+    if (!fs.existsSync(SESSIONS_FILE)) return;
+    const entries = JSON.parse(fs.readFileSync(SESSIONS_FILE, 'utf8') || '[]');
+    const now = Date.now();
+    for (const [key, session] of entries) {
+      if (session && session.expiresAt > now) sessions.set(key, session);
+    }
+  } catch (err) {
+    console.error('Error reading sessions file (starting with no sessions):', err.message);
+  }
+}
+
+function persistSessions() {
+  try {
+    const now = Date.now();
+    for (const [key, session] of sessions) {
+      if (session.expiresAt <= now) sessions.delete(key);
+    }
+    fs.writeFileSync(SESSIONS_FILE, JSON.stringify([...sessions.entries()]), 'utf8');
+  } catch (err) {
+    console.error('Error saving sessions file:', err.message);
+  }
+}
+
+loadSessions();
 
 export const ROLES = Object.freeze({
   CUSTOMER: 'customer',
@@ -43,17 +77,45 @@ function writeUsers(users) {
   fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2), 'utf8');
 }
 
+// OWASP-recommended work factor for PBKDF2-HMAC-SHA512.
+const PBKDF2_ITERATIONS = 210000;
+const LEGACY_PBKDF2_ITERATIONS = 1000;
+
+// Format: pbkdf2$<iterations>$<salt>$<hash>. Older hashes use "<salt>:<hash>" at 1000 iterations.
 export function hashPassword(password) {
+  if (typeof password !== 'string') throw new Error('Password must be a string');
   const salt = crypto.randomBytes(16).toString('hex');
-  const hash = crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
-  return `${salt}:${hash}`;
+  const hash = crypto.pbkdf2Sync(password, salt, PBKDF2_ITERATIONS, 64, 'sha512').toString('hex');
+  return `pbkdf2$${PBKDF2_ITERATIONS}$${salt}$${hash}`;
+}
+
+function parseStoredHash(storedHash) {
+  if (typeof storedHash !== 'string') return null;
+  if (storedHash.startsWith('pbkdf2$')) {
+    const [, iter, salt, hash] = storedHash.split('$');
+    const iterations = Number(iter);
+    if (!iterations || !salt || !hash) return null;
+    return { iterations, salt, hash };
+  }
+  if (storedHash.includes(':')) {
+    const [salt, hash] = storedHash.split(':');
+    return { iterations: LEGACY_PBKDF2_ITERATIONS, salt, hash };
+  }
+  return null;
 }
 
 export function verifyPassword(password, storedHash) {
-  if (!storedHash || !storedHash.includes(':')) return false;
-  const [salt, originalHash] = storedHash.split(':');
-  const hash = crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
-  return hash === originalHash;
+  if (typeof password !== 'string') return false;
+  const parsed = parseStoredHash(storedHash);
+  if (!parsed) return false;
+  const expected = Buffer.from(parsed.hash, 'hex');
+  const actual = crypto.pbkdf2Sync(password, parsed.salt, parsed.iterations, expected.length || 64, 'sha512');
+  return expected.length === actual.length && crypto.timingSafeEqual(expected, actual);
+}
+
+function needsRehash(storedHash) {
+  const parsed = parseStoredHash(storedHash);
+  return !parsed || parsed.iterations < PBKDF2_ITERATIONS;
 }
 
 // Seed default admin and sample accounts if not already present
@@ -64,6 +126,16 @@ export function initAuth() {
   // 1. Admin account
   let admin = users.find(u => u.role === 'admin' || u.role === 'platform_admin' || u.email === 'admin@locallink.org');
   if (!admin) {
+    // Never ship a hardcoded admin password. Use ADMIN_PASSWORD, or generate a one-time random one.
+    let adminPassword = process.env.ADMIN_PASSWORD;
+    if (!adminPassword) {
+      adminPassword = crypto.randomBytes(12).toString('base64url');
+      console.log('==================================================================');
+      console.log(' No ADMIN_PASSWORD set. Generated initial admin credentials:');
+      console.log(`   username: admin   password: ${adminPassword}`);
+      console.log(' Save this now; it will not be shown again.');
+      console.log('==================================================================');
+    }
     admin = {
       id: 'USR-ADMIN-01',
       username: 'admin',
@@ -72,7 +144,7 @@ export function initAuth() {
       phone: '9876543210',
       role: 'platform_admin',
       permissions: ['PLATFORM_ADMIN', 'SYSTEM_SETTINGS', 'USER_MANAGEMENT', 'AUDIT_LOGS'],
-      passwordHash: hashPassword('Admin@LocalLink2026!'),
+      passwordHash: hashPassword(adminPassword),
       location: {
         state: 'Delhi',
         district: 'Central Delhi',
@@ -101,8 +173,14 @@ export function registerUser({ name, email, phone, password, role, businessName,
   if (!name || !email || !password) {
     throw new Error('Name, email, and password are required');
   }
+  if (typeof name !== 'string' || typeof email !== 'string' || typeof password !== 'string') {
+    throw new Error('Name, email, and password must be text');
+  }
 
   const cleanEmail = email.toLowerCase().trim();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
+    throw new Error('Please enter a valid email address');
+  }
   const users = readUsers();
 
   if (users.some(u => u.email.toLowerCase() === cleanEmail)) {
@@ -123,7 +201,7 @@ export function registerUser({ name, email, phone, password, role, businessName,
     phone: (phone || '').trim(),
     role: validRole,
     passwordHash: hashPassword(password),
-    location: location || { state: 'Delhi', district: 'Central Delhi', city: 'Connaught Place', pincode: '110001' },
+    location: cleanLocation(location) || { state: 'Delhi', district: 'Central Delhi', city: 'Connaught Place', pincode: '110001' },
     status: 'active',
     createdAt: new Date().toISOString(),
     lastLogin: null
@@ -133,7 +211,8 @@ export function registerUser({ name, email, phone, password, role, businessName,
     newUser.businessName = (businessName || name).trim();
     newUser.profession = (profession || 'General Services').trim();
     newUser.hourlyRate = Number(hourlyRate) || 300;
-    newUser.skills = Array.isArray(skills) ? skills : (skills ? skills.split(',').map(s => s.trim()) : ['General Services']);
+    const parsedSkills = normalizeSkills(skills);
+    newUser.skills = parsedSkills.length ? parsedSkills : ['General Services'];
     newUser.verified = false; // requires admin verification
     newUser.availability = 'Available';
   }
@@ -192,12 +271,12 @@ export function loginUser({ email, password }) {
     throw new Error('Email and password are required');
   }
 
-  const cleanEmail = email.toLowerCase().trim();
+  const cleanEmail = String(email).toLowerCase().trim();
   const users = readUsers();
-  const user = users.find(u => 
-    (u.email && u.email.toLowerCase() === cleanEmail) || 
-    (u.username && u.username.toLowerCase() === cleanEmail) || 
-    (u.name && u.name.toLowerCase() === cleanEmail)
+  // Sign-in is by email or unique username only; display names are not unique.
+  const user = users.find(u =>
+    (u.email && u.email.toLowerCase() === cleanEmail) ||
+    (u.username && u.username.toLowerCase() === cleanEmail)
   );
 
   if (!user) {
@@ -213,6 +292,11 @@ export function loginUser({ email, password }) {
     throw new Error('Invalid email or password');
   }
 
+  // Transparently upgrade legacy/weak hashes now that we have the plaintext.
+  if (needsRehash(user.passwordHash)) {
+    user.passwordHash = hashPassword(password);
+  }
+
   // Update lastLogin
   user.lastLogin = new Date().toISOString();
   writeUsers(users);
@@ -223,32 +307,35 @@ export function loginUser({ email, password }) {
 
 export function generateToken(user) {
   const token = crypto.randomBytes(32).toString('hex');
-  const expiresAt = Date.now() + 7 * 24 * 60 * 60 * 1000; // 7 days
+  const expiresAt = Date.now() + SESSION_TTL_MS;
 
-  sessions.set(token, {
+  sessions.set(hashToken(token), {
     userId: user.id,
-    email: user.email,
     role: user.role,
     expiresAt
   });
+  persistSessions();
 
   return token;
 }
 
 export function verifySession(token) {
-  if (!token) return null;
-  const session = sessions.get(token);
+  if (!token || typeof token !== 'string') return null;
+  const key = hashToken(token);
+  const session = sessions.get(key);
   if (!session) return null;
 
   if (Date.now() > session.expiresAt) {
-    sessions.delete(token);
+    sessions.delete(key);
+    persistSessions();
     return null;
   }
 
   const users = readUsers();
   const user = users.find(u => u.id === session.userId);
   if (!user || user.status === 'deactivated' || user.status === 'suspended') {
-    sessions.delete(token);
+    sessions.delete(key);
+    persistSessions();
     return null;
   }
 
@@ -256,8 +343,8 @@ export function verifySession(token) {
 }
 
 export function invalidateSession(token) {
-  if (token) {
-    sessions.delete(token);
+  if (token && sessions.delete(hashToken(token))) {
+    persistSessions();
   }
 }
 
@@ -304,6 +391,32 @@ export function updateUserProfile(userId, updates) {
 
   writeUsers(users);
   return sanitizeUser(user);
+}
+
+// Strips markup characters from free text and bounds its length.
+export function cleanText(value, max = 200) {
+  if (typeof value !== 'string') return '';
+  return value.replace(/[<>]/g, '').trim().slice(0, max);
+}
+
+// Accepts an array or comma-separated string; returns at most 20 short, clean skill strings.
+export function normalizeSkills(skills) {
+  const list = Array.isArray(skills) ? skills : (typeof skills === 'string' ? skills.split(',') : []);
+  return list
+    .filter(s => typeof s === 'string')
+    .map(s => cleanText(s, 50))
+    .filter(Boolean)
+    .slice(0, 20);
+}
+
+// Normalizes a location object to known string fields only.
+export function cleanLocation(location) {
+  if (!location || typeof location !== 'object' || Array.isArray(location)) return null;
+  const out = {};
+  for (const key of ['state', 'district', 'city', 'pincode']) {
+    if (typeof location[key] === 'string' && location[key].trim()) out[key] = cleanText(location[key], 60);
+  }
+  return Object.keys(out).length ? out : null;
 }
 
 export function sanitizeUser(user) {

@@ -1,0 +1,332 @@
+[
+  {
+    "state": "Delhi",
+    "districts": [
+      {
+        "name": "Central Delhi",
+        "cities": ["Connaught Place", "Karol Bagh", "Pahar Ganj"],
+        "pincodes": ["110001", "110005", "110055"]
+      },
+      {
+        "name": "New Delhi",
+        "cities": ["Chanakyapuri", "Aliganj", "Barakhamba"],
+        "pincodes": ["110003", "110021", "110002"]
+      },
+      {
+        "name": "South Delhi",
+        "cities": ["Hauz Khas", "Saket", "Greater Kailash", "Ashram"],
+        "pincodes": ["110016", "110017", "110048", "110014"]
+      },
+      {
+        "name": "West Delhi",
+        "cities": ["Janakpuri", "Rajouri Garden", "Punjabi Bagh"],
+        "pincodes": ["110058", "110027", "110026"]
+      },
+      {
+        "name": "North Delhi",
+        "cities": ["Civil Lines", "Model Town", "Adarsh Nagar"],
+        "pincodes": ["110054", "110009", "110033"]
+      }
+    ]
+  },
+  {
+    "state": "Maharashtra",
+    "districts": [
+      {
+        "name": "Mumbai",
+        "cities": ["Andheri", "Bandra", "Colaba", "Dadar", "Borivali"],
+        "pincodes": ["400053", "400050", "400005", "400014", "400092"]
+      },
+      {
+        "name": "Pune",
+        "cities": ["Kothrud", "Hinjawadi", "Viman Nagar", "Shivajinagar", "Baner"],
+        "pincodes": ["411038", "411057", "411014", "411005", "411045"]
+      },
+      {
+        "name": "Nagpur",
+        "cities": ["Dharampeth", "Sitabuldi", "Manish Nagar"],
+        "pincodes": ["440010", "440012", "440015"]
+      },
+      {
+        "name": "Thane",
+        "cities": ["Thane West", "Ghodbunder Road", "Naupada"],
+        "pincodes": ["400601", "400615", "400602"]
+      }
+    ]
+  },
+  {
+    "state": "Karnataka",
+    "districts": [
+      {
+        "name": "Bengaluru Urban",
+        "cities": ["Koramangala", "Indiranagar", "Whitefield", "HSR Layout", "Jayanagar"],
+        "pincodes": ["560034", "560038", "560066", "560102", "560041"]
+      },
+      {
+        "name": "Mysuru",
+        "cities": ["Gokulam", "Jayalakshmipuram", "Vijayanagar"],
+        "pincodes": ["570002", "570012", "570017"]
+      },
+      {
+        "name": "Dakshina Kannada",
+        "cities": ["Mangaluru City", "Surathkal", "Kadri"],
+        "pincodes": ["575001", "575014", "575002"]
+      }
+    ]
+  },
+  {
+    "state": "Telangana",
+    "districts": [
+      {
+        "name": "Hyderabad",
+        "cities": ["Madhapur", "Banjara Hills", "Gachibowli", "Jubilee Hills", "Kukatpally"],
+        "pincodes": ["500081", "500034", "500032", "500033", "500072"]
+      },
+      {
+        "name": "Warangal",
+        "cities": ["Hanamkonda", "Kazipet", "Subedari"],
+        "pincodes": ["506001", "506003", "506002"]
+      }
+    ]
+  },
+  {
+    "state": "Tamil Nadu",
+    "districts": [
+      {
+        "name": "Chennai",
+        "cities": ["T Nagar", "Adyar", "Anna Nagar", "Velachery", "Mylapore"],
+        "pincodes": ["600017", "600020", "600040", "600042", "600004"]
+      },
+      {
+        "name": "Coimbatore",
+        "cities": ["RS Puram", "Gandhipuram", "Peelamedu"],
+        "pincodes": ["641002", "641012", "641004"]
+      },
+      {
+        "name": "Madurai",
+        "cities": ["Anna Nagar", "KK Nagar", "Simmakkal"],
+        "pincodes": ["625020", "625020", "625001"]
+      }
+    ]
+  },
+  {
+    "state": "Andhra Pradesh",
+    "districts": [
+      {
+        "name": "Visakhapatnam",
+        "cities": ["MVP Colony", "Gajuwaka", "Siripuram", "Madhurawada"],
+        "pincodes": ["530017", "530026", "530003", "530048"]
+      },
+      {
+        "name": "Krishna",
+        "cities": ["Vijayawada", "Benz Circle", "Governorpet"],
+        "pincodes": ["520010", "520002", "520001"]
+      },
+      {
+        "name": "Guntur",
+        "cities": ["Amaravati", "Brodipet", "Arundelpet"],
+        "pincodes": ["522020", "522002", "522007"]
+      }
+    ]
+  },
+  {
+    "state": "Gujarat",
+    "districts": [
+      {
+        "name": "Ahmedabad",
+        "cities": ["Navrangpura", "Satellite", "Bodakdev", "Maninagar"],
+        "pincodes": ["380009", "380015", "380054", "380008"]
+      },
+      {
+        "name": "Surat",
+        "cities": ["Adajan", "Vesu", "Piplod", "Varachha"],
+        "pincodes": ["395009", "395007", "395007", "395006"]
+      },
+      {
+        "name": "Vadodara",
+        "cities": ["Alkapuri", "Fatehgunj", "Akota"],
+        "pincodes": ["390007", "390002", "390020"]
+      }
+    ]
+  },
+  {
+    "state": "Rajasthan",
+    "districts": [
+      {
+        "name": "Jaipur",
+        "cities": ["Malviya Nagar", "Vaishali Nagar", "C-Scheme", "Mansarovar"],
+        "pincodes": ["302017", "302021", "302001", "302020"]
+      },
+      {
+        "name": "Jodhpur",
+        "cities": ["Ratanada", "Shastri Nagar", "Sardarpura"],
+        "pincodes": ["342011", "342003", "342003"]
+      },
+      {
+        "name": "Udaipur",
+        "cities": ["Fatehpura", "Hiran Magri", "Panchwati"],
+        "pincodes": ["313001", "313002", "313004"]
+      }
+    ]
+  },
+  {
+    "state": "Uttar Pradesh",
+    "districts": [
+      {
+        "name": "Lucknow",
+        "cities": ["Gomti Nagar", "Hazratganj", "Aliganj", "Indira Nagar"],
+        "pincodes": ["226010", "226001", "226024", "226016"]
+      },
+      {
+        "name": "Gautam Buddha Nagar",
+        "cities": ["Noida Sector 62", "Noida Sector 18", "Greater Noida"],
+        "pincodes": ["201309", "201301", "201310"]
+      },
+      {
+        "name": "Kanpur Nagar",
+        "cities": ["Civil Lines", "Swaroop Nagar", "Kakadeo"],
+        "pincodes": ["208001", "208002", "208025"]
+      },
+      {
+        "name": "Varanasi",
+        "cities": ["Lanka", "Sigra", "Bhelupur"],
+        "pincodes": ["221005", "221010", "221010"]
+      }
+    ]
+  },
+  {
+    "state": "West Bengal",
+    "districts": [
+      {
+        "name": "Kolkata",
+        "cities": ["Salt Lake", "Park Street", "Ballygunge", "New Town", "Alipore"],
+        "pincodes": ["700091", "700016", "700019", "700156", "700027"]
+      },
+      {
+        "name": "Howrah",
+        "cities": ["Shibpur", "Liluah", "Bally"],
+        "pincodes": ["711102", "711204", "711201"]
+      }
+    ]
+  },
+  {
+    "state": "Kerala",
+    "districts": [
+      {
+        "name": "Ernakulam",
+        "cities": ["Kochi", "Kakkanad", "Edappally", "Fort Kochi"],
+        "pincodes": ["682001", "682030", "682024", "682001"]
+      },
+      {
+        "name": "Thiruvananthapuram",
+        "cities": ["Kowdiar", "Pattom", "Kazhakoottam"],
+        "pincodes": ["695003", "695004", "695582"]
+      }
+    ]
+  },
+  {
+    "state": "Madhya Pradesh",
+    "districts": [
+      {
+        "name": "Indore",
+        "cities": ["Vijay Nagar", "Palasia", "Bhawarkua"],
+        "pincodes": ["452010", "452001", "452014"]
+      },
+      {
+        "name": "Bhopal",
+        "cities": ["Arera Colony", "MP Nagar", "Kolar Road"],
+        "pincodes": ["462016", "462011", "462042"]
+      }
+    ]
+  },
+  {
+    "state": "Odisha",
+    "districts": [
+      {
+        "name": "Khurda",
+        "cities": ["Bhubaneswar", "Saheed Nagar", "Patia", "Nayapalli"],
+        "pincodes": ["751001", "751007", "751024", "751012"]
+      },
+      {
+        "name": "Cuttack",
+        "cities": ["Badambadi", "CDA Sector", "Mangalabag"],
+        "pincodes": ["753012", "753014", "753001"]
+      }
+    ]
+  },
+  {
+    "state": "Punjab",
+    "districts": [
+      {
+        "name": "Ludhiana",
+        "cities": ["Model Town", "Civil Lines", "Sarabha Nagar"],
+        "pincodes": ["141002", "141001", "141001"]
+      },
+      {
+        "name": "Amritsar",
+        "cities": ["Ranjit Avenue", "Mall Road", "Lawrence Road"],
+        "pincodes": ["143001", "143001", "143001"]
+      }
+    ]
+  },
+  {
+    "state": "Haryana",
+    "districts": [
+      {
+        "name": "Gurugram",
+        "cities": ["Cyber City", "DLF Phase 5", "Sector 14", "Sohna Road"],
+        "pincodes": ["122002", "122009", "122001", "122018"]
+      },
+      {
+        "name": "Faridabad",
+        "cities": ["Sector 15", "Sector 16", "NIT Faridabad"],
+        "pincodes": ["121007", "121002", "121001"]
+      }
+    ]
+  },
+  {
+    "state": "Bihar",
+    "districts": [
+      {
+        "name": "Patna",
+        "cities": ["Boring Road", "Kankarbagh", "Bailey Road", "Patliputra Colony"],
+        "pincodes": ["800001", "800020", "800014", "800013"]
+      },
+      {
+        "name": "Gaya",
+        "cities": ["Civil Lines", "AP Colony", "Rampur"],
+        "pincodes": ["823001", "823001", "823001"]
+      }
+    ]
+  },
+  {
+    "state": "Uttarakhand",
+    "districts": [
+      {
+        "name": "Dehradun",
+        "cities": ["Rajpur Road", "Dharampur", "Ballupur", "Jakhan"],
+        "pincodes": ["248001", "248001", "248001", "248009"]
+      },
+      {
+        "name": "Haridwar",
+        "cities": ["Ranipur", "Jawlapur", "Shivalik Nagar"],
+        "pincodes": ["249401", "249407", "249403"]
+      }
+    ]
+  },
+  {
+    "state": "Assam",
+    "districts": [
+      {
+        "name": "Kamrup Metropolitan",
+        "cities": ["Guwahati", "Dispur", "Paltan Bazaar", "Ulubari"],
+        "pincodes": ["781001", "781006", "781008", "781007"]
+      },
+      {
+        "name": "Dibrugarh",
+        "cities": ["Graham Bazaar", "Chowkidinghee", "Naliapool"],
+        "pincodes": ["786001", "786001", "786001"]
+      }
+    ]
+  }
+]

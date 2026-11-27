@@ -827,7 +827,7 @@
                                     commGeoBtn.textContent = '✓ Location Active';
                                     if (commGeoStatus) {
                                         commGeoStatus.style.display = 'block';
-                                        commGeoStatus.innerHTML = `<strong>Location:</strong><br>${loc.formatted || (loc.city + ', ' + loc.state)}`;
+                                        commGeoStatus.innerHTML = `<strong>Location:</strong><br>${escapeHtml(loc.formatted || (loc.city + ', ' + loc.state))}`;
                                     }
 
                                     if (stateFilter && loc.state) {
@@ -920,7 +920,7 @@
                                     repGeoBtn.textContent = '✓ Location Active';
                                     if (repGeoStatus) {
                                         repGeoStatus.style.display = 'block';
-                                        repGeoStatus.innerHTML = `<strong>Location:</strong> ${loc.formatted || (loc.city + ', ' + loc.state)}`;
+                                        repGeoStatus.innerHTML = `<strong>Location:</strong> ${escapeHtml(loc.formatted || (loc.city + ', ' + loc.state))}`;
                                     }
 
                                     if (repState && loc.state) {
@@ -1146,25 +1146,25 @@
                         const supported = isSupported(item.id);
                         const threshold = item.threshold || 10;
                         const percent = Math.min(100, Math.round(((item.upvotes || 0) / threshold) * 100));
-                        const locText = item.location ? `${item.location.city || ''}, ${item.location.state || ''} (${item.location.pincode || ''})` : 'India';
+                        const locText = escapeHtml(item.location ? `${item.location.city || ''}, ${item.location.state || ''} (${item.location.pincode || ''})` : 'India');
 
                         return `
-                            <article class="issue-card-main" data-id="${item.id}">
+                            <article class="issue-card-main" data-id="${escapeHtml(item.id)}">
                                 <div class="issue-img-box">
-                                    <img src="${item.imageUrl || '/assets/logo.png'}" alt="${item.title}" onerror="this.src='/assets/logo.png'">
-                                    <span class="issue-cat-tag">${item.category}</span>
+                                    <img src="${escapeHtml(safeUrl(item.imageUrl, '/assets/logo.png'))}" alt="${escapeHtml(item.title)}" onerror="this.src='/assets/logo.png'">
+                                    <span class="issue-cat-tag">${escapeHtml(item.category)}</span>
                                     <span class="issue-status-badge ${item.escalated ? 'badge-escalated' : 'badge-voting'}">
-                                        ${item.status || (item.escalated ? 'Escalated' : 'Community Voting')}
+                                        ${escapeHtml(item.status || (item.escalated ? 'Escalated' : 'Community Voting'))}
                                     </span>
                                 </div>
                                 <div class="issue-card-body">
-                                    <h3 class="issue-card-title">${item.title}</h3>
+                                    <h3 class="issue-card-title">${escapeHtml(item.title)}</h3>
                                     <div class="issue-card-location">
                                         <span>📍 ${locText}</span>
                                     </div>
-                                    <div class="issue-card-desc">${item.description}</div>
+                                    <div class="issue-card-desc">${escapeHtml(item.description)}</div>
 
-                                    <div class="support-progress-wrap" data-support-progress="${item.id}">
+                                    <div class="support-progress-wrap" data-support-progress="${escapeHtml(item.id)}">
                                         <div class="support-progress-meta">
                                             <span>Citizen Support</span>
                                             <span><strong class="support-count">${item.upvotes || 0}</strong> / ${threshold} votes</span>
@@ -1175,7 +1175,7 @@
                                     </div>
 
                                     <div class="issue-card-footer">
-                                        <button type="button" class="btn-support ${supported ? 'supported' : ''}" data-issue-id="${item.id}" ${supported ? 'disabled' : ''}>
+                                        <button type="button" class="btn-support ${supported ? 'supported' : ''}" data-issue-id="${escapeHtml(item.id)}" ${supported ? 'disabled' : ''}>
                                             ${supported ? '✓ Supported' : '▲ Support Issue'}
                                         </button>
                                         <a href="${window.location.origin}/issue/${encodeURIComponent(item.id)}" class="btn-view-detail" target="_blank" rel="noopener noreferrer">
@@ -1267,10 +1267,10 @@
                 trendingList.innerHTML = sorted.map(i => `
                     <div style="padding: 10px 0; border-bottom: 1px solid #eeeeee;">
                         <div style="font-size: 13px; font-weight: 700; color: #000000; margin-bottom: 2px;">
-                            <a href="/issue/${encodeURIComponent(i.id)}" style="color: #000000; text-decoration: none;">${i.title}</a>
+                            <a href="/issue/${encodeURIComponent(i.id)}" style="color: #000000; text-decoration: none;">${escapeHtml(i.title)}</a>
                         </div>
                         <div style="font-size: 12px; color: #555555; display: flex; justify-content: space-between;">
-                            <span>${i.category}</span>
+                            <span>${escapeHtml(i.category)}</span>
                             <span><strong>${i.upvotes || 0} votes</strong></span>
                         </div>
                     </div>
@@ -1315,7 +1315,7 @@
                         if (reportSuccess) {
                             reportSuccess.innerHTML = `
                                 <strong>✓ Civic issue reported successfully with photo evidence!</strong><br>
-                                Issue Reference: <code>${resData.data.id}</code><br>
+                                Issue Reference: <code>${escapeHtml(resData.data.id)}</code><br>
                                 Your report is now live for community citizen voting.
                             `;
                             reportSuccess.style.display = 'block';

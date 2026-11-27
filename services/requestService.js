@@ -72,21 +72,16 @@ export const requestService = {
     return requestService.getByCustomerId(customerId);
   },
 
-  getByVendorId: (vendorId, user = null) => {
+  // Vendors are matched strictly by account ID. Names are user-chosen and not unique,
+  // so matching on businessName/name let any vendor take over another provider's requests.
+  getByVendorId: (vendorId) => {
     const requests = loadRequests();
-    const vId = String(vendorId).toLowerCase();
-    const bName = user && user.businessName ? String(user.businessName).toLowerCase() : null;
-    const uName = user && user.name ? String(user.name).toLowerCase() : null;
-    return requests.filter(r => 
-      String(r.providerId).toLowerCase() === vId ||
-      (bName && r.providerName && String(r.providerName).toLowerCase() === bName) ||
-      (uName && r.providerName && String(r.providerName).toLowerCase() === uName) ||
-      (r.providerName && r.providerName.toLowerCase().includes(vId))
-    );
+    const vId = String(vendorId);
+    return requests.filter(r => String(r.providerId) === vId);
   },
 
-  getByProvider: (vendorId, user = null) => {
-    return requestService.getByVendorId(vendorId, user);
+  getByProvider: (vendorId) => {
+    return requestService.getByVendorId(vendorId);
   },
 
   updateStatus: (requestId, status, user) => {
@@ -111,12 +106,7 @@ export const requestService = {
     const userRole = (user && user.role ? user.role : '').toLowerCase();
     if (userRole !== 'admin' && userRole !== 'platform_admin') {
       const isCustomer = user && req.customerId === user.id;
-      const isAssignedVendor = user && user.role === 'vendor' && (
-        String(req.providerId).toLowerCase() === String(user.id).toLowerCase() ||
-        (user.businessName && req.providerName && req.providerName.toLowerCase() === user.businessName.toLowerCase()) ||
-        (user.name && req.providerName && req.providerName.toLowerCase() === user.name.toLowerCase()) ||
-        (user.email && req.providerEmail && req.providerEmail.toLowerCase() === user.email.toLowerCase())
-      );
+      const isAssignedVendor = Boolean(user && user.role === 'vendor' && String(req.providerId) === String(user.id));
 
       // Rule: Customer cannot modify vendor-only status
       if (isCustomer && status !== 'Cancelled') {
@@ -162,9 +152,5 @@ export const requestService = {
     req.updatedAt = new Date().toISOString();
     saveRequests(requests);
     return req;
-  },
-
-  getAll: () => {
-    return loadRequests();
   }
 };
