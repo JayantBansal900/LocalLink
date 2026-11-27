@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { sanitizeUser } from './authService.js';
+import { sanitizeUser, cleanText, cleanLocation, normalizeSkills } from './authService.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -32,17 +32,26 @@ export function updateUserProfile(userId, updates) {
   if (index === -1) throw new Error('User not found');
 
   const user = users[index];
-  if (updates.name) user.name = updates.name.trim();
-  if (updates.phone) user.phone = updates.phone.trim();
-  if (updates.location) user.location = { ...user.location, ...updates.location };
+  // Every field is type-checked and stripped of markup before it is persisted.
+  const name = cleanText(updates.name, 100);
+  const phone = cleanText(updates.phone, 30);
+  const location = cleanLocation(updates.location);
+  if (name) user.name = name;
+  if (phone) user.phone = phone;
+  if (location) user.location = { ...user.location, ...location };
 
   if (user.role === 'vendor') {
-    if (updates.businessName) user.businessName = updates.businessName.trim();
-    if (updates.profession) user.profession = updates.profession.trim();
-    if (updates.hourlyRate) user.hourlyRate = Number(updates.hourlyRate) || user.hourlyRate;
-    if (updates.availability) user.availability = updates.availability.trim();
-    if (updates.skills) {
-      user.skills = Array.isArray(updates.skills) ? updates.skills : updates.skills.split(',').map(s => s.trim());
+    const businessName = cleanText(updates.businessName, 150);
+    const profession = cleanText(updates.profession, 80);
+    const availability = cleanText(updates.availability, 50);
+    const hourlyRate = Number(updates.hourlyRate);
+    if (businessName) user.businessName = businessName;
+    if (profession) user.profession = profession;
+    if (availability) user.availability = availability;
+    if (Number.isFinite(hourlyRate) && hourlyRate > 0 && hourlyRate <= 100000) user.hourlyRate = hourlyRate;
+    if (updates.skills !== undefined) {
+      const skills = normalizeSkills(updates.skills);
+      if (skills.length) user.skills = skills;
     }
   }
 
@@ -76,7 +85,7 @@ export function adminSetUserStatus(userId, status) {
   const users = readUsers();
   const user = users.find(u => u.id === userId);
   if (!user) throw new Error('User not found');
-  if (user.role === 'admin') throw new Error('Admin status cannot be modified');
+  if (user.role === 'admin' || user.role === 'platform_admin') throw new Error('Admin status cannot be modified');
 
   user.status = status;
   writeUsers(users);

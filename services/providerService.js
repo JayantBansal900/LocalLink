@@ -69,6 +69,13 @@ function loadProviders() {
 }
 
 export const providerService = {
+  // Public view of a provider: account email addresses are only visible to admins.
+  toPublic: (provider) => {
+    if (!provider) return provider;
+    const { email, ...rest } = provider;
+    return rest;
+  },
+
   getAll: (filters = {}) => {
     let list = loadProviders();
     const { profession, state, district, city, pincode, verified, rating, search, sort } = filters;

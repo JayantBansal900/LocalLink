@@ -1,6 +1,22 @@
 // LocalLink - Unified Client Utilities
 // Clean, Black/White/Grey Minimal Civic-Tech MVP System
 
+// Escape any server/user-provided value before interpolating it into innerHTML
+// (text or attribute context). Defined globally so every page script can use it.
+window.escapeHtml = function(value) {
+  if (value === null || value === undefined) return '';
+  return String(value).replace(/[&<>"'`]/g, (ch) => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;', '`': '&#96;'
+  }[ch]));
+};
+
+// Only allow same-origin relative paths or http(s) URLs in src/href attributes.
+window.safeUrl = function(value, fallback = '') {
+  const v = String(value || '').trim();
+  if (/^\/(?!\/)/.test(v) || /^https?:\/\//i.test(v)) return v;
+  return fallback;
+};
+
 (function() {
   function initLocalLink() {
     // 1. Highlight active navigation link

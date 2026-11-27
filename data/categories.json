@@ -1,0 +1,26 @@
+{
+  "professions": [
+    "Plumber",
+    "Electrician",
+    "Carpenter",
+    "Painter",
+    "Mason",
+    "Appliance Repair",
+    "Cleaner",
+    "Mechanic",
+    "Pest Control",
+    "Welder"
+  ],
+  "issueCategories": [
+    "Roads & Infrastructure",
+    "Water & Sanitation",
+    "Electricity & Energy",
+    "Sanitation & Waste",
+    "Environment & Health",
+    "Urban Mobility",
+    "Transit & Connectivity",
+    "Urban Ecology",
+    "Street Lighting",
+    "Public Parks"
+  ]
+}

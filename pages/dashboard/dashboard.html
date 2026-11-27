@@ -1357,15 +1357,15 @@
         card.innerHTML = `
           <div>
             <div class="card-header-row">
-              <h3 class="card-title">${req.providerName || 'LocalLink Provider'}</h3>
-              <span class="badge ${req.status === 'Accepted' ? 'badge-status' : ''}">${req.status || 'Pending'}</span>
+              <h3 class="card-title">${escapeHtml(req.providerName || 'LocalLink Provider')}</h3>
+              <span class="badge ${escapeHtml(req.status === 'Accepted' ? 'badge-status' : '')}">${escapeHtml(req.status || 'Pending')}</span>
             </div>
             <p class="card-meta">
-              Service: <strong>${req.service}</strong><br>
-              Scheduled: ${req.preferredDate} (${req.preferredTime})<br>
-              Booked: ${new Date(req.createdAt).toLocaleDateString()}
+              Service: <strong>${escapeHtml(req.service)}</strong><br>
+              Scheduled: ${escapeHtml(req.preferredDate)} (${escapeHtml(req.preferredTime)})<br>
+              Booked: ${escapeHtml(new Date(req.createdAt).toLocaleDateString())}
             </p>
-            ${req.message ? `<p style="font-size: 13px; color: #444; background: #fafafa; padding: 8px; border-radius: 6px; border: 1px solid #eee;">"${req.message}"</p>` : ''}
+            ${req.message ? `<p style="font-size: 13px; color: #444; background: #fafafa; padding: 8px; border-radius: 6px; border: 1px solid #eee;">"${escapeHtml(req.message)}"</p>` : ''}
           </div>
           <div class="card-actions-row">
             <a href="/profile/${encodeURIComponent(req.providerId)}" class="btn-action-primary">View Provider</a>
@@ -1418,12 +1418,12 @@
         card.innerHTML = `
           <div>
             <div class="card-header-row">
-              <h3 class="card-title">${p.name}</h3>
-              <span class="badge">${p.profession}</span>
+              <h3 class="card-title">${escapeHtml(p.name)}</h3>
+              <span class="badge">${escapeHtml(p.profession)}</span>
             </div>
             <p class="card-meta">
-              📍 ${p.city || p.location}, ${p.state || 'Delhi'}<br>
-              ⭐ ${p.rating} &bull; Rate: <strong>₹${p.hourlyRate}/hr</strong>
+              📍 ${escapeHtml(p.city || p.location)}, ${escapeHtml(p.state || 'Delhi')}<br>
+              ⭐ ${escapeHtml(p.rating)} &bull; Rate: <strong>₹${escapeHtml(p.hourlyRate)}/hr</strong>
             </p>
           </div>
           <div class="card-actions-row">
@@ -1467,13 +1467,13 @@
         card.innerHTML = `
           <div>
             <div class="card-header-row">
-              <h3 class="card-title">${i.title}</h3>
-              <span class="badge badge-status">${i.status || 'Community Voting'}</span>
+              <h3 class="card-title">${escapeHtml(i.title)}</h3>
+              <span class="badge badge-status">${escapeHtml(i.status || 'Community Voting')}</span>
             </div>
             <p class="card-meta">
-              Category: <strong>${i.category}</strong><br>
-              📍 ${i.location?.city || i.city || 'Delhi'}, ${i.location?.state || i.state || 'Delhi'}<br>
-              👍 Support Votes: <strong>${i.upvotes || 1}</strong> &bull; Reported: ${new Date(i.createdAt).toLocaleDateString()}
+              Category: <strong>${escapeHtml(i.category)}</strong><br>
+              📍 ${escapeHtml(i.location?.city || i.city || 'Delhi')}, ${escapeHtml(i.location?.state || i.state || 'Delhi')}<br>
+              👍 Support Votes: <strong>${escapeHtml(i.upvotes || 1)}</strong> &bull; Reported: ${escapeHtml(new Date(i.createdAt).toLocaleDateString())}
             </p>
           </div>
           <div class="card-actions-row">
@@ -1506,12 +1506,12 @@
         card.innerHTML = `
           <div>
             <div class="card-header-row">
-              <h3 class="card-title">${i.title}</h3>
-              <span class="badge">${i.category}</span>
+              <h3 class="card-title">${escapeHtml(i.title)}</h3>
+              <span class="badge">${escapeHtml(i.category)}</span>
             </div>
             <p class="card-meta">
-              📍 ${i.location?.city || i.city || 'Delhi'}, ${i.location?.state || i.state || 'Delhi'}<br>
-              Status: <strong>${i.status || 'Active Community Voting'}</strong> &bull; Votes: <strong>${i.upvotes || 1}</strong>
+              📍 ${escapeHtml(i.location?.city || i.city || 'Delhi')}, ${escapeHtml(i.location?.state || i.state || 'Delhi')}<br>
+              Status: <strong>${escapeHtml(i.status || 'Active Community Voting')}</strong> &bull; Votes: <strong>${escapeHtml(i.upvotes || 1)}</strong>
             </p>
           </div>
           <div class="card-actions-row">
@@ -1585,16 +1585,16 @@
         card.innerHTML = `
           <div>
             <div class="card-header-row">
-              <h3 class="card-title">${req.clientName || req.customerName || 'Customer'}</h3>
-              <span class="badge ${req.status === 'Accepted' ? 'badge-status' : ''}">${req.status || 'Pending'}</span>
+              <h3 class="card-title">${escapeHtml(req.clientName || req.customerName || 'Customer')}</h3>
+              <span class="badge ${escapeHtml(req.status === 'Accepted' ? 'badge-status' : '')}">${escapeHtml(req.status || 'Pending')}</span>
             </div>
             <p class="card-meta">
-              Service: <strong>${req.service}</strong><br>
-              Requested Date: <strong>${req.preferredDate} (${req.preferredTime})</strong><br>
-              Customer Contact: <strong>${req.clientContact || req.customerContact || 'Direct Contact'}</strong><br>
-              Booked: ${new Date(req.createdAt).toLocaleDateString()}
+              Service: <strong>${escapeHtml(req.service)}</strong><br>
+              Requested Date: <strong>${escapeHtml(req.preferredDate)} (${escapeHtml(req.preferredTime)})</strong><br>
+              Customer Contact: <strong>${escapeHtml(req.clientContact || req.customerContact || 'Direct Contact')}</strong><br>
+              Booked: ${escapeHtml(new Date(req.createdAt).toLocaleDateString())}
             </p>
-            ${req.message ? `<p style="font-size: 13px; color: #333; background: #f9f9f9; padding: 10px; border-radius: 8px; border: 1px solid #ddd;">"${req.message}"</p>` : ''}
+            ${req.message ? `<p style="font-size: 13px; color: #333; background: #f9f9f9; padding: 10px; border-radius: 8px; border: 1px solid #ddd;">"${escapeHtml(req.message)}"</p>` : ''}
           </div>
           <div class="card-actions-row">
             ${isPending ? `
@@ -1637,12 +1637,12 @@
       container.innerHTML = `
         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
           <div>
-            <h2 style="margin: 0 0 6px 0; font-size: 22px;">${currentUser.businessName || currentUser.name}</h2>
-            <p style="margin: 0; font-size: 14px; color: #555;">${currentUser.profession || 'Specialist Provider'} &bull; ${currentUser.location?.city || 'Delhi'}, ${currentUser.location?.state || 'Delhi'}</p>
+            <h2 style="margin: 0 0 6px 0; font-size: 22px;">${escapeHtml(currentUser.businessName || currentUser.name)}</h2>
+            <p style="margin: 0; font-size: 14px; color: #555;">${escapeHtml(currentUser.profession || 'Specialist Provider')} &bull; ${escapeHtml(currentUser.location?.city || 'Delhi')}, ${escapeHtml(currentUser.location?.state || 'Delhi')}</p>
           </div>
           <div>
-            <span class="badge ${currentUser.verified ? 'badge-status' : ''}" style="padding: 6px 12px; font-size: 13px;">
-              ${currentUser.verified ? '✓ Verified Provider' : 'Pending Administrative Verification'}
+            <span class="badge ${escapeHtml(currentUser.verified ? 'badge-status' : '')}" style="padding: 6px 12px; font-size: 13px;">
+              ${escapeHtml(currentUser.verified ? '✓ Verified Provider' : 'Pending Administrative Verification')}
             </span>
           </div>
         </div>
@@ -1650,22 +1650,22 @@
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 20px;">
           <div style="border: 1px solid #000; padding: 14px; border-radius: 8px;">
             <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #666;">Standard Hourly Rate</div>
-            <div style="font-size: 20px; font-weight: 700; margin-top: 4px;">₹${currentUser.hourlyRate || 300}/hr</div>
+            <div style="font-size: 20px; font-weight: 700; margin-top: 4px;">₹${escapeHtml(currentUser.hourlyRate || 300)}/hr</div>
           </div>
           <div style="border: 1px solid #000; padding: 14px; border-radius: 8px;">
             <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #666;">Availability Status</div>
-            <div style="font-size: 20px; font-weight: 700; margin-top: 4px;">${currentUser.availability || 'Available Today'}</div>
+            <div style="font-size: 20px; font-weight: 700; margin-top: 4px;">${escapeHtml(currentUser.availability || 'Available Today')}</div>
           </div>
           <div style="border: 1px solid #000; padding: 14px; border-radius: 8px;">
             <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #666;">Direct Phone</div>
-            <div style="font-size: 16px; font-weight: 700; margin-top: 8px;">${currentUser.phone || 'Provided upon booking'}</div>
+            <div style="font-size: 16px; font-weight: 700; margin-top: 8px;">${escapeHtml(currentUser.phone || 'Provided upon booking')}</div>
           </div>
         </div>
 
         <div style="margin-bottom: 20px;">
           <h4 style="margin: 0 0 8px 0; font-size: 14px;">Certified Skills &amp; Services</h4>
           <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-            ${(currentUser.skills || [currentUser.profession || 'General Repairs']).map(s => `<span class="badge">${s}</span>`).join('')}
+            ${(currentUser.skills || [currentUser.profession || 'General Repairs']).map(s => `<span class="badge">${escapeHtml(s)}</span>`).join('')}
           </div>
         </div>
 
@@ -1736,15 +1736,15 @@
         card.innerHTML = `
           <div>
             <div class="card-header-row">
-              <h3 class="card-title">${i.title}</h3>
-              <span class="badge ${i.escalated ? 'badge-status' : ''}">${i.status || 'Community Voting'}</span>
+              <h3 class="card-title">${escapeHtml(i.title)}</h3>
+              <span class="badge ${escapeHtml(i.escalated ? 'badge-status' : '')}">${escapeHtml(i.status || 'Community Voting')}</span>
             </div>
             <p class="card-meta">
-              Category: <strong>${i.category}</strong><br>
-              📍 ${i.location?.city || i.city || 'Delhi'}, ${i.location?.state || i.state || 'Delhi'}<br>
-              👍 Support Votes: <strong>${i.upvotes || 0}</strong> &bull; Reporter: ${i.reporterName || 'Citizen'}
+              Category: <strong>${escapeHtml(i.category)}</strong><br>
+              📍 ${escapeHtml(i.location?.city || i.city || 'Delhi')}, ${escapeHtml(i.location?.state || i.state || 'Delhi')}<br>
+              👍 Support Votes: <strong>${escapeHtml(i.upvotes || 0)}</strong> &bull; Reporter: ${escapeHtml(i.reporterName || 'Citizen')}
             </p>
-            ${i.imageUrl ? `<img src="${i.imageUrl}" alt="Photo Evidence" style="width: 100%; height: 120px; object-fit: cover; border-radius: 6px; border: 1px solid #000; margin-bottom: 12px;">` : ''}
+            ${i.imageUrl ? `<img src="${escapeHtml(safeUrl(i.imageUrl))}" alt="Photo Evidence" style="width: 100%; height: 120px; object-fit: cover; border-radius: 6px; border: 1px solid #000; margin-bottom: 12px;">` : ''}
           </div>
           <div class="card-actions-row">
             <button type="button" class="btn-action-primary" onclick="openGovIssueModal('${i.id}')">Review &amp; Action</button>
@@ -1845,17 +1845,17 @@
         <div class="analytics-grid">
           <div class="analytics-card">
             <div class="analytics-card-title">Citizens / Customers</div>
-            <div class="analytics-card-number">${u.totalCustomers || 0}</div>
+            <div class="analytics-card-number">${escapeHtml(u.totalCustomers || 0)}</div>
             <div class="analytics-card-desc">Active account holders</div>
           </div>
           <div class="analytics-card">
             <div class="analytics-card-title">Service Vendors</div>
-            <div class="analytics-card-number">${u.totalVendors || 0}</div>
+            <div class="analytics-card-number">${escapeHtml(u.totalVendors || 0)}</div>
             <div class="analytics-card-desc">Electricians, Plumbers, Carpenters</div>
           </div>
           <div class="analytics-card">
             <div class="analytics-card-title">Government Officers</div>
-            <div class="analytics-card-number">${u.totalGovOfficers || 0}</div>
+            <div class="analytics-card-number">${escapeHtml(u.totalGovOfficers || 0)}</div>
             <div class="analytics-card-desc">Civic Authorities</div>
           </div></div>
 
@@ -1863,17 +1863,17 @@
         <div class="analytics-grid">
           <div class="analytics-card">
             <div class="analytics-card-title">Total Providers</div>
-            <div class="analytics-card-number">${s.totalProviders || 0}</div>
-            <div class="analytics-card-desc">Verified: ${s.verifiedVendors || 0} &bull; Pending: ${s.unverifiedVendors || 0}</div>
+            <div class="analytics-card-number">${escapeHtml(s.totalProviders || 0)}</div>
+            <div class="analytics-card-desc">Verified: ${escapeHtml(s.verifiedVendors || 0)} &bull; Pending: ${escapeHtml(s.unverifiedVendors || 0)}</div>
           </div>
           <div class="analytics-card">
             <div class="analytics-card-title">Service Requests</div>
-            <div class="analytics-card-number">${s.totalRequests || 0}</div>
-            <div class="analytics-card-desc">Pending: ${s.pendingRequests || 0} &bull; Accepted: ${s.acceptedRequests || 0}</div>
+            <div class="analytics-card-number">${escapeHtml(s.totalRequests || 0)}</div>
+            <div class="analytics-card-desc">Pending: ${escapeHtml(s.pendingRequests || 0)} &bull; Accepted: ${escapeHtml(s.acceptedRequests || 0)}</div>
           </div>
           <div class="analytics-card">
             <div class="analytics-card-title">Completed Work Orders</div>
-            <div class="analytics-card-number">${s.completedRequests || 0}</div>
+            <div class="analytics-card-number">${escapeHtml(s.completedRequests || 0)}</div>
             <div class="analytics-card-desc">Successful citizen jobs</div>
           </div>
         </div>
@@ -1911,11 +1911,11 @@
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
           <div style="border: 1px solid #000; border-radius: 8px; padding: 14px;">
             <div style="font-weight: 700; font-size: 13px; text-transform: uppercase; margin-bottom: 8px;">Activity by State</div>
-            ${(l.states || []).map(st => `<div style="display: flex; justify-content: space-between; font-size: 13px; padding: 4px 0; border-bottom: 1px solid #f0f0f0;"><span>${st.state}</span><strong>${st.count} entries</strong></div>`).join('')}
+            ${(l.states || []).map(st => `<div style="display: flex; justify-content: space-between; font-size: 13px; padding: 4px 0; border-bottom: 1px solid #f0f0f0;"><span>${escapeHtml(st.state)}</span><strong>${escapeHtml(st.count)} entries</strong></div>`).join('')}
           </div>
           <div style="border: 1px solid #000; border-radius: 8px; padding: 14px;">
             <div style="font-weight: 700; font-size: 13px; text-transform: uppercase; margin-bottom: 8px;">Top Urban Centers</div>
-            ${(l.topCities || []).map(ct => `<div style="display: flex; justify-content: space-between; font-size: 13px; padding: 4px 0; border-bottom: 1px solid #f0f0f0;"><span>${ct.city}</span><strong>${ct.count} entries</strong></div>`).join('')}
+            ${(l.topCities || []).map(ct => `<div style="display: flex; justify-content: space-between; font-size: 13px; padding: 4px 0; border-bottom: 1px solid #f0f0f0;"><span>${escapeHtml(ct.city)}</span><strong>${escapeHtml(ct.count)} entries</strong></div>`).join('')}
           </div>
         </div>
       `;
@@ -1951,20 +1951,20 @@
 
         tr.innerHTML = `
           <td>
-            <strong>${u.name}</strong><br>
-            <span style="font-size: 12px; color: #666;">${u.email}</span>
+            <strong>${escapeHtml(u.name)}</strong><br>
+            <span style="font-size: 12px; color: #666;">${escapeHtml(u.email)}</span>
           </td>
           <td>
-            <span class="badge">${u.role}</span>
+            <span class="badge">${escapeHtml(u.role)}</span>
           </td>
           <td>
-            ${u.organization || u.company || u.businessName || u.department || '—'}
+            ${escapeHtml(u.organization || u.company || u.businessName || u.department || '—')}
           </td>
           <td>
-            <span class="badge ${isActive ? 'badge-status' : 'badge-outline'}">${u.status || 'active'}</span>
+            <span class="badge ${isActive ? 'badge-status' : 'badge-outline'}">${escapeHtml(u.status || 'active')}</span>
           </td>
           <td>
-            ${u.createdAt ? new Date(u.createdAt).toLocaleDateString() : '—'}
+            ${escapeHtml(u.createdAt ? new Date(u.createdAt).toLocaleDateString() : '—')}
           </td>
           <td>
             ${u.role !== 'admin' ? `
@@ -2006,20 +2006,20 @@
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td>
-            <strong>${v.name}</strong> (${v.businessName || v.name})<br>
-            <span style="font-size: 12px; color: #666;">${v.email || v.phone}</span>
+            <strong>${escapeHtml(v.name)}</strong> (${escapeHtml(v.businessName || v.name)})<br>
+            <span style="font-size: 12px; color: #666;">${escapeHtml(v.email || v.phone)}</span>
           </td>
-          <td><span class="badge">${v.profession}</span></td>
-          <td>${v.city || v.location}, ${v.state || 'Delhi'}</td>
-          <td>₹${v.hourlyRate || 300}/hr</td>
+          <td><span class="badge">${escapeHtml(v.profession)}</span></td>
+          <td>${escapeHtml(v.city || v.location)}, ${escapeHtml(v.state || 'Delhi')}</td>
+          <td>₹${escapeHtml(v.hourlyRate || 300)}/hr</td>
           <td>
-            <span class="badge ${v.verified ? 'badge-status' : 'badge-outline'}">
-              ${v.verified ? '✓ Verified' : 'Pending'}
+            <span class="badge ${escapeHtml(v.verified ? 'badge-status' : 'badge-outline')}">
+              ${escapeHtml(v.verified ? '✓ Verified' : 'Pending')}
             </span>
           </td>
           <td>
             <button type="button" class="btn-action-outline" style="font-size: 11px; padding: 4px 8px;" onclick="adminVerifyVendor('${v.id}', ${!v.verified})">
-              ${v.verified ? 'Unverify' : 'Verify'}
+              ${escapeHtml(v.verified ? 'Unverify' : 'Verify')}
             </button>
           </td>
         `;
@@ -2117,10 +2117,10 @@
         row.style.cssText = 'padding: 10px 0; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; font-size: 13px;';
         row.innerHTML = `
           <div>
-            <strong>${ev.title}</strong>
-            <div style="color: #666; font-size: 12px; margin-top: 2px;">${ev.desc}</div>
+            <strong>${escapeHtml(ev.title)}</strong>
+            <div style="color: #666; font-size: 12px; margin-top: 2px;">${escapeHtml(ev.desc)}</div>
           </div>
-          <span style="color: #888;">${ev.time}</span>
+          <span style="color: #888;">${escapeHtml(ev.time)}</span>
         `;
         container.appendChild(row);
       });

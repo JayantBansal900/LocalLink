@@ -994,7 +994,7 @@
 
       const perms = Array.isArray(user.permissions) ? user.permissions : ['PLATFORM_ADMIN'];
       const pWrap = document.getElementById('metaPermissions');
-      pWrap.innerHTML = perms.map(p => `<span class="perm-badge">${p}</span>`).join('');
+      pWrap.innerHTML = perms.map(p => `<span class="perm-badge">${escapeHtml(p)}</span>`).join('');
     }
 
     // Load real Platform-wide Analytics
@@ -1275,7 +1275,7 @@
           `;
         }).join('');
       } catch (err) {
-        container.innerHTML = `<div style="text-align: center; color: #888; padding: 15px;">Could not load activity stream: ${err.message}</div>`;
+        container.innerHTML = `<div style="text-align: center; color: #888; padding: 15px;">Could not load activity stream: ${escapeHtml(err.message)}</div>`;
       }
     }
 

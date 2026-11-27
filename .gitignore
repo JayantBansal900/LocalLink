@@ -22,13 +22,19 @@ bun.lockb
 yarn.lock
 pnpm-lock.yaml
 
-# LocalLink runtime data
-data/*.json
-data/legacy/*.json
+# LocalLink runtime data (created automatically at startup; contains accounts and sessions)
+# Seed/reference data (categories, locations, providers, demo issues) IS tracked so a fresh clone works.
+data/users.json
+data/requests.json
+data/sessions.json
 
-# User-uploaded issue evidence
+# User-uploaded issue evidence (demo evidence images are tracked)
 public/uploads/issues/*
 !public/uploads/issues/.gitkeep
+!public/uploads/issues/ISS-DEMO-*.png
+# Evidence for the two seeded citizen issues referenced in data/issues.json
+!public/uploads/issues/ISSUE-1791232040319-1214.png
+!public/uploads/issues/ISSUE-1791195864084-3607.png
 
 # Backups
 *.bak

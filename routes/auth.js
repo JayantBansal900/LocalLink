@@ -1,6 +1,28 @@
 import express from 'express';
 import { registerUser, loginUser, invalidateSession, sanitizeUser } from '../services/authService.js';
 import { requireAuth } from '../middleware/auth.js';
+import { rateLimit } from '../middleware/rateLimit.js';
+
+const SESSION_COOKIE_OPTIONS = {
+  httpOnly: true,
+  maxAge: 7 * 24 * 60 * 60 * 1000,
+  sameSite: 'lax',
+  secure: process.env.NODE_ENV === 'production',
+  path: '/'
+};
+
+// Brute-force protection: per IP + identifier for login, per IP for account creation.
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  keyFn: (req) => `${req.ip}|${String(req.body?.email || req.body?.username || '').toLowerCase().trim()}`,
+  message: 'Too many sign-in attempts. Please wait 15 minutes and try again.'
+});
+const registerLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 10,
+  message: 'Too many accounts created from this network. Please try again later.'
+});
 
 const router = express.Router();
 
@@ -21,7 +43,7 @@ function handleRegistration(req, res) {
       });
     }
 
-    if (password.length < 6) {
+    if (typeof password !== 'string' || password.length < 6) {
       return res.status(400).json({
         success: false,
         message: 'Password must be at least 6 characters long'
@@ -49,12 +71,7 @@ function handleRegistration(req, res) {
     });
 
     // Set HTTP cookie for seamless sessions
-    res.cookie('ll_token', result.token, {
-      httpOnly: true,
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-      sameSite: 'lax',
-      path: '/'
-    });
+    res.cookie('ll_token', result.token, SESSION_COOKIE_OPTIONS);
 
     let displayRoleName = 'Customer';
     if (safeRole === 'vendor') displayRoleName = 'Service provider';
@@ -76,16 +93,16 @@ function handleRegistration(req, res) {
 }
 
 // POST /api/auth/register and /api/auth/signup
-router.post('/register', handleRegistration);
-router.post('/signup', handleRegistration);
+router.post('/register', registerLimiter, handleRegistration);
+router.post('/signup', registerLimiter, handleRegistration);
 
 // POST /api/auth/login
-router.post('/login', (req, res) => {
+router.post('/login', loginLimiter, (req, res) => {
   try {
     const identifier = req.body.email || req.body.username;
     const password = req.body.password;
 
-    if (!identifier || !password) {
+    if (!identifier || !password || typeof identifier !== 'string' || typeof password !== 'string') {
       return res.status(400).json({
         success: false,
         message: 'Please provide both email/username and password'
@@ -98,12 +115,7 @@ router.post('/login', (req, res) => {
     });
 
     // Set cookie
-    res.cookie('ll_token', result.token, {
-      httpOnly: true,
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-      sameSite: 'lax',
-      path: '/'
-    });
+    res.cookie('ll_token', result.token, SESSION_COOKIE_OPTIONS);
 
     res.json({
       success: true,
@@ -137,7 +149,7 @@ router.post('/logout', (req, res) => {
     invalidateSession(token);
   }
 
-  res.clearCookie('ll_token', { path: '/' });
+  res.clearCookie('ll_token', { path: '/', sameSite: 'lax', secure: SESSION_COOKIE_OPTIONS.secure });
   res.json({
     success: true,
     message: 'Signed out successfully'
